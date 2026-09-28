@@ -5,6 +5,8 @@ export const WORD_AUDIO: Record<string, string> = {
   "der Hund": "/audio/hund.mp3",
   "die Katze": "/audio/katze.mp3",
   "der Vogel": "/audio/vogel.mp3",
+  "die Vögel": "/audio/voegel.mp3",
+  "Der Vogel singt.": "/audio/sentence-der-vogel-singt.mp3",
   "das Pferd": "/audio/pferd.mp3",
   "das Buch": "/audio/buch.mp3",
   "der": "/audio/article-der.mp3",
@@ -677,4 +679,5 @@ export const WORD_AUDIO: Record<string, string> = {
   "Was hörst du?": "/audio/title-was-hoerst-du.mp3",
   "Welches Bild hörst du?": "/audio/title-welches-bild-hoerst-du.mp3",
   "Finde die Paare": "/audio/title-finde-die-paare.mp3",
+  "Neues Wort": "/audio/title-neues-wort.mp3",
 };

@@ -30,6 +30,7 @@ import {
   Picture,
   PictureOptions,
   ResultCard,
+  TrainingCard,
   WordCard,
 } from "@/components/quiz/pieces";
 import { VocabQuiz } from "@/components/quiz/VocabQuiz";
@@ -95,6 +96,8 @@ export const Route = createFileRoute("/")({
 type Screen =
   | "home"
   | "quiz"
+  | "training"
+  | "trainingCheck"
   | "picture"
   | "wordPicture"
   | "meaning"
@@ -151,6 +154,10 @@ function Index() {
       case "listen":
         preloadWords(["der Hund", "der Vogel", "das Pferd", "die Katze"]);
         break;
+      case "training":
+        preloadWords(["der Vogel", "Der Vogel singt."]);
+        break;
+      case "trainingCheck":
       case "wordPicture":
       case "listenPicture":
         preloadWords(["der Vogel"]);
@@ -281,7 +288,9 @@ function Index() {
       /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
     if (isIOS) setShowInstallHelp(true);
   };
-  // Mirrors quiz-engine.ts's TEST_TIERS grouping (easy -> medium -> hard) so
+  // Opens with the Training level (an intro screen teaching the word, then
+  // one word-to-picture check), then mirrors quiz-engine.ts's TEST_TIERS
+  // grouping (easy -> medium -> hard) so
   // this hand-written walkthrough exercises the same difficulty order as
   // the data-driven VocabQuiz. "match" stays last regardless of tier —
   // MatchPairs always exits via its own onComplete straight to "home"
@@ -289,6 +298,8 @@ function Index() {
   // would be unreachable.
   const sequence: Screen[] = [
     "home",
+    "training",
+    "trainingCheck",
     "picture",
     "wordPicture",
     "meaning",
@@ -351,7 +362,7 @@ function Index() {
       setActiveTest(test);
       go("quiz");
     } else {
-      go("picture");
+      go("training");
     }
   };
   const speak = () => {
@@ -438,10 +449,18 @@ function Index() {
             </LessonFrame>
           )}
 
-          {screen === "wordPicture" && (
+          {screen === "training" && (
+            <TrainingCard t={t} lang={lang} word={vogel} onContinue={() => go("trainingCheck")} />
+          )}
+
+          {(screen === "wordPicture" || screen === "trainingCheck") && (
             <LessonFrame
               t={t}
-              eyebrow={t.wordPictureChallenge}
+              eyebrow={
+                screen === "trainingCheck"
+                  ? `${t.training} · ${t.wordPictureChallenge}`
+                  : t.wordPictureChallenge
+              }
               title="Welches Bild ist das?"
               subtitle={t.chooseGermanPictureForWord}
             >

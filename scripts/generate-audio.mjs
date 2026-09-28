@@ -40,6 +40,8 @@ const WORDS = [
   { word: "der Hund", slug: "hund" },
   { word: "die Katze", slug: "katze" },
   { word: "der Vogel", slug: "vogel" },
+  { word: "die Vögel", slug: "voegel" },
+  { word: "Der Vogel singt.", slug: "sentence-der-vogel-singt" },
   { word: "das Pferd", slug: "pferd" },
   { word: "das Buch", slug: "buch" },
   { word: "der", slug: "article-der" },
@@ -721,6 +723,7 @@ const TITLES = [
   { word: "Was hörst du?", slug: "title-was-hoerst-du" },
   { word: "Welches Bild hörst du?", slug: "title-welches-bild-hoerst-du" },
   { word: "Finde die Paare", slug: "title-finde-die-paare" },
+  { word: "Neues Wort", slug: "title-neues-wort" },
 ];
 
 // The German alphabet, for the word-builder's letter tiles. `name` spells out

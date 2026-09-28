@@ -739,11 +739,13 @@ export function TrainingCard({
   t,
   lang,
   word,
+  tier,
   onContinue,
 }: {
   t: Strings;
   lang: MotherTongue;
   word: VocabWord;
+  tier?: Tier | undefined;
   onContinue: () => void;
 }) {
   useEffect(() => {
@@ -751,7 +753,13 @@ export function TrainingCard({
   }, [word.full]);
 
   return (
-    <LessonFrame t={t} eyebrow={t.training} title="Neues Wort" subtitle={t.learnNewWord}>
+    <LessonFrame
+      t={t}
+      eyebrow={t.training}
+      tier={tier}
+      title="Neues Wort"
+      subtitle={t.learnNewWord}
+    >
       <div className="mx-auto my-5 size-60 overflow-hidden rounded-[32px] bg-card shadow-inner ring-1 ring-border sm:size-72">
         <LoadingImage
           src={word.image}

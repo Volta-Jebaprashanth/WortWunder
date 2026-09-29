@@ -1,0 +1,253 @@
+import type { VocabWord } from "@/data/vocabulary";
+
+// Vocabulary for the "Natur & Umwelt" (nature & environment) lesson,
+// 1.23: landscape, sky, the elements and a first handful of animals. The
+// animal words reuse the existing shared clips (der Hund, ...) but get real
+// photos here; lesson 1.24 copies them. The 29 words split into two tests
+// (15 + 14).
+//
+// Per-lesson asset layout (see AGENTS.md): this lesson's own audio/images
+// live under `public/1.23 nature/`, split into `audio/` (German filenames) and
+// `images/` (English filenames, independent of the German word). Images are
+// real Pexels photos (free to use, no attribution required) cropped to
+// 640x640; sources per file are in CREDITS.md. Words that were already taught
+// in an earlier lesson keep the same meanings (unless noted above), and their
+// photos are copied into this lesson's folder; their audio is the existing
+// clip, since WORD_AUDIO is keyed by the spoken text. Every screen also
+// captions the picture in the learner's mother tongue — see VocabQuiz.tsx.
+export const NATURE_LESSON_ID = "1.23";
+
+export const NATURE_WORDS: VocabWord[] = [
+  {
+    id: "natur",
+    image: "/1.23 nature/images/nature.jpg",
+    full: "die Natur",
+    english: "Nature",
+    tamil: "இயற்கை",
+    sinhala: "සොබාදහම",
+  },
+  {
+    id: "baum",
+    image: "/1.23 nature/images/tree.jpg",
+    full: "der Baum",
+    english: "Tree",
+    tamil: "மரம்",
+    sinhala: "ගස",
+  },
+  {
+    id: "blume",
+    image: "/1.23 nature/images/flower.jpg",
+    full: "die Blume",
+    english: "Flower",
+    tamil: "பூ",
+    sinhala: "මල",
+  },
+  {
+    id: "pflanze",
+    image: "/1.23 nature/images/plant.jpg",
+    full: "die Pflanze",
+    english: "Plant",
+    tamil: "செடி",
+    sinhala: "පැළය",
+  },
+  {
+    id: "gras",
+    image: "/1.23 nature/images/grass.jpg",
+    full: "das Gras",
+    english: "Grass",
+    tamil: "புல்",
+    sinhala: "තණකොළ",
+  },
+  {
+    id: "berg",
+    image: "/1.23 nature/images/mountain.jpg",
+    full: "der Berg",
+    english: "Mountain",
+    tamil: "மலை",
+    sinhala: "කන්ද",
+  },
+  {
+    id: "see",
+    image: "/1.23 nature/images/lake.jpg",
+    full: "der See",
+    english: "Lake",
+    tamil: "ஏரி",
+    sinhala: "විල",
+  },
+  {
+    id: "fluss",
+    image: "/1.23 nature/images/river.jpg",
+    full: "der Fluss",
+    english: "River",
+    tamil: "ஆறு",
+    sinhala: "ගඟ",
+  },
+  {
+    id: "meer",
+    image: "/1.23 nature/images/sea.jpg",
+    full: "das Meer",
+    english: "Sea",
+    tamil: "கடல்",
+    sinhala: "මුහුද",
+  },
+  {
+    id: "strand",
+    image: "/1.23 nature/images/beach.jpg",
+    full: "der Strand",
+    english: "Beach",
+    tamil: "கடற்கரை",
+    sinhala: "වෙරළ",
+  },
+  {
+    id: "wald",
+    image: "/1.23 nature/images/forest.jpg",
+    full: "der Wald",
+    english: "Forest",
+    tamil: "காடு",
+    sinhala: "කැලය",
+  },
+  {
+    id: "park",
+    image: "/1.23 nature/images/park.jpg",
+    full: "der Park",
+    english: "Park",
+    tamil: "பூங்கா",
+    sinhala: "උද්‍යානය",
+  },
+  {
+    id: "himmel",
+    image: "/1.23 nature/images/sky.jpg",
+    full: "der Himmel",
+    english: "Sky",
+    tamil: "வானம்",
+    sinhala: "අහස",
+  },
+  {
+    id: "sonne",
+    image: "/1.23 nature/images/sun.jpg",
+    full: "die Sonne",
+    english: "Sun",
+    tamil: "சூரியன்",
+    sinhala: "ඉර",
+  },
+  {
+    id: "mond",
+    image: "/1.23 nature/images/moon.jpg",
+    full: "der Mond",
+    english: "Moon",
+    tamil: "நிலா",
+    sinhala: "හඳ",
+  },
+  {
+    id: "stern",
+    image: "/1.23 nature/images/star.jpg",
+    full: "der Stern",
+    english: "Star",
+    tamil: "நட்சத்திரம்",
+    sinhala: "තරුව",
+  },
+  {
+    id: "luft",
+    image: "/1.23 nature/images/air.jpg",
+    full: "die Luft",
+    english: "Air",
+    tamil: "காற்று",
+    sinhala: "වාතය",
+  },
+  {
+    id: "erde",
+    image: "/1.23 nature/images/earth.jpg",
+    full: "die Erde",
+    english: "Earth / ground",
+    tamil: "பூமி / மண்",
+    sinhala: "පොළොව",
+  },
+  {
+    id: "wasser",
+    image: "/1.23 nature/images/water.jpg",
+    full: "das Wasser",
+    english: "Water",
+    tamil: "தண்ணீர்",
+    sinhala: "වතුර",
+  },
+  {
+    id: "feuer",
+    image: "/1.23 nature/images/fire.jpg",
+    full: "das Feuer",
+    english: "Fire",
+    tamil: "நெருப்பு",
+    sinhala: "ගින්දර",
+  },
+  {
+    id: "tier",
+    image: "/1.23 nature/images/animal.jpg",
+    full: "das Tier",
+    english: "Animal",
+    tamil: "விலங்கு",
+    sinhala: "සතා",
+  },
+  {
+    id: "hund",
+    image: "/1.23 nature/images/dog.jpg",
+    full: "der Hund",
+    english: "Dog",
+    tamil: "நாய்",
+    sinhala: "බල්ලා",
+  },
+  {
+    id: "katze",
+    image: "/1.23 nature/images/cat.jpg",
+    full: "die Katze",
+    english: "Cat",
+    tamil: "பூனை",
+    sinhala: "පූසා",
+  },
+  {
+    id: "vogel",
+    image: "/1.23 nature/images/bird.jpg",
+    full: "der Vogel",
+    english: "Bird",
+    tamil: "பறவை",
+    sinhala: "කුරුල්ලා",
+  },
+  {
+    id: "pferd",
+    image: "/1.23 nature/images/horse.jpg",
+    full: "das Pferd",
+    english: "Horse",
+    tamil: "குதிரை",
+    sinhala: "අශ්වයා",
+  },
+  {
+    id: "kuh",
+    image: "/1.23 nature/images/cow.jpg",
+    full: "die Kuh",
+    english: "Cow",
+    tamil: "பசு",
+    sinhala: "එළදෙන",
+  },
+  {
+    id: "wetter",
+    image: "/1.23 nature/images/weather.jpg",
+    full: "das Wetter",
+    english: "Weather",
+    tamil: "வானிலை",
+    sinhala: "කාලගුණය",
+  },
+  {
+    id: "draussen",
+    image: "/1.23 nature/images/outdoors.jpg",
+    full: "draußen",
+    english: "Outside (outdoors)",
+    tamil: "வெளியே",
+    sinhala: "එළියේ",
+  },
+  {
+    id: "drinnen",
+    image: "/1.23 nature/images/indoors.jpg",
+    full: "drinnen",
+    english: "Inside (indoors)",
+    tamil: "வீட்டுக்குள்ளே",
+    sinhala: "ගෙතුළ",
+  },
+];

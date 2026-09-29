@@ -1040,3 +1040,306 @@ downloaded just for an icon, also under the [Pexels License](https://www.pexels.
 | 1.1 greetings/icons/test-2.jpg | Hallo 2 | https://www.pexels.com/photo/close-up-shot-of-two-people-shaking-hands-8441809/ |
 | 1.2 family/icons/test-3.jpg | Familie 3 | https://www.pexels.com/photo/close-up-shot-of-a-happy-elderly-couple-with-their-grandchild-hugging-while-looking-at-camera-8317710/ |
 | 1.4 home/icons/test-2.jpg | Haus & Zimmer 2 | https://www.pexels.com/photo/a-cozy-living-room-with-green-couch-12474787/ |
+
+## Lesson 1.19 — Gefühle
+
+The 23 photos under `public/1.19 feelings/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 4 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.19 feelings/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| happy.jpg | glücklich | https://www.pexels.com/photo/portrait-of-laughing-kid-14935221/ |
+| sad.jpg | traurig | https://www.pexels.com/photo/photo-of-a-sad-little-boy-7743433/ |
+| hungry.jpg | hungrig | https://www.pexels.com/photo/a-boy-in-plaid-shirt-eating-pizza-8511876/ |
+| thirsty.jpg | durstig | https://www.pexels.com/photo/man-wearing-black-shirt-drinking-water-907865/ |
+| nervous.jpg | nervös | https://www.pexels.com/photo/woman-in-gray-sweater-holding-her-face-3767399/ |
+| calm.jpg | ruhig | https://www.pexels.com/photo/a-woman-sitting-on-a-cushion-meditating-7113345/ |
+| glad.jpg | froh | https://www.pexels.com/photo/young-girl-in-red-dress-with-headband-12245151/ |
+| satisfied.jpg | zufrieden | https://www.pexels.com/photo/relaxed-young-man-taking-break-in-office-39219391/ |
+| angry.jpg | wütend | https://www.pexels.com/photo/toddler-with-red-adidas-sweat-shirt-783941/ |
+| surprised.jpg | überrascht | https://www.pexels.com/photo/boy-in-black-v-neck-shirt-with-looking-straight-to-the-camera-with-a-shocking-face-expression-764340/ |
+| fear.jpg | die Angst | https://www.pexels.com/photo/scared-kid-looking-at-camera-4959221/ |
+| fun.jpg | der Spaß | https://www.pexels.com/photo/smiling-boys-playing-together-16584424/ |
+| love.jpg | die Liebe | https://www.pexels.com/photo/a-child-hugging-his-mother-7302870/ |
+| joy.jpg | die Freude | https://www.pexels.com/photo/girls-doing-a-jump-shot-7330581/ |
+| problem.jpg | das Problem | https://www.pexels.com/photo/a-woman-standing-by-a-car-12956065/ |
+| to-be-afraid.jpg | Angst haben | https://www.pexels.com/photo/a-kid-hiding-behind-a-couch-5998179/ |
+| to-look-forward.jpg | sich freuen | https://www.pexels.com/photo/photograph-of-an-excited-child-13871109/ |
+| to-hope.jpg | hoffen | https://www.pexels.com/photo/person-doing-fingers-crossed-9017426/ |
+| to-wish.jpg | wünschen | https://www.pexels.com/photo/a-young-boy-wearing-a-party-hat-while-blowing-his-cupcake-7423779/ |
+
+## Lesson 1.20 — Kleidung & Aussehen
+
+The 30 photos under `public/1.20 clothes/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 13 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.20 clothes/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| blouse.jpg | die Bluse | https://www.pexels.com/photo/a-woman-in-a-business-attire-8289271/ |
+| jeans.jpg | die Jeans | https://www.pexels.com/photo/pocket-of-a-blue-denim-jeans-10133278/ |
+| skirt.jpg | der Rock | https://www.pexels.com/photo/a-little-girl-holding-a-camera-standing-in-the-garden-22604244/ |
+| sweater.jpg | der Pullover | https://www.pexels.com/photo/stack-of-sweaters-14367613/ |
+| sock.jpg | die Socke | https://www.pexels.com/photo/feet-in-different-socks-10563910/ |
+| beanie.jpg | die Mütze | https://www.pexels.com/photo/little-boy-in-beanie-looking-at-camera-19524511/ |
+| hat.jpg | der Hut | https://www.pexels.com/photo/straw-hat-on-grass-16824522/ |
+| glasses.jpg | die Brille | https://www.pexels.com/photo/close-up-shot-of-a-boy-wearing-eyeglasses-7417171/ |
+| belt.jpg | der Gürtel | https://www.pexels.com/photo/colorful-leather-belts-on-dark-background-31959214/ |
+| a-hair.jpg | das Haar | https://www.pexels.com/photo/shallow-focus-photography-of-hand-1171655/ |
+| hair.jpg | die Haare | https://www.pexels.com/photo/girl-brushing-her-hair-6652260/ |
+| skin.jpg | die Haut | https://www.pexels.com/photo/close-up-shot-of-a-palm-8058739/ |
+| blonde.jpg | blond | https://www.pexels.com/photo/cheerful-little-boy-standing-near-tree-5623715/ |
+| brown.jpg | braun | https://www.pexels.com/photo/a-brown-teddy-bear-with-a-red-bandana-15130371/ |
+| long.jpg | lang | https://www.pexels.com/photo/girl-with-long-hair-leaning-on-a-bike-on-a-field-11756090/ |
+| short.jpg | kurz | https://www.pexels.com/photo/boy-in-t-shirt-17328941/ |
+| pretty.jpg | hübsch | https://www.pexels.com/photo/a-girl-in-white-floral-headband-9889772/ |
+
+## Lesson 1.21 — Eigenschaften
+
+The 37 photos under `public/1.21 describing/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 17 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.21 describing/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| thick.jpg | dick | https://www.pexels.com/photo/moss-on-bark-14776250/ |
+| thin.jpg | dünn | https://www.pexels.com/photo/4-pencils-on-gray-surface-4853196/ |
+| fast.jpg | schnell | https://www.pexels.com/photo/topless-boy-in-black-shorts-running-on-brown-field-3969513/ |
+| slow.jpg | langsam | https://www.pexels.com/photo/close-up-of-brown-garden-snail-on-leaf-34325970/ |
+| light.jpg | leicht | https://www.pexels.com/photo/vibrant-blue-feather-on-white-background-30975795/ |
+| heavy.jpg | schwer | https://www.pexels.com/photo/concentrated-couple-carrying-big-carton-box-down-stairs-4246102/ |
+| simple.jpg | einfach | https://www.pexels.com/photo/boy-playing-with-plastic-toys-5215553/ |
+| difficult.jpg | schwierig | https://www.pexels.com/photo/a-woman-in-beige-long-sleeves-holding-notebooks-8147362/ |
+| ugly.jpg | hässlich | https://www.pexels.com/photo/weathered-abandoned-building-with-cracked-wall-28950594/ |
+| loud.jpg | laut | https://www.pexels.com/photo/young-woman-with-a-megaphone-3851253/ |
+| quiet.jpg | leise | https://www.pexels.com/photo/confident-businesswoman-making-quiet-gesture-30822556/ |
+| funny.jpg | lustig | https://www.pexels.com/photo/boy-in-white-long-sleeve-shirt-holding-blue-round-ornament-4720397/ |
+| interesting.jpg | interessant | https://www.pexels.com/photo/funny-asian-girl-looking-through-magnifier-5062995/ |
+| boring.jpg | langweilig | https://www.pexels.com/photo/close-up-photograph-of-a-bored-child-9229252/ |
+| important.jpg | wichtig | https://www.pexels.com/photo/person-writing-on-a-sticky-note-9052849/ |
+| wrong.jpg | falsch | https://www.pexels.com/photo/bright-red-wrong-way-traffic-sign-in-miami-35113478/ |
+| open.jpg | offen | https://www.pexels.com/photo/old-fashioned-home-interior-with-open-door-14330674/ |
+| closed.jpg | geschlossen | https://www.pexels.com/photo/white-and-red-text-sign-9572034/ |
+| full.jpg | voll | https://www.pexels.com/photo/clear-drinking-glass-filled-with-water-928854/ |
+| empty.jpg | leer | https://www.pexels.com/photo/clear-drinking-glass-on-gray-surface-8960418/ |
+
+## Lesson 1.22 — Die Farben
+
+The 12 photos under `public/1.22 colors/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 8 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.22 colors/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| orange.jpg | orange | https://www.pexels.com/photo/bright-orange-pumpkins-on-a-wooden-surface-29122859/ |
+| pink.jpg | rosa | https://www.pexels.com/photo/blooming-pink-flowers-8734731/ |
+| purple.jpg | lila | https://www.pexels.com/photo/blooming-lavandula-flowers-field-in-countryside-4242688/ |
+| grey.jpg | grau | https://www.pexels.com/photo/majestic-african-elephant-in-natural-habitat-33837670/ |
+
+## Lesson 1.23 — Natur & Umwelt
+
+The 29 photos under `public/1.23 nature/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 7 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.23 nature/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| nature.jpg | die Natur | https://www.pexels.com/photo/mountain-landscape-with-green-pastures-in-a-valley-17024839/ |
+| tree.jpg | der Baum | https://www.pexels.com/photo/solitary-tree-in-lush-green-wheat-field-29975655/ |
+| flower.jpg | die Blume | https://www.pexels.com/photo/close-up-of-a-single-white-daisy-flower-39451569/ |
+| plant.jpg | die Pflanze | https://www.pexels.com/photo/person-holding-black-glass-bottle-4503750/ |
+| grass.jpg | das Gras | https://www.pexels.com/photo/close-up-of-dew-on-green-grass-blades-36416921/ |
+| mountain.jpg | der Berg | https://www.pexels.com/photo/scenic-view-of-the-snowy-mountains-5922224/ |
+| lake.jpg | der See | https://www.pexels.com/photo/serene-lake-view-at-mammoth-lakes-ca-33199930/ |
+| river.jpg | der Fluss | https://www.pexels.com/photo/scenic-view-of-flowing-river-on-a-forest-14942582/ |
+| forest.jpg | der Wald | https://www.pexels.com/photo/tall-trees-in-the-forest-9567594/ |
+| moon.jpg | der Mond | https://www.pexels.com/photo/full-moon-28284726/ |
+| star.jpg | der Stern | https://www.pexels.com/photo/starry-night-sky-over-starry-night-3222255/ |
+| air.jpg | die Luft | https://www.pexels.com/photo/a-child-blowing-the-seed-of-a-dandelion-17482898/ |
+| earth.jpg | die Erde | https://www.pexels.com/photo/close-up-of-hands-holding-dark-soil-31374933/ |
+| fire.jpg | das Feuer | https://www.pexels.com/photo/cozy-nighttime-campfire-under-the-stars-39318072/ |
+| animal.jpg | das Tier | https://www.pexels.com/photo/white-goat-peering-through-wooden-fence-39568354/ |
+| dog.jpg | der Hund | https://www.pexels.com/photo/adorable-brown-puppy-sitting-outdoors-30074125/ |
+| cat.jpg | die Katze | https://www.pexels.com/photo/charming-portrait-of-a-ginger-cat-relaxing-indoors-34345889/ |
+| bird.jpg | der Vogel | https://www.pexels.com/photo/beautiful-bird-on-tree-branch-9503307/ |
+| horse.jpg | das Pferd | https://www.pexels.com/photo/close-up-shot-of-a-horse-running-13340063/ |
+| cow.jpg | die Kuh | https://www.pexels.com/photo/rind-27896657/ |
+| outdoors.jpg | draußen | https://www.pexels.com/photo/boy-and-girl-playing-on-green-grass-5997694/ |
+| indoors.jpg | drinnen | https://www.pexels.com/photo/a-group-of-kids-playing-toys-on-the-floor-7156361/ |
+
+## Lesson 1.24 — Die Tiere
+
+The 17 photos under `public/1.24 animals/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 6 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.24 animals/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| fish.jpg | der Fisch | https://www.pexels.com/photo/vivid-orange-fish-in-aquatic-display-31956915/ |
+| pig.jpg | das Schwein | https://www.pexels.com/photo/piglet-on-a-farm-in-ohio-usa-37073014/ |
+| sheep.jpg | das Schaf | https://www.pexels.com/photo/two-black-faced-sheep-grazing-in-lush-pasture-35674243/ |
+| chicken.jpg | das Huhn | https://www.pexels.com/photo/free-range-brown-hen-in-sunny-pasture-36660076/ |
+| duck.jpg | die Ente | https://www.pexels.com/photo/male-mallard-duck-swimming-in-serene-river-38065909/ |
+| elephant.jpg | der Elefant | https://www.pexels.com/photo/majestic-asian-elephant-grazing-in-wild-habitat-35671096/ |
+| lion.jpg | der Löwe | https://www.pexels.com/photo/majestic-lion-resting-in-natural-habitat-33828273/ |
+| tiger.jpg | der Tiger | https://www.pexels.com/photo/tigerblicke-unschuldige-augen-27834731/ |
+| bear.jpg | der Bär | https://www.pexels.com/photo/majestic-european-brown-bear-in-slovak-wilderness-38965576/ |
+| pet.jpg | das Haustier | https://www.pexels.com/photo/a-young-girl-sitting-while-petting-her-rabbit-8434767/ |
+| wild.jpg | wild | https://www.pexels.com/photo/herd-of-zebras-grazing-in-tanzanian-savanna-39034102/ |
+
+## Lesson 1.25 — In der Stadt
+
+The 28 photos under `public/1.25 town/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 19 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.25 town/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| village.jpg | das Dorf | https://www.pexels.com/photo/aerial-view-of-traditional-rural-village-houses-33952478/ |
+| square.jpg | der Platz | https://www.pexels.com/photo/tower-on-town-square-17307596/ |
+| bank.jpg | die Bank | https://www.pexels.com/photo/kasseler-bank-in-bad-karlshafen-germany-36167366/ |
+| post-office.jpg | die Post | https://www.pexels.com/photo/exterior-view-of-french-la-poste-building-33376731/ |
+| police.jpg | die Polizei | https://www.pexels.com/photo/dutch-police-car-in-bustling-amsterdam-street-35317991/ |
+| cinema.jpg | das Kino | https://www.pexels.com/photo/people-sitting-in-the-movie-theater-7991130/ |
+| library.jpg | die Bibliothek | https://www.pexels.com/photo/organized-library-shelves-with-books-30744505/ |
+| bakery.jpg | die Bäckerei | https://www.pexels.com/photo/charming-cake-shop-display-with-open-sign-35228372/ |
+| petrol-station.jpg | die Tankstelle | https://www.pexels.com/photo/modern-urban-gas-station-with-fuel-pumps-34636185/ |
+
+## Lesson 1.26 — Alltagssprache
+
+The 28 photos under `public/1.26 communication/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 25 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.26 communication/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| exactly.jpg | genau | https://www.pexels.com/photo/selective-focus-photo-of-man-s-index-finger-3779434/ |
+| sure.jpg | sicher | https://www.pexels.com/photo/smiling-young-adult-in-modern-office-setting-39219735/ |
+| sure-clear.jpg | klar | https://www.pexels.com/photo/smiling-content-man-7893741/ |
+
+## Lesson 1.27 — Präpositionen
+
+The 21 photos under `public/1.27 prepositions/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 17 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.27 prepositions/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| against.jpg | gegen | https://www.pexels.com/photo/boys-pulling-the-rope-8034587/ |
+| through.jpg | durch | https://www.pexels.com/photo/traveler-walking-through-cappadocia-tunnel-31557994/ |
+| since.jpg | seit | https://www.pexels.com/photo/mature-men-hugging-on-celebration-19591120/ |
+| until.jpg | bis | https://www.pexels.com/photo/man-in-white-crew-neck-t-shirt-holding-red-stick-6668814/ |
+
+## Lesson 1.28 — Position & Ort
+
+The 17 photos under `public/1.28 position/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 6 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.28 position/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| above.jpg | oben | https://www.pexels.com/photo/a-tabby-cat-on-a-hanging-pet-bed-7726003/ |
+| below.jpg | unten | https://www.pexels.com/photo/calico-cat-under-vintage-table-outdoors-31150681/ |
+| at-the-front.jpg | vorne | https://www.pexels.com/photo/line-of-waiting-people-18530593/ |
+| at-the-back.jpg | hinten | https://www.pexels.com/photo/people-sitting-in-a-row-of-chairs-8910690/ |
+| inside.jpg | innen | https://www.pexels.com/photo/girl-in-white-long-sleeve-shirt-lying-on-white-ceramic-sink-4569299/ |
+| outside.jpg | außen | https://www.pexels.com/photo/old-residential-house-with-colorful-walls-7475553/ |
+| near.jpg | nahe | https://www.pexels.com/photo/golden-retriever-nose-close-up-15356249/ |
+| far.jpg | weit | https://www.pexels.com/photo/man-standing-on-concrete-road-3399025/ |
+| everywhere.jpg | überall | https://www.pexels.com/photo/close-up-of-toy-blocks-4491702/ |
+| somewhere.jpg | irgendwo | https://www.pexels.com/photo/young-person-peeking-behind-black-stage-curtain-33190810/ |
+| nowhere.jpg | nirgendwo | https://www.pexels.com/photo/man-sitting-door-pants-9461243/ |
+
+## Lesson 1.29 — Adverbien
+
+The 22 photos under `public/1.29 adverbs/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 18 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.29 adverbs/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| quite.jpg | ziemlich | https://www.pexels.com/photo/woman-yawning-with-hand-over-mouth-in-casual-setting-36763376/ |
+| rather.jpg | lieber | https://www.pexels.com/photo/thoughtful-woman-choosing-between-green-apple-and-donut-6550808/ |
+| almost.jpg | fast | https://www.pexels.com/photo/glass-standing-on-a-table-14180583/ |
+| enough.jpg | genug | https://www.pexels.com/photo/black-woman-showing-palm-in-light-room-7114324/ |
+
+## Lesson 1.30 — Pronomen & Co.
+
+The 24 photos under `public/1.30 grammar words/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 1 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.30 grammar words/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| i.jpg | ich | https://www.pexels.com/photo/woman-in-black-crew-neck-t-shirt-9558252/ |
+| you.jpg | du | https://www.pexels.com/photo/a-girl-in-red-long-sleeve-shirt-10168741/ |
+| you-formal.jpg | Sie | https://www.pexels.com/photo/close-up-shot-of-2-person-shake-hands-7792841/ |
+| he.jpg | er | https://www.pexels.com/photo/cheerful-schoolboy-in-blue-uniform-smiling-38245944/ |
+| she.jpg | sie | https://www.pexels.com/photo/smiling-girl-leaning-on-park-bench-outdoors-32697980/ |
+| it.jpg | es | https://www.pexels.com/photo/teddy-bear-sitting-on-the-sand-19849143/ |
+| we.jpg | wir | https://www.pexels.com/photo/kids-hugging-7423746/ |
+| you-plural.jpg | ihr | https://www.pexels.com/photo/two-students-talking-to-each-other-6935987/ |
+| they.jpg | sie | https://www.pexels.com/photo/group-of-people-walking-in-jawa-barat-park-35646714/ |
+| my.jpg | mein | https://www.pexels.com/photo/a-young-girl-in-red-long-sleeves-embracing-her-dog-11248623/ |
+| your.jpg | dein | https://www.pexels.com/photo/photo-of-a-woman-giving-a-present-to-another-woman-6245928/ |
+| your-formal.jpg | Ihr | https://www.pexels.com/photo/waiter-showing-menu-to-woman-8790962/ |
+| our.jpg | unser | https://www.pexels.com/photo/smiling-black-family-on-house-stairs-in-daylight-5727801/ |
+| your-plural.jpg | euer | https://www.pexels.com/photo/children-sitting-on-chair-in-front-of-table-8466903/ |
+| this.jpg | dieser | https://www.pexels.com/photo/a-hand-touching-the-apple-on-the-table-8004090/ |
+| these.jpg | diese | https://www.pexels.com/photo/boy-selling-shoes-on-market-13734789/ |
+| that.jpg | das | https://www.pexels.com/photo/young-boy-playing-with-toy-motorcycle-indoors-32737924/ |
+| something.jpg | etwas | https://www.pexels.com/photo/white-and-red-gift-boxes-1303087/ |
+| nothing.jpg | nichts | https://www.pexels.com/photo/person-showing-their-palms-2844473/ |
+| someone.jpg | jemand | https://www.pexels.com/photo/silhouette-in-doorway-with-ocean-view-35549856/ |
+| nobody.jpg | niemand | https://www.pexels.com/photo/empty-classroom-with-desks-and-chalkboard-36650154/ |
+| everything.jpg | alles | https://www.pexels.com/photo/colorful-turkish-breakfast-spread-on-wooden-table-29061713/ |
+| everyone.jpg | jeder | https://www.pexels.com/photo/crowd-raising-hands-at-outdoor-event-34612591/ |

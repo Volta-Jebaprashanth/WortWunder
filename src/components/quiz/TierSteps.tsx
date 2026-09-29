@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { cn } from "@/lib/utils";
 import { TIER_ORDER, type Tier } from "@/lib/quiz-engine";
 
-// A 4-step "you are here" track, one dot per tier in tier order, joined by
+// A 5-step "you are here" track, one dot per tier in tier order, joined by
 // short lines: cleared tiers are solid dots in their color, the tier being
 // worked on is a bigger pulsing dot, the rest are grey outlines. Reads as
 // "how far along", not as "how hard this exercise is" — a plain "Basic"
@@ -10,6 +10,7 @@ import { TIER_ORDER, type Tier } from "@/lib/quiz-engine";
 // path (routes/index.tsx) and next to each question's test name
 // (LessonFrame).
 const TIER_STEP_COLORS: Record<Tier, { bg: string; border: string; ring: string }> = {
+  training: { bg: "bg-violet-500", border: "border-violet-500", ring: "ring-violet-500/30" },
   basic: { bg: "bg-sky-500", border: "border-sky-500", ring: "ring-sky-500/30" },
   easy: { bg: "bg-success", border: "border-success", ring: "ring-success/30" },
   medium: { bg: "bg-amber-400", border: "border-amber-400", ring: "ring-amber-400/30" },

@@ -57,6 +57,10 @@ export interface Strings {
   unscramble: string;
   listeningChallenge: string;
   roundUp: string;
+  training: string;
+  learnNewWord: string;
+  exampleSentence: string;
+  plural: string;
   chooseGermanWordForPicture: string;
   chooseGermanPictureForWord: string;
   chooseMeaning: string;
@@ -133,6 +137,10 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     unscramble: "Unscramble",
     listeningChallenge: "Listening challenge",
     roundUp: "Round-up",
+    training: "Training",
+    learnNewWord: "Look, listen and remember this new word.",
+    exampleSentence: "Example",
+    plural: "Plural",
     chooseGermanWordForPicture: "Choose the German word for this picture.",
     chooseGermanPictureForWord: "Choose the picture for this German word.",
     chooseMeaning: "Choose the meaning.",
@@ -208,6 +216,10 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     unscramble: "எழுத்துக்களை வரிசைப்படுத்து",
     listeningChallenge: "கேட்டல் சவால்",
     roundUp: "இறுதிச் சுற்று",
+    training: "பயிற்சி",
+    learnNewWord: "இந்தப் புதிய சொல்லைப் பார், கேள், நினைவில் வை.",
+    exampleSentence: "உதாரணம்",
+    plural: "பன்மை",
     chooseGermanWordForPicture: "இந்தப் படத்திற்கான ஜெர்மன் சொல்லைத் தேர்ந்தெடு.",
     chooseGermanPictureForWord: "இந்த ஜெர்மன் சொல்லுக்கான படத்தைத் தேர்ந்தெடு.",
     chooseMeaning: "பொருளைத் தேர்ந்தெடு.",
@@ -282,6 +294,10 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     unscramble: "අකුරු පිළිවෙළට සකසන්න",
     listeningChallenge: "ශ්‍රවණ අභියෝගය",
     roundUp: "අවසාන වටය",
+    training: "පුහුණුව",
+    learnNewWord: "මෙම නව වචනය බලන්න, අහන්න, මතක තබා ගන්න.",
+    exampleSentence: "උදාහරණය",
+    plural: "බහුවචනය",
     chooseGermanWordForPicture: "මෙම පින්තූරයට ගැලපෙන ජර්මානු වචනය තෝරන්න.",
     chooseGermanPictureForWord: "මෙම ජර්මානු වචනයට ගැලපෙන පින්තූරය තෝරන්න.",
     chooseMeaning: "අර්ථය තෝරන්න.",

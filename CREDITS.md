@@ -432,6 +432,601 @@ are all cropped from these.
 | university-student.jpg | der Student | copy of `1.7 jobs/images/university-student.jpg` (see above) |
 | female-university-student.jpg | die Studentin | copy of `1.7 jobs/images/female-university-student.jpg` (see above) |
 
+## Lesson 1.9 — Einkaufen
+
+The 48 photos under `public/1.9 shopping/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 7 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.9 shopping/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| small-shop.jpg | der Laden | https://www.pexels.com/photo/storefront-on-the-street-side-10427698/ |
+| supermarket.jpg | der Supermarkt | https://www.pexels.com/photo/a-woman-pushing-a-cart-in-a-grocery-store-4971966/ |
+| market.jpg | der Markt | https://www.pexels.com/photo/market-stall-with-vegetables-and-fruits-14650541/ |
+| shopping-center.jpg | das Einkaufszentrum | https://www.pexels.com/photo/the-inside-of-a-shopping-mall-with-a-glass-roof-27677152/ |
+| price.jpg | der Preis | https://www.pexels.com/photo/a-person-looking-at-the-price-tag-5699020/ |
+| money.jpg | das Geld | https://www.pexels.com/photo/euro-banknotes-and-coins-on-a-table-30576160/ |
+| euro.jpg | der Euro | https://www.pexels.com/photo/euro-coins-on-black-background-16399858/ |
+| customer.jpg | der Kunde | https://www.pexels.com/photo/a-man-walking-on-a-grocery-store-6488889/ |
+| female-customer.jpg | die Kundin | https://www.pexels.com/photo/happy-woman-buying-groceries-in-a-convenience-store-4177708/ |
+| checkout.jpg | die Kasse | https://www.pexels.com/photo/cashier-in-store-3735172/ |
+| size.jpg | die Größe | https://www.pexels.com/photo/a-tailor-measuring-his-client-using-a-tape-measure-6765658/ |
+| color.jpg | die Farbe | https://www.pexels.com/photo/close-up-photo-of-colored-pencils-4117257/ |
+| dress.jpg | das Kleid | https://www.pexels.com/photo/girl-wearing-long-sleeve-dress-3662798/ |
+| shirt.jpg | das Hemd | https://www.pexels.com/photo/person-holding-red-dress-shirt-on-hanger-2249248/ |
+| trousers.jpg | die Hose | https://www.pexels.com/photo/folded-denim-jeans-4109797/ |
+| jacket.jpg | die Jacke | https://www.pexels.com/photo/a-woman-in-denim-jacket-5779608/ |
+| coat.jpg | der Mantel | https://www.pexels.com/photo/photo-of-a-man-wearing-coat-during-snow-974908/ |
+| shoe.jpg | der Schuh | https://www.pexels.com/photo/white-shoe-on-red-background-18212364/ |
+| shoes.jpg | die Schuhe | https://www.pexels.com/photo/shoes-in-boxes-on-shelf-2908975/ |
+| t-shirt.jpg | das T-Shirt | https://www.pexels.com/photo/white-t-shirt-hanging-on-a-rack-11671964/ |
+| clothing.jpg | die Kleidung | https://www.pexels.com/photo/clothes-on-hangers-hanging-on-clothing-racks-3812433/ |
+| cheap.jpg | billig | https://www.pexels.com/photo/a-shop-sale-sign-offering-half-the-price-7987589/ |
+| expensive.jpg | teuer | https://www.pexels.com/photo/side-view-shot-of-an-expensive-sports-car-parked-on-the-side-of-the-road-12249430/ |
+| good-value.jpg | günstig | https://www.pexels.com/photo/woman-smiling-while-holding-shopping-bags-5868275/ |
+| new.jpg | neu | https://www.pexels.com/photo/white-sneakers-in-a-box-11946032/ |
+| old.jpg | alt | https://www.pexels.com/photo/dirty-white-sneakers-3651833/ |
+| red.jpg | rot | https://www.pexels.com/photo/red-apples-635705/ |
+| blue.jpg | blau | https://www.pexels.com/photo/textured-blue-wall-with-light-spots-6783258/ |
+| green.jpg | grün | https://www.pexels.com/photo/green-leaf-close-up-photo-2233992/ |
+| yellow.jpg | gelb | https://www.pexels.com/photo/close-up-photography-of-lemons-1414122/ |
+| black.jpg | schwarz | https://www.pexels.com/photo/black-cat-28119304/ |
+| white.jpg | weiß | https://www.pexels.com/photo/white-baby-rabbit-16773474/ |
+| to-buy.jpg | kaufen | https://www.pexels.com/photo/a-man-paying-his-bill-in-the-grocery-store-8475146/ |
+| to-sell.jpg | verkaufen | https://www.pexels.com/photo/man-selling-fruits-in-a-grocery-8475172/ |
+| to-look-for.jpg | suchen | https://www.pexels.com/photo/a-girl-holding-a-magnifying-glass-9291144/ |
+| to-find.jpg | finden | https://www.pexels.com/photo/girls-with-baskets-collecting-easter-eggs-in-garden-7169575/ |
+| to-need.jpg | brauchen | https://www.pexels.com/photo/hand-written-checklist-16791349/ |
+| to-cost.jpg | kosten | https://www.pexels.com/photo/grocery-store-264636/ |
+| to-take.jpg | nehmen | https://www.pexels.com/photo/photo-of-a-woman-in-denim-shorts-reaching-for-a-cereal-box-7976795/ |
+| to-give.jpg | geben | https://www.pexels.com/photo/a-girl-giving-her-mother-flowers-8658983/ |
+| to-have.jpg | haben | https://www.pexels.com/photo/kid-hugging-a-teddy-bear-5240467/ |
+| shop.jpg | das Geschäft | copy of `1.7 jobs/images/shop.jpg` (see above) |
+| salesperson.jpg | der Verkäufer | copy of `1.7 jobs/images/salesperson.jpg` (see above) |
+| female-salesperson.jpg | die Verkäuferin | copy of `1.7 jobs/images/female-salesperson.jpg` (see above) |
+| bag.jpg | die Tasche | copy of `1.4 home/images/bag.jpg` (see above) |
+| big.jpg | groß | copy of `1.4 home/images/big.jpg` (see above) |
+| small.jpg | klein | copy of `1.4 home/images/small.jpg` (see above) |
+| to-pay.jpg | bezahlen | copy of `1.3 food/images/pay.jpg` (see above) |
+
+## Lesson 1.10 — Zeit & Datum
+
+The 54 photos under `public/1.10 time/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 6 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.10 time/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| time.jpg | die Zeit | https://www.pexels.com/photo/hourglass-on-white-background-15556380/ |
+| clock.jpg | die Uhr | https://www.pexels.com/photo/round-white-analog-wall-clock-at-10-10-5799379/ |
+| hour.jpg | die Stunde | https://www.pexels.com/photo/round-wall-clock-2182727/ |
+| minute.jpg | die Minute | https://www.pexels.com/photo/stopwatch-on-smartphone-4114778/ |
+| second.jpg | die Sekunde | https://www.pexels.com/photo/close-up-of-a-heuer-mechanical-stopwatch-19730401/ |
+| day.jpg | der Tag | https://www.pexels.com/photo/sun-shining-from-behind-clouds-over-valley-14010889/ |
+| week.jpg | die Woche | https://www.pexels.com/photo/modern-desk-setup-with-weekly-planner-33136468/ |
+| month.jpg | der Monat | https://www.pexels.com/photo/calendar-on-wall-11706725/ |
+| year.jpg | das Jahr | https://www.pexels.com/photo/fireworks-photo-634694/ |
+| morning.jpg | der Morgen | https://www.pexels.com/photo/sunrise-over-calm-rural-field-in-countryside-4324322/ |
+| afternoon.jpg | der Nachmittag | https://www.pexels.com/photo/person-relaxing-in-park-on-lawn-20728227/ |
+| evening.jpg | der Abend | https://www.pexels.com/photo/a-city-skyline-at-dusk-12751384/ |
+| night.jpg | die Nacht | https://www.pexels.com/photo/moon-and-stars-on-night-sky-13651742/ |
+| today.jpg | heute | https://www.pexels.com/photo/backview-of-a-cute-child-running-after-a-blue-ball-13809554/ |
+| tomorrow.jpg | morgen | https://www.pexels.com/photo/stylish-clothes-on-the-bed-9788969/ |
+| yesterday.jpg | gestern | https://www.pexels.com/photo/family-watching-old-photos-10302064/ |
+| now.jpg | jetzt | https://www.pexels.com/photo/a-man-looking-at-his-watch-9528992/ |
+| later.jpg | später | https://www.pexels.com/photo/woman-looking-bored-beside-a-big-alarm-clock-7346147/ |
+| early.jpg | früh | https://www.pexels.com/photo/relaxation-bed-bedroom-time-8345986/ |
+| late.jpg | spät | https://www.pexels.com/photo/woman-working-late-at-night-on-laptop-30215681/ |
+| in-the-morning.jpg | morgens | https://www.pexels.com/photo/close-up-photo-of-boy-brushing-his-teeth-4185330/ |
+| in-the-afternoon.jpg | nachmittags | https://www.pexels.com/photo/happy-family-playing-together-in-living-room-31152789/ |
+| in-the-evening.jpg | abends | https://www.pexels.com/photo/family-eating-dinner-together-on-a-dining-table-6603119/ |
+| first.jpg | zuerst | https://www.pexels.com/photo/happy-mother-supporting-black-baby-making-first-step-6624244/ |
+| then.jpg | dann | https://www.pexels.com/photo/person-tying-shoelaces-1566421/ |
+| always.jpg | immer | https://www.pexels.com/photo/hand-holding-seat-belt-16770914/ |
+| monday.jpg | Montag | https://www.pexels.com/photo/children-walking-to-school-in-uniform-31692715/ |
+| tuesday.jpg | Dienstag | https://www.pexels.com/photo/kid-swimming-underwater-9044049/ |
+| wednesday.jpg | Mittwoch | https://www.pexels.com/photo/woman-teaching-the-girl-how-to-play-the-violin-6671596/ |
+| thursday.jpg | Donnerstag | https://www.pexels.com/photo/mother-and-children-in-library-5865565/ |
+| friday.jpg | Freitag | https://www.pexels.com/photo/family-eating-pizza-3912405/ |
+| saturday.jpg | Samstag | https://www.pexels.com/photo/a-family-having-picnic-in-the-park-8208755/ |
+| sunday.jpg | Sonntag | https://www.pexels.com/photo/couple-eating-breakfast-on-the-bed-3575143/ |
+| often.jpg | oft | https://www.pexels.com/photo/boy-walking-dog-on-a-leash-9429158/ |
+| sometimes.jpg | manchmal | https://www.pexels.com/photo/crop-field-under-rainbow-and-cloudy-skies-at-dayime-1542495/ |
+| january.jpg | Januar | https://www.pexels.com/photo/children-building-snowman-in-snow-10589592/ |
+| february.jpg | Februar | https://www.pexels.com/photo/children-wearing-costumes-5604938/ |
+| march.jpg | März | https://www.pexels.com/photo/vibrant-spring-crocus-flowers-in-bloom-31056197/ |
+| april.jpg | April | https://www.pexels.com/photo/person-holding-a-woven-basket-with-easter-eggs-4108576/ |
+| may.jpg | Mai | https://www.pexels.com/photo/apple-tree-blossoms-16636776/ |
+| june.jpg | Juni | https://www.pexels.com/photo/strawberries-in-basket-17117954/ |
+| july.jpg | Juli | https://www.pexels.com/photo/kids-playing-on-the-beach-8926027/ |
+| august.jpg | August | https://www.pexels.com/photo/shallow-focus-photography-of-yellow-sunflower-field-under-sunny-sky-1169084/ |
+| september.jpg | September | https://www.pexels.com/photo/colorful-baskets-full-of-grapes-3842606/ |
+| october.jpg | Oktober | https://www.pexels.com/photo/orange-pumpkins-on-a-field-4671692/ |
+| november.jpg | November | https://www.pexels.com/photo/colourful-paper-lanterns-2421503/ |
+| december.jpg | Dezember | https://www.pexels.com/photo/christmas-presents-under-a-christmas-tree-10577823/ |
+| never.jpg | nie | https://www.pexels.com/photo/hand-of-a-boy-making-the-stop-gesture-12585870/ |
+| at-noon.jpg | mittags | copy of `1.3 food/images/lunch.jpg` (see above) |
+| at-night.jpg | nachts | copy of `1.1 greetings/images/good-night.jpg` (see above) |
+| spring.jpg | der Frühling | copy of `1.5 weather/images/spring.jpg` (see above) |
+| summer.jpg | der Sommer | copy of `1.5 weather/images/summer.jpg` (see above) |
+| autumn.jpg | der Herbst | copy of `1.5 weather/images/autumn.jpg` (see above) |
+| winter.jpg | der Winter | copy of `1.5 weather/images/winter.jpg` (see above) |
+
+## Lesson 1.11 — Verkehr & Wege
+
+The 50 photos under `public/1.11 transport/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 4 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.11 transport/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| traffic.jpg | der Verkehr | https://www.pexels.com/photo/a-busy-city-street-with-many-cars-and-people-17722066/ |
+| car.jpg | das Auto | https://www.pexels.com/photo/red-car-parked-on-the-street-9516301/ |
+| bus.jpg | der Bus | https://www.pexels.com/photo/white-and-blue-bus-on-the-road-8536723/ |
+| train.jpg | der Zug | https://www.pexels.com/photo/a-train-on-a-countryside-railroad-4801737/ |
+| railway.jpg | die Bahn | https://www.pexels.com/photo/railroad-tracks-through-grassy-field-in-countryside-6482860/ |
+| tram.jpg | die Straßenbahn | https://www.pexels.com/photo/a-yellow-and-white-tram-on-a-city-street-16832288/ |
+| subway.jpg | die U-Bahn | https://www.pexels.com/photo/train-at-a-underground-subway-station-14198125/ |
+| taxi.jpg | das Taxi | https://www.pexels.com/photo/yellow-taxi-cab-parked-in-front-of-brown-brick-building-9389043/ |
+| bicycle.jpg | das Fahrrad | https://www.pexels.com/photo/light-blue-bicycle-parked-beside-yellow-painted-wall-12545053/ |
+| motorcycle.jpg | das Motorrad | https://www.pexels.com/photo/a-motorcycle-parked-beside-the-building-14216482/ |
+| airplane.jpg | das Flugzeug | https://www.pexels.com/photo/airplane-flying-in-blue-sky-5726119/ |
+| airport.jpg | der Flughafen | https://www.pexels.com/photo/people-inside-airport-1730814/ |
+| train-station.jpg | der Bahnhof | https://www.pexels.com/photo/travelers-waiting-on-the-platform-of-the-railway-station-18727426/ |
+| stop.jpg | die Haltestelle | https://www.pexels.com/photo/people-at-a-bus-stop-12179224/ |
+| way.jpg | der Weg | https://www.pexels.com/photo/footpath-in-forest-12364212/ |
+| intersection.jpg | die Kreuzung | https://www.pexels.com/photo/top-view-of-a-road-intersection-17189038/ |
+| traffic-light.jpg | die Ampel | https://www.pexels.com/photo/black-traffic-light-with-green-light-4543111/ |
+| map.jpg | die Karte | https://www.pexels.com/photo/person-holding-outlined-map-793088/ |
+| ticket.jpg | das Ticket | https://www.pexels.com/photo/a-ticket-on-the-lap-of-a-person-5801647/ |
+| travel-ticket.jpg | die Fahrkarte | https://www.pexels.com/photo/a-person-inserting-a-ticket-7252259/ |
+| direction.jpg | die Richtung | https://www.pexels.com/photo/directions-on-signpost-14697954/ |
+| right.jpg | rechts | https://www.pexels.com/photo/a-blue-and-white-traffic-sign-with-an-arrow-pointing-to-the-right-28079332/ |
+| straight-ahead.jpg | geradeaus | https://www.pexels.com/photo/cars-on-a-straight-road-2288351/ |
+| back.jpg | zurück | https://www.pexels.com/photo/person-looking-over-shoulder-at-sunset-2812055/ |
+| here.jpg | hier | https://www.pexels.com/photo/boy-pointing-finger-2248498/ |
+| there.jpg | dort | https://www.pexels.com/photo/back-view-of-a-woman-pointing-at-the-sky-13871888/ |
+| next-to.jpg | neben | https://www.pexels.com/photo/dog-and-cat-sitting-together-16395150/ |
+| opposite.jpg | gegenüber | https://www.pexels.com/photo/two-people-sitting-at-a-table-talking-to-each-other-23496904/ |
+| in-front-of.jpg | vor | https://www.pexels.com/photo/red-car-parked-in-front-of-a-house-on-the-street-8102187/ |
+| behind.jpg | hinter | https://www.pexels.com/photo/orange-tabby-cat-on-back-of-window-curtain-1828875/ |
+| between.jpg | zwischen | https://www.pexels.com/photo/grayscale-portrait-of-man-woman-and-child-holding-hands-1301494/ |
+| at.jpg | an | https://www.pexels.com/photo/picture-frames-hanging-on-the-wall-5905067/ |
+| on.jpg | auf | https://www.pexels.com/photo/brown-tabby-cat-sitting-on-a-box-11777953/ |
+| in.jpg | in | https://www.pexels.com/photo/orange-and-white-cat-in-brown-cardboard-box-7726346/ |
+| to.jpg | nach | https://www.pexels.com/photo/boy-in-brown-hoodie-carrying-red-backpack-while-walking-on-dirt-road-near-tall-trees-207697/ |
+| out-of.jpg | aus | https://www.pexels.com/photo/kid-peeking-out-of-a-tent-13229622/ |
+| to-drive.jpg | fahren | https://www.pexels.com/photo/photo-of-woman-driving-car-1051071/ |
+| to-walk.jpg | gehen | https://www.pexels.com/photo/back-view-of-two-people-walking-on-the-sidewalk-13965739/ |
+| to-fly.jpg | fliegen | https://www.pexels.com/photo/close-up-photography-of-a-flying-bird-996920/ |
+| to-depart.jpg | abfahren | https://www.pexels.com/photo/passing-train-on-the-tracks-1598075/ |
+| to-arrive.jpg | ankommen | https://www.pexels.com/photo/back-view-of-couple-embracing-at-airport-21235995/ |
+| to-get-on.jpg | einsteigen | https://www.pexels.com/photo/people-boarding-the-bus-in-the-bus-stop-5481705/ |
+| to-get-off.jpg | aussteigen | https://www.pexels.com/photo/people-getting-out-of-a-bus-at-the-bus-stop-19376424/ |
+| to-wait.jpg | warten | https://www.pexels.com/photo/dog-waiting-outside-the-door-8339246/ |
+| to-show.jpg | zeigen | https://www.pexels.com/photo/mother-and-son-sitting-on-a-wooden-chair-while-showing-the-bond-paper-with-drawing-7005179/ |
+| street.jpg | die Straße | copy of `1.8 personal information/images/street.jpg` (see above) |
+| left.jpg | links | mirrored copy of right.jpg (above) |
+| to-run.jpg | laufen | copy of `1.6 hobbies/images/to-run.jpg` (see above) |
+| to-come.jpg | kommen | copy of `1.8 personal information/images/to-come.jpg` (see above) |
+| to-take.jpg | nehmen | copy of `1.9 shopping/images/to-take.jpg` (see above) |
+
+## Lesson 1.12 — Arbeit & Schule
+
+The 47 photos under `public/1.12 work and school/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 29 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.12 work and school/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| break.jpg | die Pause | https://www.pexels.com/photo/coworkers-taking-a-coffee-break-4427813/ |
+| class.jpg | die Klasse | https://www.pexels.com/photo/students-and-teacher-in-a-classroom-8617771/ |
+| course.jpg | der Kurs | https://www.pexels.com/photo/people-during-training-course-18999540/ |
+| subject.jpg | das Fach | https://www.pexels.com/photo/students-doing-a-science-experiment-inside-the-laboratory-8471835/ |
+| exam.jpg | die Prüfung | https://www.pexels.com/photo/a-person-taking-an-exam-6684209/ |
+| task.jpg | die Aufgabe | https://www.pexels.com/photo/clever-diligent-ethnic-child-doing-homework-on-sheet-of-paper-5896601/ |
+| book.jpg | das Buch | https://www.pexels.com/photo/close-up-of-a-pile-of-books-23833967/ |
+| notebook.jpg | das Heft | https://www.pexels.com/photo/spiral-notebook-and-pencils-on-a-blue-surface-6193017/ |
+| pen.jpg | der Stift | https://www.pexels.com/photo/close-up-photography-of-black-pen-1029577/ |
+| free-time.jpg | die Freizeit | https://www.pexels.com/photo/happy-guy-resting-on-hammock-in-forest-3776814/ |
+| to-understand.jpg | verstehen | https://www.pexels.com/photo/a-young-man-holding-a-light-bulb-above-his-head-8543370/ |
+| to-speak.jpg | sprechen | https://www.pexels.com/photo/a-woman-talking-on-the-microphone-giving-a-speech-8872482/ |
+| to-ask.jpg | fragen | https://www.pexels.com/photo/students-raising-their-hands-in-the-classroom-5212329/ |
+| to-answer.jpg | antworten | https://www.pexels.com/photo/a-boy-writing-his-answers-on-the-blackboard-8617735/ |
+| to-explain.jpg | erklären | https://www.pexels.com/photo/photo-of-man-explaining-lesson-6325934/ |
+| to-begin.jpg | beginnen | https://www.pexels.com/photo/runner-at-the-starting-line-12659357/ |
+| to-end.jpg | enden | https://www.pexels.com/photo/grayscale-photo-of-man-at-the-finish-line-of-a-marathon-race-2404056/ |
+| to-earn.jpg | verdienen | https://www.pexels.com/photo/50-and-20-euro-banknotes-8080823/ |
+| work.jpg | die Arbeit | copy of `1.7 jobs/images/work.jpg` (see above) |
+| profession.jpg | der Beruf | copy of `1.7 jobs/images/profession.jpg` (see above) |
+| job.jpg | der Job | copy of `1.7 jobs/images/job.jpg` (see above) |
+| company.jpg | die Firma | copy of `1.7 jobs/images/company.jpg` (see above) |
+| office.jpg | das Büro | copy of `1.7 jobs/images/office.jpg` (see above) |
+| boss.jpg | der Chef | copy of `1.7 jobs/images/boss.jpg` (see above) |
+| female-boss.jpg | die Chefin | copy of `1.7 jobs/images/female-boss.jpg` (see above) |
+| colleague.jpg | der Kollege | copy of `1.7 jobs/images/colleague.jpg` (see above) |
+| female-colleague.jpg | die Kollegin | copy of `1.7 jobs/images/female-colleague.jpg` (see above) |
+| employee.jpg | der Mitarbeiter | copy of `1.7 jobs/images/employee.jpg` (see above) |
+| female-employee.jpg | die Mitarbeiterin | copy of `1.7 jobs/images/female-employee.jpg` (see above) |
+| customer.jpg | der Kunde | copy of `1.9 shopping/images/customer.jpg` (see above) |
+| female-customer.jpg | die Kundin | copy of `1.9 shopping/images/female-customer.jpg` (see above) |
+| teacher.jpg | der Lehrer | copy of `1.7 jobs/images/teacher.jpg` (see above) |
+| female-teacher.jpg | die Lehrerin | copy of `1.7 jobs/images/female-teacher.jpg` (see above) |
+| schoolboy.jpg | der Schüler | copy of `1.7 jobs/images/schoolboy.jpg` (see above) |
+| schoolgirl.jpg | die Schülerin | copy of `1.7 jobs/images/schoolgirl.jpg` (see above) |
+| university-student.jpg | der Student | copy of `1.7 jobs/images/university-student.jpg` (see above) |
+| female-university-student.jpg | die Studentin | copy of `1.7 jobs/images/female-university-student.jpg` (see above) |
+| school.jpg | die Schule | copy of `1.7 jobs/images/school.jpg` (see above) |
+| university.jpg | die Universität | copy of `1.7 jobs/images/university.jpg` (see above) |
+| computer.jpg | der Computer | copy of `1.4 home/images/computer.jpg` (see above) |
+| to-work.jpg | arbeiten | copy of `1.7 jobs/images/to-work.jpg` (see above) |
+| to-learn.jpg | lernen | copy of `1.7 jobs/images/to-learn.jpg` (see above) |
+| to-study.jpg | studieren | copy of `1.7 jobs/images/to-study.jpg` (see above) |
+| to-read.jpg | lesen | copy of `1.6 hobbies/images/to-read.jpg` (see above) |
+| to-write.jpg | schreiben | copy of `1.6 hobbies/images/to-write.jpg` (see above) |
+| to-look-for.jpg | suchen | copy of `1.9 shopping/images/to-look-for.jpg` (see above) |
+| to-need.jpg | brauchen | copy of `1.9 shopping/images/to-need.jpg` (see above) |
+
+## Lesson 1.13 — Gesundheit
+
+The 39 photos under `public/1.13 health/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 6 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.13 health/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| health.jpg | die Gesundheit | https://www.pexels.com/photo/a-doctor-examining-a-child-patient-5998457/ |
+| body.jpg | der Körper | https://www.pexels.com/photo/active-kids-doing-bending-exercise-8613305/ |
+| head.jpg | der Kopf | https://www.pexels.com/photo/mother-hand-of-girl-head-16778025/ |
+| face.jpg | das Gesicht | https://www.pexels.com/photo/a-young-boy-with-freckles-on-his-face-7570101/ |
+| eye.jpg | das Auge | https://www.pexels.com/photo/close-up-photo-of-human-eye-2953811/ |
+| ear.jpg | das Ohr | https://www.pexels.com/photo/close-up-of-human-ear-7298452/ |
+| nose.jpg | die Nase | https://www.pexels.com/photo/side-view-of-woman-s-face-in-close-up-photography-7290081/ |
+| mouth.jpg | der Mund | https://www.pexels.com/photo/close-up-of-the-smile-of-a-man-9775440/ |
+| tooth.jpg | der Zahn | https://www.pexels.com/photo/a-dentist-holding-a-tooth-model-and-a-dental-tool-4971514/ |
+| throat.jpg | der Hals | https://www.pexels.com/photo/man-taking-medication-for-throat-6285300/ |
+| hand.jpg | die Hand | https://www.pexels.com/photo/sunlit-man-hand-palm-20200314/ |
+| arm.jpg | der Arm | https://www.pexels.com/photo/man-flexing-his-biceps-5714283/ |
+| leg.jpg | das Bein | https://www.pexels.com/photo/a-person-running-11001131/ |
+| foot.jpg | der Fuß | https://www.pexels.com/photo/a-close-up-shot-of-bare-feet-on-grass-8530292/ |
+| back.jpg | der Rücken | https://www.pexels.com/photo/back-view-shot-of-a-person-massaging-his-own-back-7298613/ |
+| belly.jpg | der Bauch | https://www.pexels.com/photo/pregnant-belly-with-hands-forming-a-heart-34317993/ |
+| pharmacy.jpg | die Apotheke | https://www.pexels.com/photo/green-medical-cross-outside-a-pharmacy-11648283/ |
+| medicine.jpg | die Medizin | https://www.pexels.com/photo/close-up-of-medicines-9742736/ |
+| medication.jpg | das Medikament | https://www.pexels.com/photo/close-up-photo-of-pills-on-blister-packs-4210607/ |
+| pain.jpg | der Schmerz | https://www.pexels.com/photo/a-man-massaging-his-nape-7298870/ |
+| headache.jpg | das Kopfweh | https://www.pexels.com/photo/a-woman-with-a-headache-8637917/ |
+| illness.jpg | die Krankheit | https://www.pexels.com/photo/man-in-white-dress-shirt-sitting-on-chair-4114010/ |
+| cold.jpg | die Erkältung | https://www.pexels.com/photo/a-sick-girl-wiping-her-nose-with-tissue-3765115/ |
+| fever.jpg | das Fieber | https://www.pexels.com/photo/a-mother-caring-for-her-sick-son-7641415/ |
+| cough.jpg | der Husten | https://www.pexels.com/photo/a-man-in-a-plaid-shirt-coughing-11501479/ |
+| healthy.jpg | gesund | https://www.pexels.com/photo/boy-biting-on-a-broccoli-6970101/ |
+| sick.jpg | krank | https://www.pexels.com/photo/sick-blonde-girl-in-bed-19386204/ |
+| tired.jpg | müde | https://www.pexels.com/photo/a-young-boy-yawning-8423860/ |
+| fit.jpg | fit | https://www.pexels.com/photo/photo-of-people-jogging-4148937/ |
+| injured.jpg | verletzt | https://www.pexels.com/photo/boy-in-yellow-button-up-shirt-3905545/ |
+| to-hurt.jpg | weh tun | https://www.pexels.com/photo/hit-in-knee-boy-crying-8798949/ |
+| to-feel.jpg | fühlen | https://www.pexels.com/photo/a-boy-lying-on-the-couch-5858741/ |
+| to-help.jpg | helfen | https://www.pexels.com/photo/blue-jeans-3036405/ |
+| doctor.jpg | der Arzt | copy of `1.7 jobs/images/doctor.jpg` (see above) |
+| female-doctor.jpg | die Ärztin | copy of `1.7 jobs/images/female-doctor.jpg` (see above) |
+| hospital.jpg | das Krankenhaus | copy of `1.7 jobs/images/hospital.jpg` (see above) |
+| to-sleep.jpg | schlafen | copy of `1.4 home/images/sleep.jpg` (see above) |
+| to-need.jpg | brauchen | copy of `1.9 shopping/images/to-need.jpg` (see above) |
+| to-take.jpg | nehmen | copy of `1.9 shopping/images/to-take.jpg` (see above) |
+
+## Lesson 1.14 — Reise & Hotel
+
+The 43 photos under `public/1.14 travel/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 19 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.14 travel/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| trip.jpg | die Reise | https://www.pexels.com/photo/family-sitting-on-car-back-12932548/ |
+| vacation.jpg | der Urlaub | https://www.pexels.com/photo/a-family-having-fun-on-the-shore-with-water-8623946/ |
+| hotel.jpg | das Hotel | https://www.pexels.com/photo/a-hotel-sign-lit-up-at-night-28238364/ |
+| single-room.jpg | das Einzelzimmer | https://www.pexels.com/photo/interior-design-of-hotel-bedroom-16197244/ |
+| double-room.jpg | das Doppelzimmer | https://www.pexels.com/photo/cozy-modern-hotel-room-interior-design-35103156/ |
+| reservation.jpg | die Reservierung | https://www.pexels.com/photo/elegant-reserved-table-in-outdoor-setting-38021421/ |
+| booking.jpg | die Buchung | https://www.pexels.com/photo/person-using-macbook-pro-on-white-table-5077049/ |
+| reception.jpg | die Rezeption | https://www.pexels.com/photo/selective-focus-photo-of-reception-signage-3768095/ |
+| towel.jpg | das Handtuch | https://www.pexels.com/photo/white-and-maroon-rugs-45980/ |
+| suitcase.jpg | der Koffer | https://www.pexels.com/photo/vintage-suitcases-stacked-outdoors-near-storefront-28539535/ |
+| passport.jpg | der Pass | https://www.pexels.com/photo/a-person-holding-passports-7009478/ |
+| document.jpg | das Dokument | https://www.pexels.com/photo/a-person-signing-a-document-7054502/ |
+| beach.jpg | der Strand | https://www.pexels.com/photo/serene-beachscape-in-zanzibar-s-mjini-magharibi-36468248/ |
+| sea.jpg | das Meer | https://www.pexels.com/photo/view-of-a-sea-22699879/ |
+| sight.jpg | die Sehenswürdigkeit | https://www.pexels.com/photo/crowd-standing-in-front-of-eiffel-tower-in-paris-france-20413295/ |
+| museum.jpg | das Museum | https://www.pexels.com/photo/a-skeleton-in-a-museum-10276022/ |
+| church.jpg | die Kirche | https://www.pexels.com/photo/historic-church-architecture-in-paisley-scotland-33303387/ |
+| park.jpg | der Park | https://www.pexels.com/photo/trees-and-green-sunlit-lawn-in-park-in-city-25313404/ |
+| information.jpg | die Information | https://www.pexels.com/photo/modern-office-reception-with-scenic-view-36887759/ |
+| to-reserve.jpg | reservieren | https://www.pexels.com/photo/man-in-black-vest-using-a-mobile-phone-6284897/ |
+| to-book.jpg | buchen | https://www.pexels.com/photo/close-up-shot-of-a-passport-and-tickets-on-top-of-a-laptop-7310015/ |
+| to-leave.jpg | abreisen | https://www.pexels.com/photo/woman-pulling-her-luggage-3923502/ |
+| to-stay.jpg | bleiben | https://www.pexels.com/photo/blonde-woman-in-bathrobe-sitting-on-bed-with-breakfast-on-tray-in-hotel-room-24031226/ |
+| to-visit.jpg | besuchen | https://www.pexels.com/photo/family-of-different-ages-hugging-6149192/ |
+| room.jpg | das Zimmer | copy of `1.4 home/images/room.jpg` (see above) |
+| key.jpg | der Schlüssel | copy of `1.4 home/images/key.jpg` (see above) |
+| night.jpg | die Nacht | copy of `1.10 time/images/night.jpg` (see above) |
+| breakfast.jpg | das Frühstück | copy of `1.3 food/images/breakfast.jpg` (see above) |
+| bathroom.jpg | das Badezimmer | copy of `1.4 home/images/bathroom.jpg` (see above) |
+| bed.jpg | das Bett | copy of `1.4 home/images/bed.jpg` (see above) |
+| bag.jpg | die Tasche | copy of `1.9 shopping/images/bag.jpg` (see above) |
+| ticket.jpg | das Ticket | copy of `1.11 transport/images/ticket.jpg` (see above) |
+| airport.jpg | der Flughafen | copy of `1.11 transport/images/airport.jpg` (see above) |
+| train-station.jpg | der Bahnhof | copy of `1.11 transport/images/train-station.jpg` (see above) |
+| country.jpg | das Land | copy of `1.8 personal information/images/country.jpg` (see above) |
+| city.jpg | die Stadt | copy of `1.8 personal information/images/city.jpg` (see above) |
+| address.jpg | die Adresse | copy of `1.8 personal information/images/address.jpg` (see above) |
+| to-travel.jpg | reisen | copy of `1.6 hobbies/images/to-travel.jpg` (see above) |
+| to-arrive.jpg | ankommen | copy of `1.11 transport/images/to-arrive.jpg` (see above) |
+| to-show.jpg | zeigen | copy of `1.11 transport/images/to-show.jpg` (see above) |
+| to-pay.jpg | bezahlen | copy of `1.9 shopping/images/to-pay.jpg` (see above) |
+| to-sleep.jpg | schlafen | copy of `1.4 home/images/sleep.jpg` (see above) |
+| to-need.jpg | brauchen | copy of `1.12 work and school/images/to-need.jpg` (see above) |
+
+## Lesson 1.15 — Die Zahlen
+
+The 41 photos under `public/1.15 numbers/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). The path icons in `public/1.15 numbers/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| zero.jpg | null | https://www.pexels.com/photo/0-number-on-red-surface-1339874/ |
+| one.jpg | eins | https://www.pexels.com/photo/a-brown-wooden-wall-with-a-number-13572268/ |
+| two.jpg | zwei | https://www.pexels.com/photo/a-number-on-a-wall-19468679/ |
+| three.jpg | drei | https://www.pexels.com/photo/close-up-of-a-number-three-sign-on-a-wall-9011378/ |
+| four.jpg | vier | https://www.pexels.com/photo/gold-number-balloon-3905870/ |
+| five.jpg | fünf | https://www.pexels.com/photo/speed-limit-road-sign-on-a-tiled-wall-19356540/ |
+| six.jpg | sechs | https://www.pexels.com/photo/close-up-of-number-6-painter-on-cement-7231728/ |
+| seven.jpg | sieben | https://www.pexels.com/photo/subway-information-sign-in-close-up-8554363/ |
+| eight.jpg | acht | https://www.pexels.com/photo/number-on-stone-building-wall-17641666/ |
+| nine.jpg | neun | https://www.pexels.com/photo/number-nine-on-a-door-shutter-12585840/ |
+| ten.jpg | zehn | https://www.pexels.com/photo/number-10-text-1339845/ |
+| eleven.jpg | elf | https://www.pexels.com/photo/a-sign-on-a-building-26796713/ |
+| twelve.jpg | zwölf | https://www.pexels.com/photo/red-metal-mail-box-10125964/ |
+| thirteen.jpg | dreizehn | https://www.pexels.com/photo/minimalist-building-facade-with-number-13-36004810/ |
+| fourteen.jpg | vierzehn | https://www.pexels.com/photo/weathered-yellow-metal-with-number-14-and-graffiti-36634055/ |
+| fifteen.jpg | fünfzehn | https://www.pexels.com/photo/road-sign-with-speed-limit-number-in-town-6095812/ |
+| sixteen.jpg | sechzehn | https://www.pexels.com/photo/decorative-number-16-on-a-building-facade-25388717/ |
+| seventeen.jpg | siebzehn | https://www.pexels.com/photo/a-grayscale-photo-of-a-wooden-door-11350638/ |
+| eighteen.jpg | achtzehn | https://www.pexels.com/photo/number-18-on-the-wall-8014933/ |
+| nineteen.jpg | neunzehn | https://www.pexels.com/photo/young-woman-posing-with-gray-inflatable-balloons-7939533/ |
+| twenty.jpg | zwanzig | https://www.pexels.com/photo/20-number-on-red-background-1339865/ |
+| thirty.jpg | dreißig | https://www.pexels.com/photo/man-and-woman-holding-number-balloons-7911053/ |
+| forty.jpg | vierzig | https://www.pexels.com/photo/close-up-of-a-road-sign-14807383/ |
+| fifty.jpg | fünfzig | https://www.pexels.com/photo/close-up-photo-of-a-road-sign-7640587/ |
+| sixty.jpg | sechzig | https://www.pexels.com/photo/60-number-1339871/ |
+| seventy.jpg | siebzig | https://www.pexels.com/photo/close-shoat-of-speed-limit-sign-13033503/ |
+| eighty.jpg | achtzig | https://www.pexels.com/photo/scenic-swedish-wheat-field-with-speed-limit-sign-33512984/ |
+| ninety.jpg | neunzig | https://www.pexels.com/photo/brown-90-illustration-1339873/ |
+| hundred.jpg | hundert | https://www.pexels.com/photo/red-background-with-100-text-overlay-1339870/ |
+| thousand.jpg | tausend | https://www.pexels.com/photo/illustration-of-an-atm-6289035/ |
+| number.jpg | die Zahl | https://www.pexels.com/photo/plastic-made-numbers-in-various-colors-5412100/ |
+| much.jpg | viel | https://www.pexels.com/photo/blue-red-yellow-and-green-plastic-blocks-4491711/ |
+| little.jpg | wenig | https://www.pexels.com/photo/bread-on-blue-round-plate-95212/ |
+| more.jpg | mehr | https://www.pexels.com/photo/close-up-of-water-pouring-into-glass-33743597/ |
+| less.jpg | weniger | https://www.pexels.com/photo/clear-drinking-glass-filled-with-water-928854/ |
+| half.jpg | halb | https://www.pexels.com/photo/half-of-ripe-orange-on-black-table-6029340/ |
+| double.jpg | doppelt | https://www.pexels.com/photo/pretty-girls-twinning-12678019/ |
+| first-place.jpg | erste | https://www.pexels.com/photo/close-up-photo-of-a-gold-medal-7267576/ |
+| second-place.jpg | zweite | https://www.pexels.com/photo/a-person-receiving-medals-6827126/ |
+| third-place.jpg | dritte | https://www.pexels.com/photo/bronze-medal-on-white-7267601/ |
+| last.jpg | letzte | https://www.pexels.com/photo/people-walking-on-indoor-walkway-with-railings-28965329/ |
+
+## Lesson 1.16 — Die W-Fragen
+
+The 20 photos under `public/1.16 question words/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). The path icons in `public/1.16 question words/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| who.jpg | wer | https://www.pexels.com/photo/close-up-shot-of-a-person-holding-a-door-knocker-5640625/ |
+| what.jpg | was | https://www.pexels.com/photo/curious-child-outdoors-with-stone-background-37905799/ |
+| when.jpg | wann | https://www.pexels.com/photo/close-up-photo-of-red-pins-on-a-calendar-9810172/ |
+| where.jpg | wo | https://www.pexels.com/photo/young-man-looking-at-the-sea-through-binoculars-17789334/ |
+| where-to.jpg | wohin | https://www.pexels.com/photo/wooden-post-with-colorful-directional-signs-10546192/ |
+| where-from.jpg | woher | https://www.pexels.com/photo/teacher-discussing-her-lesson-about-geography-8926545/ |
+| why.jpg | warum | https://www.pexels.com/photo/wondering-little-girl-16117754/ |
+| how.jpg | wie | https://www.pexels.com/photo/mother-and-son-building-together-indoors-36713037/ |
+| how-much.jpg | wie viel | https://www.pexels.com/photo/a-man-looking-at-the-sale-tag-on-his-gray-coat-5926248/ |
+| how-many.jpg | wie viele | https://www.pexels.com/photo/open-hand-on-blue-background-symbolic-gesture-38875550/ |
+| which-masculine.jpg | welcher | https://www.pexels.com/photo/four-assorted-color-neckties-on-gray-textile-130855/ |
+| which-feminine.jpg | welche | https://www.pexels.com/photo/woman-holding-an-orange-jacket-8396303/ |
+| which-neuter.jpg | welches | https://www.pexels.com/photo/child-choosing-book-from-colorful-library-shelf-32213088/ |
+| what-kind-of.jpg | was für | https://www.pexels.com/photo/variety-of-ice-cream-flavors-in-display-case-34232605/ |
+| how-long.jpg | wie lange | https://www.pexels.com/photo/hourglass-on-books-in-an-office-setting-37494738/ |
+| how-often.jpg | wie oft | https://www.pexels.com/photo/portrait-of-woman-brushing-teeth-27176924/ |
+| how-old.jpg | wie alt | https://www.pexels.com/photo/chocolate-cake-nuts-and-strawberries-12616001/ |
+| what-time.jpg | wie spät | https://www.pexels.com/photo/businessman-looking-at-wristwatch-4963374/ |
+| how-far.jpg | wie weit | https://www.pexels.com/photo/gray-concrete-road-490466/ |
+| how-big.jpg | wie groß | https://www.pexels.com/photo/father-measuring-height-of-his-son-8188745/ |
+
+## Lesson 1.17 — Wichtige Verben
+
+The 75 photos under `public/1.17 verbs/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 48 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.17 verbs/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| to-become.jpg | werden | https://www.pexels.com/photo/black-female-kid-in-doctor-costume-in-studio-5560554/ |
+| can.jpg | können | https://www.pexels.com/photo/a-kid-riding-a-bicycle-with-a-helmet-8017591/ |
+| must.jpg | müssen | https://www.pexels.com/photo/girl-with-a-flower-on-her-hair-doing-her-homework-4865547/ |
+| to-want.jpg | wollen | https://www.pexels.com/photo/a-cute-little-kid-standing-inside-a-store-while-looking-afar-15246276/ |
+| would-like.jpg | möchten | https://www.pexels.com/photo/woman-in-black-top-at-the-counter-3928263/ |
+| may.jpg | dürfen | https://www.pexels.com/photo/a-mother-sitting-on-a-couch-with-her-daughter-12600814/ |
+| should.jpg | sollen | https://www.pexels.com/photo/father-talking-to-his-son-4260102/ |
+| to-like.jpg | mögen | https://www.pexels.com/photo/portrait-of-a-girl-eating-13107876/ |
+| to-live.jpg | leben | https://www.pexels.com/photo/happy-old-couple-relaxing-on-grass-4894660/ |
+| to-say.jpg | sagen | https://www.pexels.com/photo/hispanic-girl-whispering-secret-on-ear-of-friend-7168996/ |
+| to-know.jpg | wissen | https://www.pexels.com/photo/children-sitting-at-the-table-8423044/ |
+| to-be-familiar-with.jpg | kennen | https://www.pexels.com/photo/friends-having-a-conversation-7219156/ |
+| to-think.jpg | denken | https://www.pexels.com/photo/a-person-in-pensive-mood-3772532/ |
+| to-believe.jpg | glauben | https://www.pexels.com/photo/photo-of-a-girl-looking-up-at-dusk-18243885/ |
+| to-receive.jpg | bekommen | https://www.pexels.com/photo/crop-black-mother-passing-christmas-gift-to-smiling-daughter-5727939/ |
+| to-bring.jpg | bringen | https://www.pexels.com/photo/waiter-serving-gourmet-meal-in-modern-restaurant-36442212/ |
+| to-fetch.jpg | holen | https://www.pexels.com/photo/brown-short-coated-dog-on-seashore-13446981/ |
+| to-get-up.jpg | aufstehen | https://www.pexels.com/photo/woman-in-gray-tank-top-sitting-on-bed-3807551/ |
+| to-start.jpg | anfangen | https://www.pexels.com/photo/sprinters-on-a-running-track-19787364/ |
+| to-meet.jpg | treffen | https://www.pexels.com/photo/happy-asian-men-shaking-hands-on-sunny-street-5368942/ |
+| to-sit.jpg | sitzen | https://www.pexels.com/photo/a-little-girl-in-a-blue-dress-sitting-on-a-chair-27833887/ |
+| to-stand.jpg | stehen | https://www.pexels.com/photo/smiling-child-in-urban-outdoor-setting-31971201/ |
+| to-lie.jpg | liegen | https://www.pexels.com/photo/laughing-woman-lying-in-grass-20367801/ |
+| to-carry.jpg | tragen | https://www.pexels.com/photo/cheerful-woman-carrying-packed-carton-box-4506231/ |
+| to-wash.jpg | waschen | https://www.pexels.com/photo/crop-mother-washing-hands-of-child-in-bathroom-4474053/ |
+| to-love.jpg | lieben | https://www.pexels.com/photo/daughter-hugging-mother-9885408/ |
+| to-please.jpg | gefallen | https://www.pexels.com/photo/a-girl-doing-a-thumbs-up-8363043/ |
+| to-be.jpg | sein | copy of `1.8 personal information/images/to-be.jpg` (see above) |
+| to-have.jpg | haben | copy of `1.9 shopping/images/to-have.jpg` (see above) |
+| to-do.jpg | machen | copy of `1.6 hobbies/images/to-do.jpg` (see above) |
+| to-go.jpg | gehen | copy of `1.11 transport/images/to-walk.jpg` (see above) |
+| to-come.jpg | kommen | copy of `1.11 transport/images/to-come.jpg` (see above) |
+| to-drive.jpg | fahren | copy of `1.11 transport/images/to-drive.jpg` (see above) |
+| to-stay.jpg | bleiben | copy of `1.14 travel/images/to-stay.jpg` (see above) |
+| to-live-in.jpg | wohnen | copy of `1.8 personal information/images/to-live.jpg` (see above) |
+| to-work.jpg | arbeiten | copy of `1.12 work and school/images/to-work.jpg` (see above) |
+| to-learn.jpg | lernen | copy of `1.12 work and school/images/to-learn.jpg` (see above) |
+| to-study.jpg | studieren | copy of `1.12 work and school/images/to-study.jpg` (see above) |
+| to-speak.jpg | sprechen | copy of `1.12 work and school/images/to-speak.jpg` (see above) |
+| to-ask.jpg | fragen | copy of `1.12 work and school/images/to-ask.jpg` (see above) |
+| to-answer.jpg | antworten | copy of `1.12 work and school/images/to-answer.jpg` (see above) |
+| to-listen.jpg | hören | copy of `1.6 hobbies/images/to-listen.jpg` (see above) |
+| to-see.jpg | sehen | copy of `1.6 hobbies/images/to-watch.jpg` (see above) |
+| to-read.jpg | lesen | copy of `1.12 work and school/images/to-read.jpg` (see above) |
+| to-write.jpg | schreiben | copy of `1.12 work and school/images/to-write.jpg` (see above) |
+| to-understand.jpg | verstehen | copy of `1.12 work and school/images/to-understand.jpg` (see above) |
+| to-find.jpg | finden | copy of `1.9 shopping/images/to-find.jpg` (see above) |
+| to-look-for.jpg | suchen | copy of `1.12 work and school/images/to-look-for.jpg` (see above) |
+| to-need.jpg | brauchen | copy of `1.12 work and school/images/to-need.jpg` (see above) |
+| to-buy.jpg | kaufen | copy of `1.9 shopping/images/to-buy.jpg` (see above) |
+| to-sell.jpg | verkaufen | copy of `1.9 shopping/images/to-sell.jpg` (see above) |
+| to-pay.jpg | bezahlen | copy of `1.9 shopping/images/to-pay.jpg` (see above) |
+| to-cost.jpg | kosten | copy of `1.9 shopping/images/to-cost.jpg` (see above) |
+| to-take.jpg | nehmen | copy of `1.11 transport/images/to-take.jpg` (see above) |
+| to-give.jpg | geben | copy of `1.9 shopping/images/to-give.jpg` (see above) |
+| to-eat.jpg | essen | copy of `1.3 food/images/eat.jpg` (see above) |
+| to-drink.jpg | trinken | copy of `1.3 food/images/drink.jpg` (see above) |
+| to-cook.jpg | kochen | copy of `1.6 hobbies/images/to-cook.jpg` (see above) |
+| to-sleep.jpg | schlafen | copy of `1.4 home/images/sleep.jpg` (see above) |
+| to-begin.jpg | beginnen | copy of `1.12 work and school/images/to-begin.jpg` (see above) |
+| to-end.jpg | enden | copy of `1.12 work and school/images/to-end.jpg` (see above) |
+| to-visit.jpg | besuchen | copy of `1.14 travel/images/to-visit.jpg` (see above) |
+| to-help.jpg | helfen | copy of `1.13 health/images/to-help.jpg` (see above) |
+| to-show.jpg | zeigen | copy of `1.11 transport/images/to-show.jpg` (see above) |
+| to-wait.jpg | warten | copy of `1.11 transport/images/to-wait.jpg` (see above) |
+| to-open.jpg | öffnen | copy of `1.4 home/images/open.jpg` (see above) |
+| to-close.jpg | schließen | copy of `1.4 home/images/close.jpg` (see above) |
+| to-run.jpg | laufen | copy of `1.11 transport/images/to-run.jpg` (see above) |
+| to-swim.jpg | schwimmen | copy of `1.6 hobbies/images/to-swim.jpg` (see above) |
+| to-play.jpg | spielen | copy of `1.6 hobbies/images/to-play.jpg` (see above) |
+| to-travel.jpg | reisen | copy of `1.6 hobbies/images/to-travel.jpg` (see above) |
+| to-fly.jpg | fliegen | copy of `1.11 transport/images/to-fly.jpg` (see above) |
+| to-clean.jpg | putzen | copy of `1.4 home/images/cleaning.jpg` (see above) |
+| to-feel.jpg | fühlen | copy of `1.13 health/images/to-feel.jpg` (see above) |
+| to-be-called.jpg | heißen | copy of `1.8 personal information/images/to-be-called.jpg` (see above) |
+
+## Lesson 1.18 — Kleine Wörter
+
+The 52 photos under `public/1.18 small words/images/` are real photos
+from [Pexels](https://www.pexels.com), cropped to a square 640x640, under the
+same [Pexels License](https://www.pexels.com/license/) (free to use, no
+attribution required). 25 of them are copies of photos from earlier lessons
+for words taught there too; their sources are listed in those lessons'
+sections above. The path icons in `public/1.18 small words/icons/`
+are all cropped from these.
+
+| File | German word | Source |
+| ---- | ----------- | ------ |
+| and.jpg | und | https://www.pexels.com/photo/bread-slices-on-brown-wooden-chopping-board-11842180/ |
+| or.jpg | oder | https://www.pexels.com/photo/faceless-woman-showing-fresh-apple-and-sweet-doughnut-6551090/ |
+| but.jpg | aber | https://www.pexels.com/photo/close-up-photo-of-a-boy-behind-car-window-8230736/ |
+| because-for.jpg | denn | https://www.pexels.com/photo/kid-stepping-on-a-puddle-14753849/ |
+| because.jpg | weil | https://www.pexels.com/photo/boy-with-umbrella-running-on-street-in-rain-18147749/ |
+| that.jpg | dass | https://www.pexels.com/photo/woman-in-blue-crew-neck-long-sleeve-shirt-while-holding-her-phone-3767367/ |
+| also.jpg | auch | https://www.pexels.com/photo/children-in-school-uniform-holding-hands-outdoors-35128474/ |
+| only.jpg | nur | https://www.pexels.com/photo/red-apple-fruit-on-red-surface-8627570/ |
+| already.jpg | schon | https://www.pexels.com/photo/elegant-dining-completion-on-white-plate-38199515/ |
+| still.jpg | noch | https://www.pexels.com/photo/brunette-girl-sleeping-on-a-pillow-6202177/ |
+| very.jpg | sehr | https://www.pexels.com/photo/two-dogs-strolling-on-a-forest-path-in-lausanne-34176095/ |
+| too.jpg | zu | https://www.pexels.com/photo/juxtaposition-of-high-heel-and-baby-shoe-on-wooden-floor-37173051/ |
+| not.jpg | nicht | https://www.pexels.com/photo/a-woman-showing-her-palm-10545016/ |
+| no-not-any.jpg | kein | https://www.pexels.com/photo/mountain-dew-and-gatorade-inside-an-empty-refrigerator-9395976/ |
+| yes.jpg | ja | https://www.pexels.com/photo/blue-yes-button-on-beige-back-21562937/ |
+| no.jpg | nein | https://www.pexels.com/photo/human-holding-a-banner-6484506/ |
+| maybe.jpg | vielleicht | https://www.pexels.com/photo/man-shrugging-in-white-shirt-on-neutral-background-33715990/ |
+| really.jpg | wirklich | https://www.pexels.com/photo/man-in-red-button-up-shirt-3777931/ |
+| gladly.jpg | gern | https://www.pexels.com/photo/a-mother-and-her-son-giving-a-high-five-while-cooking-8507646/ |
+| again.jpg | wieder | https://www.pexels.com/photo/a-girl-in-white-and-black-dress-swinging-in-a-park-14415539/ |
+| with.jpg | mit | https://www.pexels.com/photo/little-girl-holding-a-puppy-11633162/ |
+| without.jpg | ohne | https://www.pexels.com/photo/coffee-in-cup-17006374/ |
+| for.jpg | für | https://www.pexels.com/photo/hands-holding-black-gift-box-with-golden-ribbon-9661914/ |
+| from.jpg | von | https://www.pexels.com/photo/scrabble-tiles-on-an-envelope-6005305/ |
+| at.jpg | bei | https://www.pexels.com/photo/ms-dots-90th-birthday-w-her-great-grandson-27520972/ |
+| under.jpg | unter | https://www.pexels.com/photo/calico-cat-under-vintage-table-outdoors-31150681/ |
+| over.jpg | über | https://www.pexels.com/photo/aerial-view-of-snowy-chicago-skyline-from-airplane-28500686/ |
+| of-course.jpg | Natürlich | copy of `1.1 greetings/images/of-course.jpg` (see above) |
+| together.jpg | zusammen | copy of `1.2 family/images/together.jpg` (see above) |
+| alone.jpg | allein | copy of `1.8 personal information/images/alone.jpg` (see above) |
+| here.jpg | hier | copy of `1.11 transport/images/here.jpg` (see above) |
+| there.jpg | dort | copy of `1.11 transport/images/there.jpg` (see above) |
+| today.jpg | heute | copy of `1.10 time/images/today.jpg` (see above) |
+| tomorrow.jpg | morgen | copy of `1.10 time/images/tomorrow.jpg` (see above) |
+| yesterday.jpg | gestern | copy of `1.10 time/images/yesterday.jpg` (see above) |
+| now.jpg | jetzt | copy of `1.10 time/images/now.jpg` (see above) |
+| then.jpg | dann | copy of `1.10 time/images/then.jpg` (see above) |
+| first.jpg | zuerst | copy of `1.10 time/images/first.jpg` (see above) |
+| later.jpg | später | copy of `1.10 time/images/later.jpg` (see above) |
+| always.jpg | immer | copy of `1.10 time/images/always.jpg` (see above) |
+| often.jpg | oft | copy of `1.10 time/images/often.jpg` (see above) |
+| sometimes.jpg | manchmal | copy of `1.10 time/images/sometimes.jpg` (see above) |
+| never.jpg | nie | copy of `1.10 time/images/never.jpg` (see above) |
+| to.jpg | nach | copy of `1.11 transport/images/to.jpg` (see above) |
+| out-of.jpg | aus | copy of `1.11 transport/images/out-of.jpg` (see above) |
+| in.jpg | in | copy of `1.11 transport/images/in.jpg` (see above) |
+| at-on.jpg | an | copy of `1.11 transport/images/at.jpg` (see above) |
+| on.jpg | auf | copy of `1.11 transport/images/on.jpg` (see above) |
+| next-to.jpg | neben | copy of `1.11 transport/images/next-to.jpg` (see above) |
+| in-front-of.jpg | vor | copy of `1.11 transport/images/in-front-of.jpg` (see above) |
+| behind.jpg | hinter | copy of `1.11 transport/images/behind.jpg` (see above) |
+| between.jpg | zwischen | copy of `1.11 transport/images/between.jpg` (see above) |
+
 ## Path icons (`public/<lesson>/icons/`)
 
 The small round pictures on the learning path are 160x160 close-up crops.

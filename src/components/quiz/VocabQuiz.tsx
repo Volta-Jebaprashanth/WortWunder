@@ -22,6 +22,7 @@ import {
   Picture,
   PictureOptions,
   ResultCard,
+  TrainingCard,
   WordCard,
 } from "@/components/quiz/pieces";
 import type { VocabWord } from "@/data/vocabulary";
@@ -43,7 +44,7 @@ import { recordCorrectAnswer } from "@/lib/stats-store";
 import type { MotherTongue, Strings } from "@/lib/i18n";
 
 // Data-driven quiz screen for a vocabulary test (1.1.1 Hallo 1, 1.2.3
-// Familie 3, ... — see src/data/lessons.ts): every word x 10 test types. Rounds are strictly tier-gated — every round's queue is built
+// Familie 3, ... — see src/data/lessons.ts): every word x 11 test types. Rounds are strictly tier-gated — every round's queue is built
 // from whatever (word, testType) rows are still pending (pendingAttempts >
 // 0 in progress-store.ts) in the EARLIEST tier that isn't fully cleared, so
 // no easy-tier item ever appears while a basic row is outstanding, and
@@ -82,6 +83,10 @@ export function VocabQuiz({
   const [checked, setChecked] = useState(false);
   const [lastCorrect, setLastCorrect] = useState(false);
   const [attempts, setAttempts] = useState(0);
+  // A training item is two screens: the intro (TrainingCard) and then its
+  // word-to-picture question. Resets per queue item, so a word whose
+  // question was missed gets its intro again the next time it comes up.
+  const [introDone, setIntroDone] = useState(false);
   const item: QuizItem | undefined = queue[index];
   const spokenWord = item && item.kind !== "match" ? item.word.full : "";
   // Rounds are tier-gated, so the current item's tier is the test's tier.
@@ -109,6 +114,7 @@ export function VocabQuiz({
     setLetters([]);
     setChecked(false);
     setAttempts(0);
+    setIntroDone(false);
   }, [index]);
 
   // Fetch only what this question and the next few need (audio and pictures),
@@ -230,31 +236,51 @@ export function VocabQuiz({
           </LessonFrame>
         )}
 
-        {item && item.kind === "wordPicture" && derived && (
-          <LessonFrame
+        {item && item.kind === "training" && !introDone && derived && (
+          <TrainingCard
             t={t}
-            eyebrow={t.wordPictureChallenge}
+            lang={lang}
+            word={derived.word}
             tier={tier}
-            title="Welches Bild ist das?"
-            subtitle={t.chooseGermanPictureForWord}
-          >
-            <WordCard t={t} text={derived.word.full} speak />
-            <PictureOptions
-              options={derived.mcOptions.map((w) => ({ id: w.id, image: w.image, label: w[lang] }))}
-              selected={answer}
-              correct={derived.word.id}
-              revealed={checked}
-              onSelect={setAnswer}
-            />
-            {!checked && (
-              <Continue
-                t={t}
-                disabled={!answer}
-                onClick={() => checkAnswer(answer === derived.word.id)}
-              />
-            )}
-          </LessonFrame>
+            onContinue={() => setIntroDone(true)}
+          />
         )}
+
+        {item &&
+          (item.kind === "wordPicture" || (item.kind === "training" && introDone)) &&
+          derived && (
+            <LessonFrame
+              t={t}
+              eyebrow={
+                item.kind === "training"
+                  ? `${t.training} · ${t.wordPictureChallenge}`
+                  : t.wordPictureChallenge
+              }
+              tier={tier}
+              title="Welches Bild ist das?"
+              subtitle={t.chooseGermanPictureForWord}
+            >
+              <WordCard t={t} text={derived.word.full} speak />
+              <PictureOptions
+                options={derived.mcOptions.map((w) => ({
+                  id: w.id,
+                  image: w.image,
+                  label: w[lang],
+                }))}
+                selected={answer}
+                correct={derived.word.id}
+                revealed={checked}
+                onSelect={setAnswer}
+              />
+              {!checked && (
+                <Continue
+                  t={t}
+                  disabled={!answer}
+                  onClick={() => checkAnswer(answer === derived.word.id)}
+                />
+              )}
+            </LessonFrame>
+          )}
 
         {item && item.kind === "meaning" && derived && (
           <LessonFrame

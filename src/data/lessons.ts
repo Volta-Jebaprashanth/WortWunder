@@ -8,6 +8,16 @@ import { WEATHER_LESSON_ID, WEATHER_WORDS } from "@/data/weather";
 import { HOBBIES_LESSON_ID, HOBBIES_WORDS } from "@/data/hobbies";
 import { JOBS_LESSON_ID, JOBS_WORDS } from "@/data/jobs";
 import { PERSONAL_LESSON_ID, PERSONAL_WORDS } from "@/data/personal";
+import { SHOPPING_LESSON_ID, SHOPPING_WORDS } from "@/data/shopping";
+import { TIME_LESSON_ID, TIME_WORDS } from "@/data/time";
+import { TRANSPORT_LESSON_ID, TRANSPORT_WORDS } from "@/data/transport";
+import { WORK_SCHOOL_LESSON_ID, WORK_SCHOOL_WORDS } from "@/data/work-school";
+import { HEALTH_LESSON_ID, HEALTH_WORDS } from "@/data/health";
+import { TRAVEL_LESSON_ID, TRAVEL_WORDS } from "@/data/travel";
+import { NUMBERS_LESSON_ID, NUMBERS_WORDS } from "@/data/numbers";
+import { QUESTIONS_LESSON_ID, QUESTIONS_WORDS } from "@/data/questions";
+import { VERBS_LESSON_ID, VERBS_WORDS } from "@/data/verbs";
+import { SMALL_WORDS_LESSON_ID, SMALL_WORDS_WORDS } from "@/data/small-words";
 
 // Every vocabulary test holds 10-15 words. A lesson's word list is split
 // evenly into as few tests as fit that range (24 -> 12+12, 37 -> 13+12+12),
@@ -123,6 +133,114 @@ export const VOCAB_LESSONS: VocabLesson[] = [
       sinhala: "පුද්ගලික තොරතුරු",
     },
     tests: splitIntoTests(PERSONAL_LESSON_ID, PERSONAL_WORDS),
+  },
+  {
+    id: SHOPPING_LESSON_ID,
+    assetDir: "1.9 shopping",
+    title: "Einkaufen",
+    icon: "🛒",
+    meaning: { english: "Shopping", tamil: "பொருட்கள் வாங்குதல்", sinhala: "සාප්පු යාම" },
+    tests: splitIntoTests(SHOPPING_LESSON_ID, SHOPPING_WORDS),
+  },
+  {
+    id: TIME_LESSON_ID,
+    assetDir: "1.10 time",
+    title: "Zeit & Datum",
+    icon: "🕐",
+    meaning: {
+      english: "Time, days & dates",
+      tamil: "நேரம், நாட்கள் & தேதிகள்",
+      sinhala: "වේලාව, දවස් සහ දින",
+    },
+    tests: splitIntoTests(TIME_LESSON_ID, TIME_WORDS),
+  },
+  {
+    id: TRANSPORT_LESSON_ID,
+    assetDir: "1.11 transport",
+    title: "Verkehr & Wege",
+    icon: "🚌",
+    meaning: {
+      english: "Transport & directions",
+      tamil: "போக்குவரத்து & திசைகள்",
+      sinhala: "ප්‍රවාහනය සහ දිශා",
+    },
+    tests: splitIntoTests(TRANSPORT_LESSON_ID, TRANSPORT_WORDS),
+  },
+  {
+    id: WORK_SCHOOL_LESSON_ID,
+    assetDir: "1.12 work and school",
+    title: "Arbeit & Schule",
+    icon: "🏫",
+    meaning: { english: "Work & school", tamil: "வேலை & பள்ளி", sinhala: "රැකියාව සහ පාසල" },
+    tests: splitIntoTests(WORK_SCHOOL_LESSON_ID, WORK_SCHOOL_WORDS),
+  },
+  {
+    id: HEALTH_LESSON_ID,
+    assetDir: "1.13 health",
+    title: "Gesundheit",
+    icon: "🩺",
+    meaning: { english: "Health", tamil: "ஆரோக்கியம்", sinhala: "සෞඛ්‍යය" },
+    tests: splitIntoTests(HEALTH_LESSON_ID, HEALTH_WORDS),
+  },
+  {
+    id: TRAVEL_LESSON_ID,
+    assetDir: "1.14 travel",
+    title: "Reise & Hotel",
+    icon: "🏨",
+    meaning: {
+      english: "Travel & hotel",
+      tamil: "பயணம் & ஹோட்டல்",
+      sinhala: "සංචාරය සහ හෝටලය",
+    },
+    tests: splitIntoTests(TRAVEL_LESSON_ID, TRAVEL_WORDS),
+  },
+  {
+    id: NUMBERS_LESSON_ID,
+    assetDir: "1.15 numbers",
+    title: "Die Zahlen",
+    icon: "🔢",
+    meaning: {
+      english: "Numbers",
+      tamil: "எண்கள்",
+      sinhala: "ඉලක්කම්",
+    },
+    tests: splitIntoTests(NUMBERS_LESSON_ID, NUMBERS_WORDS),
+  },
+  {
+    id: QUESTIONS_LESSON_ID,
+    assetDir: "1.16 question words",
+    title: "Die W-Fragen",
+    icon: "❓",
+    meaning: {
+      english: "Question words",
+      tamil: "கேள்விச் சொற்கள்",
+      sinhala: "ප්‍රශ්න වචන",
+    },
+    tests: splitIntoTests(QUESTIONS_LESSON_ID, QUESTIONS_WORDS),
+  },
+  {
+    id: VERBS_LESSON_ID,
+    assetDir: "1.17 verbs",
+    title: "Wichtige Verben",
+    icon: "🏃",
+    meaning: {
+      english: "Essential verbs",
+      tamil: "முக்கிய வினைச்சொற்கள்",
+      sinhala: "වැදගත් ක්‍රියා පද",
+    },
+    tests: splitIntoTests(VERBS_LESSON_ID, VERBS_WORDS),
+  },
+  {
+    id: SMALL_WORDS_LESSON_ID,
+    assetDir: "1.18 small words",
+    title: "Kleine Wörter",
+    icon: "🔗",
+    meaning: {
+      english: "Connectors & small words",
+      tamil: "இணைப்புச் சொற்கள்",
+      sinhala: "සම්බන්ධක සහ කුඩා වචන",
+    },
+    tests: splitIntoTests(SMALL_WORDS_LESSON_ID, SMALL_WORDS_WORDS),
   },
 ];
 

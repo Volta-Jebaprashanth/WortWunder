@@ -1,16 +1,20 @@
 import type { VocabWord } from "@/data/vocabulary";
 
-// Generic quiz-queue builder: N words x 10 test types, grouped into four
-// difficulty tiers (1 basic, 3 easy, 3 medium, 3 hard). Rounds are strictly
-// tier-gated — see buildRoundFromRows below — so nothing from the easy tier
-// is ever queued while any basic row is still outstanding, and likewise
-// medium waits on easy and hard waits on medium (the "match" test type is grouped rather than per-word, so a
+// Generic quiz-queue builder: N words x 11 test types, grouped into five
+// difficulty tiers (1 training, 1 basic, 3 easy, 3 medium, 3 hard). The
+// training tier's one type first teaches the word on an intro screen
+// (TrainingCard) and then asks a word-to-picture question about it. Rounds
+// are strictly tier-gated — see buildRoundFromRows below — so nothing from
+// the basic tier is ever queued while any training row is still
+// outstanding, and likewise easy waits on basic, medium on easy and hard on
+// medium (the "match" test type is grouped rather than per-word, so a
 // tier lands at 10 items instead of 40 once it's match's turn).
-export type Tier = "basic" | "easy" | "medium" | "hard";
+export type Tier = "training" | "basic" | "easy" | "medium" | "hard";
 
-export const TIER_ORDER: Tier[] = ["basic", "easy", "medium", "hard"];
+export const TIER_ORDER: Tier[] = ["training", "basic", "easy", "medium", "hard"];
 
 export type TestType =
+  | "training"
   | "picture"
   | "wordPicture"
   | "meaning"
@@ -23,6 +27,7 @@ export type TestType =
   | "match";
 
 export const TEST_TIERS: Record<Tier, TestType[]> = {
+  training: ["training"],
   basic: ["wordPicture"],
   easy: ["picture", "meaning", "listen"],
   medium: ["missing", "listenPicture", "translate"],
@@ -30,6 +35,7 @@ export const TEST_TIERS: Record<Tier, TestType[]> = {
 };
 
 export const ALL_TEST_TYPES: TestType[] = [
+  ...TEST_TIERS.training,
   ...TEST_TIERS.basic,
   ...TEST_TIERS.easy,
   ...TEST_TIERS.medium,
@@ -152,6 +158,16 @@ export function itemMedia(item: QuizItem, byId: Record<string, VocabWord>): Item
   switch (item.kind) {
     case "picture":
       return { words: options.map((w) => w.full), letters: [], images: [item.word.image] };
+    case "training":
+      return {
+        words: [
+          item.word.full,
+          ...(item.word.plural ? [item.word.plural] : []),
+          ...(item.word.example ? [item.word.example.german] : []),
+        ],
+        letters: [],
+        images: options.map((w) => w.image),
+      };
     case "wordPicture":
       return { words: [item.word.full], letters: [], images: options.map((w) => w.image) };
     case "meaning":

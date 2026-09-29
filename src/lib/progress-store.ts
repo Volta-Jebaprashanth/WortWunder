@@ -4,9 +4,10 @@ import { TIER_ORDER, tierOfType, type TestType, type Tier } from "@/lib/quiz-eng
 // row per (testType, word) combination — 100 rows for a 10-word/10-type test
 // — holding a `pendingAttempts` counter instead of a pass/fail log:
 //   - a test is first entered           -> every row starts at 1
-//                                          (3 for basic-tier rows)
+//                                          (2 for basic-tier rows)
 //   - the FIRST wrong attempt on a row  -> pending = min(pending + 2, 4)
-//                                          (max 5 for basic-tier rows)
+//                                          (max 3 for training-tier rows,
+//                                          max 5 for basic-tier rows)
 //   - whenever that row is finally passed (first try or after retries)
 //                                       -> pending = max(pending - 1, 0)
 // A test is "complete" once every one of its rows is 0. Re-entering an
@@ -23,27 +24,32 @@ import { TIER_ORDER, tierOfType, type TestType, type Tier } from "@/lib/quiz-eng
 // word/type is created fresh (see startPending) — even mid-progress, not just on a fresh
 // start. See ensureTestEntered.
 //
-// Rounds are strictly tier-gated (basic -> easy -> medium -> hard, see
-// quiz-engine.ts TIER_ORDER): every row across all 4 tiers exists from the
-// moment a test is entered, but getActiveTierRows only ever hands back rows from the
-// earliest tier that isn't fully cleared yet, so nothing from medium is
-// ever queued while an easy row is still pending, etc. The basic tier
-// starts each row at 3 (and caps at 5) so a kid sees every word several
-// times in its simplest form before anything harder shows up.
+// Rounds are strictly tier-gated (training -> basic -> easy -> medium ->
+// hard, see quiz-engine.ts TIER_ORDER): every row across all 5 tiers exists
+// from the moment a test is entered, but getActiveTierRows only ever hands
+// back rows from the earliest tier that isn't fully cleared yet, so nothing
+// from medium is ever queued while an easy row is still pending, etc. The
+// training tier introduces each word once (capped at 3 if the kid keeps
+// missing its question); the basic tier then starts each row at 2 (and caps
+// at 5) so a kid sees every word a couple more times in its simplest form
+// before anything harder shows up.
 const PROGRESS_KEY = "wortwunder:progress";
 const SCHEMA_VERSION = 2;
-const START_PENDING = 1;
 const FAIL_PENALTY = 2;
-const MAX_PENDING = 4;
-const BASIC_START_PENDING = 3;
-const BASIC_MAX_PENDING = 5;
+const PENDING_LIMITS: Record<Tier, { start: number; max: number }> = {
+  training: { start: 1, max: 3 },
+  basic: { start: 2, max: 5 },
+  easy: { start: 1, max: 4 },
+  medium: { start: 1, max: 4 },
+  hard: { start: 1, max: 4 },
+};
 
 function startPending(testType: TestType): number {
-  return tierOfType(testType) === "basic" ? BASIC_START_PENDING : START_PENDING;
+  return PENDING_LIMITS[tierOfType(testType)].start;
 }
 
 function maxPending(testType: TestType): number {
-  return tierOfType(testType) === "basic" ? BASIC_MAX_PENDING : MAX_PENDING;
+  return PENDING_LIMITS[tierOfType(testType)].max;
 }
 
 interface TestState {
@@ -102,12 +108,18 @@ export function ensureTestEntered(testId: string, wordIds: string[], testTypes: 
   // existing pendingAttempts when resuming, or starting fresh (see
   // startPending) when it's new or this is a full reset. All 4 tiers' rows
   // are populated up front even though presentation is tier-gated — see getActiveTierRows.
+  // One exception to "new rows start fresh": a training row added to a
+  // word the kid is already partway through (progress saved before the
+  // training tier existed) starts cleared — they've already met that word,
+  // so it shouldn't drag them back to the intro screens.
   const rows: Record<string, number> = {};
   for (const wordId of wordIds) {
+    const wordSeen =
+      !resetAll && testTypes.some((type) => existing!.rows[rowKey(type, wordId)] !== undefined);
     for (const testType of testTypes) {
       const key = rowKey(testType, wordId);
-      const start = startPending(testType);
-      rows[key] = resetAll ? start : (existing!.rows[key] ?? start);
+      const start = tierOfType(testType) === "training" && wordSeen ? 0 : startPending(testType);
+      rows[key] = resetAll ? startPending(testType) : (existing!.rows[key] ?? start);
     }
   }
   store.tests[testId] = {

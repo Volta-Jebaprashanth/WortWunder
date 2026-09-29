@@ -8,6 +8,7 @@ import { shuffle, type Tier } from "@/lib/quiz-engine";
 import { TierSteps } from "@/components/quiz/TierSteps";
 import { placeholderFor } from "@/lib/thumbhash";
 import type { MotherTongue, Strings } from "@/lib/i18n";
+import type { VocabWord } from "@/data/vocabulary";
 
 // Shared presentational building blocks for a lesson screen. Originally
 // written inline in routes/index.tsx for the (single, hardcoded) Vogel
@@ -706,6 +707,116 @@ export function MatchPairs<W extends MatchWord>({
         </div>
       )}
     </div>
+  );
+}
+
+// One colour per grammatical gender, so kids start linking der/die/das to a
+// colour rather than memorising it: der = blue, die = red, das = green.
+const ARTICLE_COLORS: Record<string, string> = {
+  der: "text-sky-600",
+  die: "text-rose-500",
+  das: "text-emerald-600",
+};
+
+// "der Vogel" with its article in that article's colour; anything without a
+// leading der/die/das renders as-is.
+function ArticleWord({ text }: { text: string }) {
+  const match = /^(der|die|das)\s+(.+)$/i.exec(text);
+  if (!match) return <>{text}</>;
+  const [, article, rest] = match;
+  return (
+    <span>
+      <span className={ARTICLE_COLORS[article!.toLowerCase()]}>{article}</span> {rest}
+    </span>
+  );
+}
+
+// The Training level's intro screen: not a question, just the word taught
+// once — picture, German word (spoken on arrival, tap to hear again) with its
+// article colour-coded, its meaning, its plural, and an example sentence
+// with its meaning — before the kid is asked anything about it.
+export function TrainingCard({
+  t,
+  lang,
+  word,
+  tier,
+  onContinue,
+}: {
+  t: Strings;
+  lang: MotherTongue;
+  word: VocabWord;
+  tier?: Tier | undefined;
+  onContinue: () => void;
+}) {
+  useEffect(() => {
+    playWord(word.full);
+  }, [word.full]);
+
+  return (
+    <LessonFrame
+      t={t}
+      eyebrow={t.training}
+      tier={tier}
+      title="Neues Wort"
+      subtitle={t.learnNewWord}
+    >
+      <div className="mx-auto my-5 size-60 overflow-hidden rounded-[32px] bg-card shadow-inner ring-1 ring-border sm:size-72">
+        <LoadingImage
+          src={word.image}
+          alt={word.full}
+          className="size-full"
+          imgClassName="object-cover"
+        />
+      </div>
+      <div className="flex flex-col items-center gap-1 text-center">
+        <button
+          type="button"
+          onClick={() => playWord(word.full)}
+          aria-label={t.tapToHear(word.full)}
+          className="inline-flex items-center gap-2 font-display text-3xl font-extrabold sm:text-4xl"
+        >
+          <ArticleWord text={word.full} /> <Volume2 className="size-7 shrink-0 text-ink-soft" />
+        </button>
+        <p className="font-display text-2xl font-extrabold text-ink-soft sm:text-3xl">
+          {word[lang]}
+        </p>
+      </div>
+      {word.plural && (
+        <div className="mx-auto mt-6 max-w-sm rounded-[24px] bg-card p-4 text-center ring-1 ring-border">
+          <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-ink-soft">
+            {t.plural}
+          </p>
+          <button
+            type="button"
+            onClick={() => playWord(word.plural!)}
+            aria-label={t.tapToHear(word.plural)}
+            className="mt-1 inline-flex items-center gap-2 font-display text-xl font-extrabold"
+          >
+            <ArticleWord text={word.plural} />
+            <Volume2 className="size-5 shrink-0 text-ink-soft" />
+          </button>
+        </div>
+      )}
+      {word.example && (
+        <div className="mx-auto mt-3 max-w-sm rounded-[24px] bg-card p-4 text-center ring-1 ring-border">
+          <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-ink-soft">
+            {t.exampleSentence}
+          </p>
+          <button
+            type="button"
+            onClick={() => playWord(word.example!.german)}
+            aria-label={t.tapToHear(word.example.german)}
+            className="mt-1 inline-flex items-center gap-2 font-display text-xl font-extrabold"
+          >
+            {word.example.german} <Volume2 className="size-5 shrink-0 text-ink-soft" />
+          </button>
+          <p className="font-bold text-ink-soft">{word.example[lang]}</p>
+        </div>
+      )}
+      <Button variant="adventure" size="lesson" className="mt-6 w-full" onClick={onContinue}>
+        Weiter
+      </Button>
+    </LessonFrame>
   );
 }
 

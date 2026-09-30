@@ -1,110 +1,122 @@
-# Deutsch Kids Fun
+<!-- markdownlint-disable-next-line MD041 MD033 -->
+<p align="center"><img src="public/images/logo.png" alt="WortWunder logo: a friendly fox waving a German flag and saying Hallo!" width="180"></p>
 
-Build a child-friendly German vocabulary learning web app inspired by the gamified feel and simplicity of Duolingo.
+# 🌟 WortWunder
 
-This is ONLY a UI prototype for now.
+**Master every word you need for the German A1 exam, one playful lesson at a time.**
 
-Requirements:
+Passing Goethe or ÖSD A1 starts with vocabulary. WortWunder turns the A1 word list
+into short, game-like sessions with real photos, native-sounding audio and a
+learning path that shows your progress. Finish a section and you'll know every word in it.
 
-Static/mock data only
+👉 **[Try it now](https://wortwunder.voltajeba.com/)**, free in your browser and installable on your phone.
 
-No backend
+---
 
-No database
+## Why WortWunder?
 
-No authentication
+Most learners preparing for A1 know the frustration: you read a word list, you
+understand it, and a week later it's gone. WortWunder is built around one
+idea: **you don't finish a word until you really know it.**
 
-No APIs
+- 🎯 **Built for the A1 exam.** 30 lessons and 1,100+ words cover the topics A1
+  tests ask about: greetings, family, food, home, shopping, time, travel,
+  health, work, numbers, verbs, prepositions and more.
+- 🧠 **Made to stick.** Every word goes through 11 kinds of exercises, from
+  easy recognition to spelling it from memory. A word only counts as learned
+  when you've passed all of them.
+- 📸 **Real photos.** Each word is shown with a real photo of the thing or
+  action, which is easier to remember than a translation.
+- 🔊 **Hear every word.** Clear neural-voice pronunciation for every word, so
+  you practise listening and speaking along with reading.
+- 🇩🇪 **der, die, das from day one.** Every noun is taught with its article, so
+  you never have to go back and relearn genders.
+- 🌍 **Learn in your language.** Meanings are shown in **English, Tamil or
+  Sinhala**.
+- 👨‍👩‍👧 **For every age.** Anyone can use it: an adult getting ready for a visa or
+  integration exam, a student, or a child learning their first German words.
 
-No real user persistence
+---
 
-Responsive, especially mobile/tablet
+## How it works
 
-You decide the UI architecture, component structure, colors, typography, illustrations, animations, and UX.
+### 1. Follow the path
 
-The app is for children learning beginner German vocabulary, so make it playful, colorful, friendly, simple, and highly visual.
+Your learning path is split into sections, and each section into small tests
+of 10–15 words. Short tests keep each session quick, so you can do one on the
+bus or during a coffee break.
 
-Use Duolingo as inspiration for the gamified learning experience, but create an original design and do not copy its branding or exact UI.
+### 2. Level up through five tiers
 
-For now, build ONLY these 5 screens:
+Each test takes you through five tiers of difficulty. The next tier opens only
+after you've cleared the one before it:
 
-Home / Learning Path
+| Tier | What you do |
+| --- | --- |
+| 🌱 **Training** | Meet the word with its picture, sound and meaning |
+| ⭐ **Basic** | Match the word to the right picture |
+| 🟢 **Easy** | Picture → word, word → meaning, listen and choose |
+| 🟡 **Medium** | Fill in missing letters, listen → picture, translate |
+| 🔴 **Hard** | Spell it from scratch, spell what you hear, match pairs |
 
-Learning progress
+If you get a word wrong, it comes back until you get it right.
 
-Lessons/levels
+### 3. Become a vocab expert
 
-XP, streak, hearts or similar gamification
+When you finish a section, you have practised every word in it: you've seen
+it, heard it, recognised it and spelled it. You know the word, not just its
+translation.
 
-Locked/unlocked lessons
+### 4. Practise for the real exam
 
-Vocabulary Introduction
+The **ÖSD** section groups the same lessons under the topic names used in the
+exam, so you can revise by exam topic. Your progress is shared between both
+views.
 
-Introduce a small set of German vocabulary with images
+---
 
-German word + English meaning
+## What's inside
 
-Include articles such as der/die/das
+| | |
+| --- | --- |
+| 📚 Lessons | 30 A1 topics |
+| 🔤 Words | 1,100+ |
+| 🧩 Exercise types | 11 |
+| 🗣️ Meaning languages | English · தமிழ் · සිංහල |
+| 📱 Platforms | Any browser, installable as an app on Android & iOS |
+| 💸 Price | Free, a non-profit learning project |
 
-Picture → German
+---
 
-Show an image
+## Install it like an app
 
-Four German word choices
+WortWunder is a Progressive Web App. Open it on your phone and tap **Install**
+(on Android) or **Share → Add to Home Screen** (on iPhone). It launches full
+screen, just like a native app.
 
-Interactive answer selection
+---
 
-Correct/incorrect feedback
+## For developers
 
-Build the German Word
-
-Show an image
-
-Letter tiles
-
-User builds the German word
-
-Interactive selection/reset
-
-Listening Exercise
-
-Play/listen button
-
-Four German word choices
-
-Interactive answer selection
-
-Correct/incorrect feedback
-
-Create a simple working prototype flow between these screens.
-
-Use beginner vocabulary such as: der Hund, die Katze, der Vogel, das Pferd, der Apfel, die Banane, das Buch, das Wasser.
-
-Focus heavily on polished UI/UX and making it feel like a real children's learning app.
-
-Do not build anything beyond these 5 screens yet. I will review the UI first before we expand the application.
-
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://katz-und-maus.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/41e2a6e9-31e4-4f3b-87f7-c8a4d421499d).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+WortWunder is built with TanStack Start, React 19, Tailwind CSS v4 and
+shadcn/ui, and uses [bun](https://bun.sh).
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+bun install
+bun run dev      # start the dev server
+bun run build    # production build
+bun run lint     # lint
 ```
 
---
+Adding a new lesson takes a word-list file in `src/data/` and one entry in
+`src/data/lessons.ts`. See [AGENTS.md](AGENTS.md) for the full architecture,
+asset conventions and audio/image workflow. Photo credits are listed in
+[CREDITS.md](CREDITS.md).
+
+The first UI prototype was scaffolded with [Lovable](https://lovable.dev). Everything
+since, including the learning path, the tiered quiz engine, the A1 vocabulary,
+photos and audio, has been designed and built by hand.
+
+---
+
+Viel Erfolg bei deiner A1-Prüfung! 🍀

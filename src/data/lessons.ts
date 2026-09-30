@@ -18,6 +18,18 @@ import { NUMBERS_LESSON_ID, NUMBERS_WORDS } from "@/data/numbers";
 import { QUESTIONS_LESSON_ID, QUESTIONS_WORDS } from "@/data/questions";
 import { VERBS_LESSON_ID, VERBS_WORDS } from "@/data/verbs";
 import { SMALL_WORDS_LESSON_ID, SMALL_WORDS_WORDS } from "@/data/small-words";
+import { FEELINGS_LESSON_ID, FEELINGS_WORDS } from "@/data/feelings";
+import { CLOTHES_LESSON_ID, CLOTHES_WORDS } from "@/data/clothes";
+import { DESCRIBING_LESSON_ID, DESCRIBING_WORDS } from "@/data/describing";
+import { COLORS_LESSON_ID, COLORS_WORDS } from "@/data/colors";
+import { NATURE_LESSON_ID, NATURE_WORDS } from "@/data/nature";
+import { ANIMALS_LESSON_ID, ANIMALS_WORDS } from "@/data/animals";
+import { TOWN_LESSON_ID, TOWN_WORDS } from "@/data/town";
+import { COMMUNICATION_LESSON_ID, COMMUNICATION_WORDS } from "@/data/communication";
+import { PREPOSITIONS_LESSON_ID, PREPOSITIONS_WORDS } from "@/data/prepositions";
+import { POSITION_LESSON_ID, POSITION_WORDS } from "@/data/position";
+import { ADVERBS_LESSON_ID, ADVERBS_WORDS } from "@/data/adverbs";
+import { GRAMMAR_LESSON_ID, GRAMMAR_WORDS } from "@/data/grammar-words";
 
 // Every vocabulary test holds 10-15 words. A lesson's word list is split
 // evenly into as few tests as fit that range (24 -> 12+12, 37 -> 13+12+12),
@@ -241,6 +253,150 @@ export const VOCAB_LESSONS: VocabLesson[] = [
       sinhala: "සම්බන්ධක සහ කුඩා වචන",
     },
     tests: splitIntoTests(SMALL_WORDS_LESSON_ID, SMALL_WORDS_WORDS),
+  },
+  {
+    id: FEELINGS_LESSON_ID,
+    assetDir: "1.19 feelings",
+    title: "Gefühle",
+    icon: "😊",
+    meaning: {
+      english: "Feelings & emotions",
+      tamil: "உணர்வுகள்",
+      sinhala: "හැඟීම්",
+    },
+    tests: splitIntoTests(FEELINGS_LESSON_ID, FEELINGS_WORDS),
+  },
+  {
+    id: CLOTHES_LESSON_ID,
+    assetDir: "1.20 clothes",
+    title: "Kleidung & Aussehen",
+    icon: "👕",
+    meaning: {
+      english: "Clothes & appearance",
+      tamil: "ஆடைகள் & தோற்றம்",
+      sinhala: "ඇඳුම් සහ පෙනුම",
+    },
+    tests: splitIntoTests(CLOTHES_LESSON_ID, CLOTHES_WORDS),
+  },
+  {
+    id: DESCRIBING_LESSON_ID,
+    assetDir: "1.21 describing",
+    title: "Eigenschaften",
+    icon: "📏",
+    meaning: {
+      english: "Describing people & things",
+      tamil: "விவரிக்கும் சொற்கள்",
+      sinhala: "විස්තර කරන වචන",
+    },
+    tests: splitIntoTests(DESCRIBING_LESSON_ID, DESCRIBING_WORDS),
+  },
+  {
+    id: COLORS_LESSON_ID,
+    assetDir: "1.22 colors",
+    title: "Die Farben",
+    icon: "🎨",
+    meaning: {
+      english: "Colours",
+      tamil: "நிறங்கள்",
+      sinhala: "වර්ණ",
+    },
+    tests: splitIntoTests(COLORS_LESSON_ID, COLORS_WORDS),
+  },
+  {
+    id: NATURE_LESSON_ID,
+    assetDir: "1.23 nature",
+    title: "Natur & Umwelt",
+    icon: "🌳",
+    meaning: {
+      english: "Nature & environment",
+      tamil: "இயற்கை & சுற்றுச்சூழல்",
+      sinhala: "සොබාදහම සහ පරිසරය",
+    },
+    tests: splitIntoTests(NATURE_LESSON_ID, NATURE_WORDS),
+  },
+  {
+    id: ANIMALS_LESSON_ID,
+    assetDir: "1.24 animals",
+    title: "Die Tiere",
+    icon: "🐶",
+    meaning: {
+      english: "Animals",
+      tamil: "விலங்குகள்",
+      sinhala: "සතුන්",
+    },
+    tests: splitIntoTests(ANIMALS_LESSON_ID, ANIMALS_WORDS),
+  },
+  {
+    id: TOWN_LESSON_ID,
+    assetDir: "1.25 town",
+    title: "In der Stadt",
+    icon: "🏙️",
+    meaning: {
+      english: "Places around town",
+      tamil: "நகரத்தில் உள்ள இடங்கள்",
+      sinhala: "නගරයේ ස්ථාන",
+    },
+    tests: splitIntoTests(TOWN_LESSON_ID, TOWN_WORDS),
+  },
+  {
+    id: COMMUNICATION_LESSON_ID,
+    assetDir: "1.26 communication",
+    title: "Alltagssprache",
+    icon: "🗣️",
+    meaning: {
+      english: "Everyday communication",
+      tamil: "அன்றாட உரையாடல்",
+      sinhala: "එදිනෙදා කතාබහ",
+    },
+    tests: splitIntoTests(COMMUNICATION_LESSON_ID, COMMUNICATION_WORDS),
+  },
+  {
+    id: PREPOSITIONS_LESSON_ID,
+    assetDir: "1.27 prepositions",
+    title: "Präpositionen",
+    icon: "🧩",
+    meaning: {
+      english: "Important prepositions",
+      tamil: "முக்கிய முன்னிடைச் சொற்கள்",
+      sinhala: "වැදගත් පූර්ව නිපාත",
+    },
+    tests: splitIntoTests(PREPOSITIONS_LESSON_ID, PREPOSITIONS_WORDS),
+  },
+  {
+    id: POSITION_LESSON_ID,
+    assetDir: "1.28 position",
+    title: "Position & Ort",
+    icon: "📍",
+    meaning: {
+      english: "Position & location",
+      tamil: "இடம் & நிலை",
+      sinhala: "පිහිටීම සහ ස්ථානය",
+    },
+    tests: splitIntoTests(POSITION_LESSON_ID, POSITION_WORDS),
+  },
+  {
+    id: ADVERBS_LESSON_ID,
+    assetDir: "1.29 adverbs",
+    title: "Adverbien",
+    icon: "🧠",
+    meaning: {
+      english: "Basic adverbs",
+      tamil: "அடிப்படை வினையுரிச்சொற்கள்",
+      sinhala: "මූලික ක්‍රියා විශේෂණ",
+    },
+    tests: splitIntoTests(ADVERBS_LESSON_ID, ADVERBS_WORDS),
+  },
+  {
+    id: GRAMMAR_LESSON_ID,
+    assetDir: "1.30 grammar words",
+    title: "Pronomen & Co.",
+    icon: "🧱",
+    meaning: {
+      english: "Basic grammar words",
+      tamil: "அடிப்படை இலக்கணச் சொற்கள்",
+      sinhala: "මූලික ව්‍යාකරණ වචන",
+    },
+    tests: splitIntoTests(GRAMMAR_LESSON_ID, GRAMMAR_WORDS),
   },
 ];
 

@@ -1,27 +1,15 @@
-<!-- LOVABLE:BEGIN -->
-> [!IMPORTANT]
-> This project is connected to [Lovable](https://lovable.dev). Avoid rewriting
-> published git history — force pushing, or rebasing/amending/squashing commits
-> that are already pushed — as it rewrites history on Lovable's side and the
-> user will likely lose their project history.
->
-> Commits you push to the connected branch sync back to Lovable and show up in
-> the editor, so keep the branch in a working state.
-<!-- LOVABLE:END -->
-
 ## What this is
 
-WortWunder ("Deutsch Kids Fun") — a playful, Duolingo-inspired German vocabulary
-app for kids. Per the original brief this is a **UI-only prototype**: static/mock
-data, no backend, no database, no auth, no real APIs. It has since grown a
-`localStorage`-backed profile and PWA install flow, but still has no server-side
-persistence.
+WortWunder — a playful, Duolingo-inspired German vocabulary app for anyone
+preparing for the A1 exam (adults and kids). It started as a UI-only prototype
+and has no backend, database, auth or real APIs: progress and the profile live
+in `localStorage`, and it installs as a PWA.
 
 ## Commands
 
 This project uses **bun** (`bun.lock` is the real lockfile; `package-lock.json`
-exists but is gitignored and unused — ignore the `npm i` instructions in
-README.md, they're stale Lovable boilerplate).
+exists but is gitignored and unused). README.md is the public, marketing-style
+project page (audience: A1 exam learners of any age); dev details live here.
 
 ```sh
 bun install       # install deps
@@ -30,10 +18,12 @@ bun run build     # production build (nitro, Cloudflare target by default)
 bun run build:dev # build in development mode
 bun run preview   # preview a production build
 bun run lint      # eslint .
+bun run typecheck # tsc --noEmit
 bun run format    # prettier --write .
 ```
 
 There is no test framework configured — no test script, no vitest/jest dependency.
+CI (`.github/workflows/ci.yml`) runs lint, typecheck and build on every PR.
 
 ## Architecture
 
@@ -51,13 +41,11 @@ Vite 8 + Nitro.
   state machine (`Screen = "home" | "picture" | "build" | "listen"`) rather than
   separate route files. Profile (`{ name, age }`) is persisted to `localStorage`
   under the key `wortwunder:profile`.
-- **Vite config is mostly pre-baked**: `vite.config.ts` just wraps
-  `@lovable.dev/vite-tanstack-config`, which already registers TanStack devtools,
-  `tanstackStart`, `viteReact`, `tailwindcss`, `tsConfigPaths`, `nitro` (Cloudflare
-  build target by default), `VITE_*` env injection, the `@` alias, React/TanStack
-  dedupe, error-logger plugins, and sandbox port/host detection. Do not add any
-  of those plugins manually — it duplicates them and breaks the build. Extra
-  config goes through `defineConfig({ vite: {...}, tanstackStart: {...} })`.
+- **Vite config**: `vite.config.ts` is a plain Vite config that registers
+  `tailwindcss`, `tsConfigPaths`, `tanstackStart` (server entry redirected to
+  `src/server.ts`), `nitro` (build only, `cloudflare-module` preset by default)
+  and `viteReact`, plus the `@` alias and React/TanStack dedupe. Dev server runs
+  on port 8080.
 - **Error handling pipeline** spans several files and is easy to miss piecemeal:
   - `src/lib/error-capture.ts` monkey-patches `console.error` to expand
     `Error`/`cause`-chain objects into readable strings and stashes the most
@@ -73,10 +61,6 @@ Vite 8 + Nitro.
     `{"unhandled":true,"message":"HTTPError"}` JSON 500 (which bypasses normal
     try/catch) and substitutes the rendered error page, pulling the real error
     back out of `error-capture.ts`'s stash for logging.
-  - `src/lib/lovable-error-reporting.ts` forwards client-side error-boundary
-    catches to Lovable's in-editor telemetry hooks (`window.__lovableEvents`,
-    `window.__lovableReportRuntimeError`), which only exist inside the Lovable
-    preview iframe.
 - **PWA / install prompt**: `src/routes/__root.tsx` injects an inline
   pre-hydration `<script>` that captures the `beforeinstallprompt` event onto
   `window.__bip` before React has loaded, so the prompt isn't lost to a race

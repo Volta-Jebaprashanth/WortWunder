@@ -1,0 +1,40 @@
+name: 📚 Vocabulary fix
+description: Wrong article, spelling, translation, audio or picture
+labels: [vocabulary]
+body:
+  - type: input
+    id: lesson
+    attributes:
+      label: Lesson
+      placeholder: e.g. 1.2 Familie
+    validations:
+      required: true
+  - type: input
+    id: word
+    attributes:
+      label: Word
+      placeholder: e.g. der Mädchen
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What's wrong?
+      multiple: true
+      options:
+        - Article (der/die/das)
+        - German spelling
+        - English meaning
+        - Tamil meaning
+        - Sinhala meaning
+        - Pronunciation audio
+        - Picture
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Suggested correction
+      placeholder: e.g. "das Mädchen" — neuter, like all -chen nouns.
+    validations:
+      required: true

@@ -1,0 +1,245 @@
+import type { VocabWord } from "@/data/vocabulary";
+
+// Vocabulary for the "Alltagssprache" (everyday communication) lesson,
+// 1.26: the phrases people use all day. Most repeat lesson 1.1 and keep its
+// capitalisation, so they reuse its clips (spelling screens ignore case).
+// "klar" reuses the lesson 1.5 clip, but here it means "sure", so it gets a
+// new photo. The 28 words split into two tests of 14.
+//
+// Per-lesson asset layout (see AGENTS.md): this lesson's own audio/images
+// live under `public/1.26 communication/`, split into `audio/` (German filenames) and
+// `images/` (English filenames, independent of the German word). Images are
+// real Pexels photos (free to use, no attribution required) cropped to
+// 640x640; sources per file are in CREDITS.md. Words that were already taught
+// in an earlier lesson keep the same meanings (unless noted above), and their
+// photos are copied into this lesson's folder; their audio is the existing
+// clip, since WORD_AUDIO is keyed by the spoken text. Every screen also
+// captions the picture in the learner's mother tongue — see VocabQuiz.tsx.
+export const COMMUNICATION_LESSON_ID = "1.26";
+
+export const COMMUNICATION_WORDS: VocabWord[] = [
+  {
+    id: "hallo",
+    image: "/1.26 communication/images/hello.jpg",
+    full: "Hallo",
+    english: "Hello",
+    tamil: "வணக்கம்",
+    sinhala: "ආයුබෝවන්",
+  },
+  {
+    id: "guten-morgen",
+    image: "/1.26 communication/images/good-morning.jpg",
+    full: "Guten Morgen",
+    english: "Good morning",
+    tamil: "காலை வணக்கம்",
+    sinhala: "සුභ උදෑසනක්",
+  },
+  {
+    id: "guten-tag",
+    image: "/1.26 communication/images/good-day.jpg",
+    full: "Guten Tag",
+    english: "Good day",
+    tamil: "நல்ல பகல் வணக்கம்",
+    sinhala: "සුභ දවසක්",
+  },
+  {
+    id: "guten-abend",
+    image: "/1.26 communication/images/good-evening.jpg",
+    full: "Guten Abend",
+    english: "Good evening",
+    tamil: "மாலை வணக்கம்",
+    sinhala: "සුභ සන්ධ්‍යාවක්",
+  },
+  {
+    id: "gute-nacht",
+    image: "/1.26 communication/images/good-night.jpg",
+    full: "Gute Nacht",
+    english: "Good night",
+    tamil: "இனிய இரவு",
+    sinhala: "සුභ රාත්‍රියක්",
+  },
+  {
+    id: "tschuess",
+    image: "/1.26 communication/images/bye.jpg",
+    full: "Tschüss",
+    english: "Bye",
+    tamil: "பை பை",
+    sinhala: "බායි",
+  },
+  {
+    id: "auf-wiedersehen",
+    image: "/1.26 communication/images/goodbye.jpg",
+    full: "Auf Wiedersehen",
+    english: "Goodbye",
+    tamil: "மீண்டும் சந்திப்போம்",
+    sinhala: "නැවත හමුවෙමු",
+  },
+  {
+    id: "bitte",
+    image: "/1.26 communication/images/please.jpg",
+    full: "Bitte",
+    english: "Please",
+    tamil: "தயவுசெய்து",
+    sinhala: "කරුණාකර",
+  },
+  {
+    id: "danke",
+    image: "/1.26 communication/images/thank-you.jpg",
+    full: "Danke",
+    english: "Thank you",
+    tamil: "நன்றி",
+    sinhala: "ස්තූතියි",
+  },
+  {
+    id: "vielen-dank",
+    image: "/1.26 communication/images/many-thanks.jpg",
+    full: "Vielen Dank",
+    english: "Many thanks",
+    tamil: "மிக்க நன்றி",
+    sinhala: "බොහොම ස්තූතියි",
+  },
+  {
+    id: "gern-geschehen",
+    image: "/1.26 communication/images/youre-welcome.jpg",
+    full: "Gern geschehen",
+    english: "You're welcome",
+    tamil: "மகிழ்ச்சியுடன்",
+    sinhala: "සතුටින්",
+  },
+  {
+    id: "entschuldigung",
+    image: "/1.26 communication/images/excuse-me.jpg",
+    full: "Entschuldigung",
+    english: "Excuse me",
+    tamil: "மன்னிக்கவும்",
+    sinhala: "සමාවෙන්න",
+  },
+  {
+    id: "sorry",
+    image: "/1.26 communication/images/sorry.jpg",
+    full: "Sorry",
+    english: "Sorry",
+    tamil: "வருந்துகிறேன்",
+    sinhala: "කණගාටුයි",
+  },
+  {
+    id: "willkommen",
+    image: "/1.26 communication/images/welcome.jpg",
+    full: "Willkommen",
+    english: "Welcome",
+    tamil: "வரவேற்பு",
+    sinhala: "සාදරයෙන් පිළිගනිමු",
+  },
+  {
+    id: "natuerlich",
+    image: "/1.26 communication/images/of-course.jpg",
+    full: "Natürlich",
+    english: "Of course",
+    tamil: "நிச்சயமாக",
+    sinhala: "ඇත්තෙන්ම",
+  },
+  {
+    id: "genau",
+    image: "/1.26 communication/images/exactly.jpg",
+    full: "genau",
+    english: "Exactly",
+    tamil: "சரியாக",
+    sinhala: "හරියටම",
+  },
+  {
+    id: "vielleicht",
+    image: "/1.26 communication/images/maybe.jpg",
+    full: "vielleicht",
+    english: "Maybe",
+    tamil: "ஒருவேளை",
+    sinhala: "සමහරවිට",
+  },
+  {
+    id: "wirklich",
+    image: "/1.26 communication/images/really.jpg",
+    full: "wirklich",
+    english: "Really",
+    tamil: "உண்மையில்",
+    sinhala: "ඇත්තටම",
+  },
+  {
+    id: "sicher",
+    image: "/1.26 communication/images/sure.jpg",
+    full: "sicher",
+    english: "Sure / certain",
+    tamil: "உறுதியாக",
+    sinhala: "ස්ථිරයි",
+  },
+  {
+    id: "klar",
+    image: "/1.26 communication/images/sure-clear.jpg",
+    full: "klar",
+    english: "Sure / clear",
+    tamil: "தெளிவாக / சரி",
+    sinhala: "පැහැදිලියි / හරි",
+  },
+  {
+    id: "richtig",
+    image: "/1.26 communication/images/correct.jpg",
+    full: "Richtig",
+    english: "Correct",
+    tamil: "சரி",
+    sinhala: "නිවැරදියි",
+  },
+  {
+    id: "kein-problem",
+    image: "/1.26 communication/images/no-problem.jpg",
+    full: "Kein Problem",
+    english: "No problem",
+    tamil: "பிரச்சனை இல்லை",
+    sinhala: "ප්‍රශ්නයක් නැහැ",
+  },
+  {
+    id: "alles-klar",
+    image: "/1.26 communication/images/everything-okay.jpg",
+    full: "Alles klar",
+    english: "Everything okay",
+    tamil: "எல்லாம் சரி",
+    sinhala: "හැමදේම හරි",
+  },
+  {
+    id: "bis-spaeter",
+    image: "/1.26 communication/images/see-you-later.jpg",
+    full: "Bis später",
+    english: "See you later",
+    tamil: "பிறகு சந்திப்போம்",
+    sinhala: "පසුව හමුවෙමු",
+  },
+  {
+    id: "bis-morgen",
+    image: "/1.26 communication/images/see-you-tomorrow.jpg",
+    full: "Bis morgen",
+    english: "See you tomorrow",
+    tamil: "நாளை சந்திப்போம்",
+    sinhala: "හෙට හමුවෙමු",
+  },
+  {
+    id: "bis-bald",
+    image: "/1.26 communication/images/see-you-soon.jpg",
+    full: "Bis bald",
+    english: "See you soon",
+    tamil: "விரைவில் சந்திப்போம்",
+    sinhala: "ඉක්මනින් හමුවෙමු",
+  },
+  {
+    id: "viel-glueck",
+    image: "/1.26 communication/images/good-luck.jpg",
+    full: "Viel Glück",
+    english: "Good luck",
+    tamil: "நல்ல அதிர்ஷ்டம்",
+    sinhala: "ජය වේවා",
+  },
+  {
+    id: "gute-reise",
+    image: "/1.26 communication/images/have-a-good-trip.jpg",
+    full: "Gute Reise",
+    english: "Have a good trip",
+    tamil: "இனிய பயணம்",
+    sinhala: "සුභ ගමනක්",
+  },
+];

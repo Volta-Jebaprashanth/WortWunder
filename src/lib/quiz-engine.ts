@@ -75,14 +75,27 @@ export function shuffle<T>(arr: readonly T[]): T[] {
   return copy;
 }
 
-function chunk<T>(arr: T[], size: number): T[][] {
-  const out: T[][] = [];
-  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+// Two words a learner can't tell apart by spelling or sound: "sie" (she),
+// "sie" (they) and "Sie" (formal you) in lesson 1.30. Offering both as
+// options would make two answers right, so they never share a question.
+function sameSpelling(a: VocabWord, b: VocabWord): boolean {
+  return answerLetters(spellingOf(a)) === answerLetters(spellingOf(b));
+}
+
+// Splits the match words into groups of up to `size`, never putting two
+// same-spelling words in one group.
+function matchGroups(words: VocabWord[], size: number): VocabWord[][] {
+  const out: VocabWord[][] = [];
+  for (const word of words) {
+    const group = out.find((g) => g.length < size && !g.some((w) => sameSpelling(w, word)));
+    if (group) group.push(word);
+    else out.push([word]);
+  }
   return out;
 }
 
 function pickDistractorIds(words: VocabWord[], correct: VocabWord, count: number): string[] {
-  return shuffle(words.filter((w) => w.id !== correct.id))
+  return shuffle(words.filter((w) => w.id !== correct.id && !sameSpelling(w, correct)))
     .slice(0, count)
     .map((w) => w.id);
 }
@@ -128,7 +141,7 @@ export function buildRoundFromRows(rows: RowRef[], words: VocabWord[]): QuizItem
   const matchWords = shuffle(matchWordIds)
     .map((id) => byId[id])
     .filter((w): w is VocabWord => Boolean(w));
-  for (const group of chunk(matchWords, 5))
+  for (const group of matchGroups(matchWords, 5))
     items.push({ kind: "match", tier: "hard", words: group });
 
   return shuffle(items);

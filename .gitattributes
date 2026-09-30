@@ -1,0 +1,9 @@
+# Normalise line endings to LF everywhere (Prettier enforces LF, so CRLF
+# checkouts on Windows would otherwise fail `bun run lint`).
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.mp3 binary

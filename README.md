@@ -5,6 +5,11 @@
 
 **Master every word you need for the German A1 exam, one playful lesson at a time.**
 
+[![CI](https://github.com/Volta-Jebaprashanth/wortwunder/actions/workflows/ci.yml/badge.svg)](https://github.com/Volta-Jebaprashanth/wortwunder/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Live app](https://img.shields.io/badge/app-wortwunder.voltajeba.com-orange)](https://wortwunder.voltajeba.com/)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 Passing Goethe or ÖSD A1 starts with vocabulary. WortWunder turns the A1 word list
 into short, game-like sessions with real photos, native-sounding audio and a
 learning path that shows your progress. Finish a section and you'll know every word in it.
@@ -97,9 +102,10 @@ shadcn/ui, and uses [bun](https://bun.sh).
 
 ```sh
 bun install
-bun run dev      # start the dev server
-bun run build    # production build
-bun run lint     # lint
+bun run dev       # start the dev server
+bun run build     # production build
+bun run lint      # lint
+bun run typecheck # type-check
 ```
 
 Adding a new lesson takes a word-list file in `src/data/` and one entry in
@@ -110,6 +116,21 @@ asset conventions and audio/image workflow. Photo credits are listed in
 The first UI prototype was scaffolded with [Lovable](https://lovable.dev). Everything
 since, including the learning path, the tiered quiz engine, the A1 vocabulary,
 photos and audio, has been designed and built by hand.
+
+---
+
+## Contributing
+
+Spotted a wrong article or translation? Want a new lesson? Contributions are
+welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), and please follow our
+[Code of Conduct](CODE_OF_CONDUCT.md). To report a security issue, see
+[SECURITY.md](SECURITY.md).
+
+## License
+
+The code is released under the [MIT License](LICENSE). Photos are from
+[Pexels](https://www.pexels.com) and remain under the
+[Pexels License](https://www.pexels.com/license/); see [CREDITS.md](CREDITS.md).
 
 ---
 

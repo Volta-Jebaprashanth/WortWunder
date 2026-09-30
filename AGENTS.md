@@ -18,10 +18,12 @@ bun run build     # production build (nitro, Cloudflare target by default)
 bun run build:dev # build in development mode
 bun run preview   # preview a production build
 bun run lint      # eslint .
+bun run typecheck # tsc --noEmit
 bun run format    # prettier --write .
 ```
 
 There is no test framework configured — no test script, no vitest/jest dependency.
+CI (`.github/workflows/ci.yml`) runs lint, typecheck and build on every PR.
 
 ## Architecture
 

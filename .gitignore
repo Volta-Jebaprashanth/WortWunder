@@ -36,3 +36,7 @@ package-lock.json
 *.njsproj
 *.sln
 *.sw?
+
+# Local scratch files
+eslint_stderr.txt
+vite-pid.txt

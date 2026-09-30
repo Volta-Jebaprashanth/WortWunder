@@ -115,7 +115,7 @@ asset conventions and audio/image workflow. Photo credits are listed in
 
 The first UI prototype was scaffolded with [Lovable](https://lovable.dev). Everything
 since, including the learning path, the tiered quiz engine, the A1 vocabulary,
-photos and audio, has been designed and built by hand.
+photos and audio, has been designed and built by hand + claude code vibe coding.
 
 ---
 

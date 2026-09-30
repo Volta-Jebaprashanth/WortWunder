@@ -20,8 +20,22 @@ export interface VocabWord {
 }
 
 export const TIERE_WORDS: VocabWord[] = [
-  { id: "hund", image: "/images/animals/hund.png", full: "der Hund", english: "Dog", tamil: "நாய்", sinhala: "බල්ලා" },
-  { id: "katze", image: "/images/animals/katze.png", full: "die Katze", english: "Cat", tamil: "பூனை", sinhala: "පූසා" },
+  {
+    id: "hund",
+    image: "/images/animals/hund.png",
+    full: "der Hund",
+    english: "Dog",
+    tamil: "நாய்",
+    sinhala: "බල්ලා",
+  },
+  {
+    id: "katze",
+    image: "/images/animals/katze.png",
+    full: "die Katze",
+    english: "Cat",
+    tamil: "பூனை",
+    sinhala: "පූසා",
+  },
   {
     id: "vogel",
     image: "/images/animals/vogel.png",
@@ -37,7 +51,14 @@ export const TIERE_WORDS: VocabWord[] = [
       sinhala: "කුරුල්ලා ගී ගයනවා.",
     },
   },
-  { id: "pferd", image: "/images/animals/pferd.png", full: "das Pferd", english: "Horse", tamil: "குதிரை", sinhala: "අශ්වයා" },
+  {
+    id: "pferd",
+    image: "/images/animals/pferd.png",
+    full: "das Pferd",
+    english: "Horse",
+    tamil: "குதிரை",
+    sinhala: "අශ්වයා",
+  },
 ];
 
 export function wordMeaning(word: VocabWord, lang: MotherTongue): string {

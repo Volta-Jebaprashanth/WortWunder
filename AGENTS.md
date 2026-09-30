@@ -53,7 +53,7 @@ Vite 8 + Nitro.
   - `src/start.ts` installs server middleware: rethrows errors that already carry
     a `statusCode`, otherwise renders the fallback error page. It also defines
     `createCsrfMiddleware` explicitly — TanStack Start only auto-installs CSRF
-    protection for server functions when `src/start.ts` is *absent*, so defining
+    protection for server functions when `src/start.ts` is _absent_, so defining
     this file means CSRF must be re-added by hand (already done here — don't
     drop it).
   - `src/server.ts` is the Cloudflare Worker `fetch` entry. It specifically
@@ -169,6 +169,7 @@ Vite 8 + Nitro.
 
   `src/data/greetings.ts` and `public/1.1 greetings/` are the reference
   example (lesson 1.1) — follow the same layout for every new lesson.
+
 - **Lessons and tests**: a lesson (e.g. 1.2 Familie) is one word list; it is
   split into tests of **10–15 words each**, as evenly as possible, by
   `splitIntoTests` in `src/data/lessons.ts` — lesson 1.2's 37 words become

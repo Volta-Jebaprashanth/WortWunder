@@ -8,10 +8,10 @@ By taking part you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Ways to contribute
 
-- **Report a bug.** Open an issue with the *Bug report* template.
+- **Report a bug.** Open an issue with the _Bug report_ template.
 - **Fix vocabulary.** Found a wrong article, translation or spelling? Open an
-  issue with the *Vocabulary fix* template, or send a pull request.
-- **Suggest a feature.** Open an issue with the *Feature request* template
+  issue with the _Vocabulary fix_ template, or send a pull request.
+- **Suggest a feature.** Open an issue with the _Feature request_ template
   before starting large changes, so we can agree on the approach first.
 - **Improve translations.** Meanings are shown in English, Tamil and Sinhala.
   Native speakers checking these are especially valuable.

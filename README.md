@@ -56,13 +56,13 @@ bus or during a coffee break.
 Each test takes you through five tiers of difficulty. The next tier opens only
 after you've cleared the one before it:
 
-| Tier | What you do |
-| --- | --- |
-| 🌱 **Training** | Meet the word with its picture, sound and meaning |
-| ⭐ **Basic** | Match the word to the right picture |
-| 🟢 **Easy** | Picture → word, word → meaning, listen and choose |
-| 🟡 **Medium** | Fill in missing letters, listen → picture, translate |
-| 🔴 **Hard** | Spell it from scratch, spell what you hear, match pairs |
+| Tier            | What you do                                             |
+| --------------- | ------------------------------------------------------- |
+| 🌱 **Training** | Meet the word with its picture, sound and meaning       |
+| ⭐ **Basic**    | Match the word to the right picture                     |
+| 🟢 **Easy**     | Picture → word, word → meaning, listen and choose       |
+| 🟡 **Medium**   | Fill in missing letters, listen → picture, translate    |
+| 🔴 **Hard**     | Spell it from scratch, spell what you hear, match pairs |
 
 If you get a word wrong, it comes back until you get it right.
 
@@ -76,14 +76,14 @@ translation.
 
 ## What's inside
 
-| | |
-| --- | --- |
-| 📚 Lessons | 30 A1 topics |
-| 🔤 Words | 1,100+ |
-| 🧩 Exercise types | 11 |
-| 🗣️ Meaning languages | English · தமிழ் · සිංහල |
-| 📱 Platforms | Any browser, installable as an app on Android & iOS |
-| 💸 Price | Free, a non-profit learning project |
+|                      |                                                     |
+| -------------------- | --------------------------------------------------- |
+| 📚 Lessons           | 30 A1 topics                                        |
+| 🔤 Words             | 1,100+                                              |
+| 🧩 Exercise types    | 11                                                  |
+| 🗣️ Meaning languages | English · தமிழ் · සිංහල                             |
+| 📱 Platforms         | Any browser, installable as an app on Android & iOS |
+| 💸 Price             | Free, a non-profit learning project                 |
 
 ---
 

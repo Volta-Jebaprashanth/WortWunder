@@ -67,12 +67,6 @@ When you finish a section, you have practised every word in it: you've seen
 it, heard it, recognised it and spelled it. You know the word, not just its
 translation.
 
-### 4. Practise for the real exam
-
-The **ÖSD** section groups the same lessons under the topic names used in the
-exam, so you can revise by exam topic. Your progress is shared between both
-views.
-
 ---
 
 ## What's inside

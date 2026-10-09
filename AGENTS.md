@@ -5,6 +5,11 @@ preparing for the A1 exam (adults and kids). It started as a UI-only prototype
 and has no backend, database, auth or real APIs: progress and the profile live
 in `localStorage`, and it installs as a PWA.
 
+`ROADMAP.md` is the plan for growing it from a vocabulary trainer into a full
+A1 course ("Von Null auf A1"): decisions, data model and the milestone
+checklist. Read it before working on anything course-related, and tick off
+milestones there as they land.
+
 ## Commands
 
 This project uses **bun** (`bun.lock` is the real lockfile; `package-lock.json`

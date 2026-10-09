@@ -50,8 +50,7 @@ import type { MotherTongue, Strings } from "@/lib/i18n";
 // no easy-tier item ever appears while a basic row is outstanding, and
 // likewise medium waits on easy and hard on medium. The lesson keeps looping within (and then
 // across) tiers until every row is mastered (pending 0). Renders one item
-// at a time using the shared pieces from components/quiz/pieces.tsx instead
-// of the Vogel lesson's hand-written per-screen JSX in routes/index.tsx.
+// at a time using the shared pieces from components/quiz/pieces.tsx.
 function segmentRanges(segments: number[]) {
   let offset = 0;
   return segments.map((len) => {

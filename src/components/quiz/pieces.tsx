@@ -10,13 +10,8 @@ import { placeholderFor } from "@/lib/thumbhash";
 import type { MotherTongue, Strings } from "@/lib/i18n";
 import type { VocabWord } from "@/data/vocabulary";
 
-// Shared presentational building blocks for a lesson screen. Originally
-// written inline in routes/index.tsx for the (single, hardcoded) Vogel
-// lesson; extracted here so both that lesson and the data-driven Greetings
-// quiz (components/quiz/VocabQuiz.tsx) render from the same pieces
-// instead of forking the UI. Behavior for existing call sites is unchanged —
-// the only additions are optional props (icon fallbacks, tile grouping,
-// grid column count) that new call sites opt into.
+// Shared presentational building blocks for a lesson screen, used by the
+// data-driven vocabulary quiz (components/quiz/VocabQuiz.tsx).
 
 export function LessonFrame({
   t,
@@ -205,51 +200,6 @@ export function AnswerGrid({
           disabled={revealed}
           onClick={() => {
             if (speak) playWord(option);
-            onSelect(option);
-          }}
-          className={cn(
-            !revealed && selected === option && "border-primary bg-primary/10",
-            revealed &&
-              selected === option &&
-              option === correct &&
-              "border-success bg-success-soft",
-            revealed &&
-              selected === option &&
-              option !== correct &&
-              "border-destructive bg-danger-soft",
-          )}
-        >
-          {option}
-        </Button>
-      ))}
-    </div>
-  );
-}
-
-export function OptionGrid({
-  options,
-  selected,
-  correct,
-  revealed,
-  onSelect,
-  columns = 3,
-}: {
-  options: string[];
-  selected: string | null;
-  correct: string;
-  revealed: boolean;
-  onSelect: (answer: string) => void;
-  columns?: 2 | 3;
-}) {
-  return (
-    <div className={cn("grid gap-3", columns === 2 ? "grid-cols-2" : "grid-cols-3")}>
-      {options.map((option) => (
-        <Button
-          key={option}
-          variant="answer"
-          disabled={revealed}
-          onClick={() => {
-            playWord(option);
             onSelect(option);
           }}
           className={cn(

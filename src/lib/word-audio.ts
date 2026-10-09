@@ -1,5 +1,6 @@
 import { WORD_AUDIO } from "@/data/word-audio.generated";
 import { LETTER_AUDIO } from "@/data/letter-audio.generated";
+import { COURSE_AUDIO } from "@/data/course-audio.generated";
 
 // Playback goes through the Web Audio API rather than <audio> elements: clips
 // are fetched and decoded into memory ahead of time, so a tap starts the sound
@@ -20,6 +21,9 @@ interface Clip {
 export interface AudioNeeds {
   words: string[];
   letters: string[];
+  // Course sentence ids (see course-audio.generated.ts); both the normal and
+  // the slow clip are fetched.
+  sentenceIds?: string[];
 }
 
 const LOOKAHEAD_QUESTIONS = 3;
@@ -133,8 +137,12 @@ function enqueue(srcs: string[], front = false) {
   pump();
 }
 
-function srcsOf({ words, letters }: AudioNeeds): string[] {
+function srcsOf({ words, letters, sentenceIds = [] }: AudioNeeds): string[] {
   const srcs: string[] = [];
+  for (const id of sentenceIds) {
+    const clip = COURSE_AUDIO[id];
+    if (clip) srcs.push(clip.src, clip.slow);
+  }
   for (const word of words) {
     const src = WORD_AUDIO[word];
     if (src) srcs.push(src);
@@ -160,19 +168,14 @@ export function setAudioWindow(current: AudioNeeds, upcoming: AudioNeeds[]) {
   enqueue([...ordered, ...TITLE_SRCS]);
 }
 
-// For screens outside the quiz's window (the hand-written Vogel lesson):
-// fetch these clips ahead of anything already queued.
-export function preloadWords(words: string[]) {
-  enqueue(srcsOf({ words, letters: [] }), true);
-}
-
-export function preloadLetters(letters: string[]) {
-  enqueue(srcsOf({ words: [], letters }), true);
-}
-
 export function isWordReady(word: string): boolean {
   const src = WORD_AUDIO[word];
   return !src || clips.has(src);
+}
+
+export function isSentenceReady(sentenceId: string): boolean {
+  const clip = COURSE_AUDIO[sentenceId];
+  return !clip || clips.has(clip.src);
 }
 
 export function subscribeAudio(listener: () => void): () => void {
@@ -245,13 +248,22 @@ function playClip(src: string) {
   });
 }
 
-function speak(text: string) {
+function speak(text: string, rate = 0.78) {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "de-DE";
-  utterance.rate = 0.78;
+  utterance.rate = rate;
   window.speechSynthesis.speak(utterance);
+}
+
+// Plays a course sentence's recorded clip (see
+// scripts/generate-course-audio.ts), at normal speed or slowly. Falls back
+// to speech synthesis for a sentence whose audio hasn't been generated yet.
+export function playSentence(sentence: { id: string; german: string }, slow = false) {
+  const clip = COURSE_AUDIO[sentence.id];
+  if (clip) playClip(slow ? clip.slow : clip.src);
+  else speak(sentence.german, slow ? 0.5 : 0.78);
 }
 
 // Plays a recorded pronunciation for `word` if one has been generated

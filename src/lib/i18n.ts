@@ -88,6 +88,18 @@ export interface Strings {
   backToPath: string;
   expandSection: string;
   collapseSection: string;
+  comingSoon: string;
+  moreLessons: string;
+  tip: string;
+  buildMeaning: string;
+  buildGerman: string;
+  listenBuildSentence: string;
+  listenPickMeaning: string;
+  playSentence: string;
+  playSlowly: string;
+  exitLesson: string;
+  correctAnswer: string;
+  lessonScore: (right: number, total: number) => string;
 }
 
 export const TRANSLATIONS: Record<MotherTongue, Strings> = {
@@ -168,6 +180,18 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     backToPath: "Back to my path",
     expandSection: "Expand",
     collapseSection: "Collapse",
+    comingSoon: "Coming soon",
+    moreLessons: "More lessons",
+    tip: "Tip",
+    buildMeaning: "Tap the words to build the meaning.",
+    buildGerman: "Tap the words to build the German sentence.",
+    listenBuildSentence: "Listen, then tap the words you hear.",
+    listenPickMeaning: "Listen, then choose the meaning.",
+    playSentence: "Play the sentence",
+    playSlowly: "Play slowly",
+    exitLesson: "Leave the lesson",
+    correctAnswer: "Correct answer:",
+    lessonScore: (right, total) => `${right} of ${total} right first time`,
   },
   tamil: {
     openProfileMenu: "சுயவிவரப் பட்டியலைத் திற",
@@ -247,6 +271,18 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     backToPath: "என் பாதைக்குத் திரும்பு",
     expandSection: "விரிவாக்கு",
     collapseSection: "சுருக்கு",
+    comingSoon: "விரைவில் வருகிறது",
+    moreLessons: "மேலும் பாடங்கள்",
+    tip: "குறிப்பு",
+    buildMeaning: "பொருளை உருவாக்க சொற்களைத் தட்டவும்.",
+    buildGerman: "ஜெர்மன் வாக்கியத்தை உருவாக்க சொற்களைத் தட்டவும்.",
+    listenBuildSentence: "கேளுங்கள், பிறகு நீங்கள் கேட்ட சொற்களைத் தட்டவும்.",
+    listenPickMeaning: "கேளுங்கள், பிறகு பொருளைத் தேர்ந்தெடுங்கள்.",
+    playSentence: "வாக்கியத்தைக் கேள்",
+    playSlowly: "மெதுவாகக் கேள்",
+    exitLesson: "பாடத்திலிருந்து வெளியேறு",
+    correctAnswer: "சரியான விடை:",
+    lessonScore: (right, total) => `${total}-இல் ${right} முதல் முயற்சியிலேயே சரி`,
   },
   sinhala: {
     openProfileMenu: "පැතිකඩ මෙනුව විවෘත කරන්න",
@@ -325,5 +361,17 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     backToPath: "මගේ මාවතට ආපසු",
     expandSection: "විස්තීරණය කරන්න",
     collapseSection: "හකුළන්න",
+    comingSoon: "ළඟදීම පැමිණේ",
+    moreLessons: "තවත් පාඩම්",
+    tip: "ඉඟිය",
+    buildMeaning: "අර්ථය සෑදීමට වචන ඔබන්න.",
+    buildGerman: "ජර්මානු වාක්‍යය සෑදීමට වචන ඔබන්න.",
+    listenBuildSentence: "අහන්න, පසුව ඔබ ඇසූ වචන ඔබන්න.",
+    listenPickMeaning: "අහන්න, පසුව අර්ථය තෝරන්න.",
+    playSentence: "වාක්‍යය අහන්න",
+    playSlowly: "හෙමින් අහන්න",
+    exitLesson: "පාඩමෙන් ඉවත් වන්න",
+    correctAnswer: "නිවැරදි පිළිතුර:",
+    lessonScore: (right, total) => `${total}න් ${right}ක් පළමු වරම නිවැරදියි`,
   },
 };

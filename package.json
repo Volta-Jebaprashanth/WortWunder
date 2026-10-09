@@ -31,8 +31,11 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "format": "prettier --write .",
     "generate-audio": "node scripts/generate-audio.mjs",
+    "generate-course-audio": "bun scripts/generate-course-audio.ts",
+    "validate-course": "bun scripts/validate-course.ts",
     "generate-feedback-sounds": "node scripts/generate-feedback-sounds.mjs",
     "generate-image-placeholders": "python3 scripts/generate-image-placeholders.py"
   },
@@ -110,6 +113,7 @@
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
-    "vite": "8.1.5"
+    "vite": "8.1.5",
+    "vitest": "^5.0.3"
   }
 }

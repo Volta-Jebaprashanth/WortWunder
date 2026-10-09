@@ -229,19 +229,25 @@ interface CourseLesson {
   title: string; // German
   meaning: Record<MotherTongue, string>;
   newWords: string[]; // "<lessonId>/<wordId>"
-  steps: LessonStep[]; // authored order: tips, sentences, dialogues, tasks
+  sentences: Sentence[]; // written where they are taught
+  steps: LessonStep[]; // authored order: tips, words, sentences (later: dialogues, tasks)
 }
 
 interface CourseUnit {
   id: string; // "u01"
   title: string;
+  icon: string; // emoji on the path
   meaning: Record<MotherTongue, string>;
   canDo: Record<MotherTongue, string[]>; // shown on the unit card
+  notes: GrammarNote[];
   guidebook: string[]; // grammar note ids
+  dialogues: Dialogue[];
   lessons: CourseLesson[];
   checkpoint: string[]; // sentence and task ids drawn on for the unit test
 }
 ```
+
+The types as built live in `src/data/course/types.ts`.
 
 Rules:
 
@@ -249,9 +255,11 @@ Rules:
   them. To retire a sentence, delete it and leave the gap in the numbering.
 - Vocabulary is referenced as `<lessonId>/<wordId>` because word ids repeat
   across vocabulary lessons.
-- A validation script (`scripts/validate-course.mjs`) fails the build on:
-  duplicate ids, a missing translation, a gap index out of range, a
-  reference to an unknown word or sentence, a sentence with no audio file.
+- A validation script (`scripts/validate-course.ts`, run with bun so it can
+  read the TypeScript data; the checks are in `src/lib/course-validate.ts`)
+  fails the build on: duplicate ids, a missing translation, a gap index out
+  of range, a reference to an unknown word or sentence, a sentence with no
+  audio file.
 
 ## 9. Engine, progress and review
 
@@ -287,8 +295,9 @@ course calls the same `recordCorrectAnswer`.
 
 ## 10. Audio
 
-- `scripts/generate-audio.mjs` gains a course mode that reads every sentence
-  from `src/data/course/` and writes
+- `scripts/generate-course-audio.ts` (a separate script run with bun, since
+  `generate-audio.mjs` runs under node and cannot import the TypeScript
+  course data) reads every sentence from `src/data/course/` and writes
   `public/course/<unit>/audio/<sentenceId>.mp3` plus a manifest
   `src/data/course-audio.generated.ts`.
 - Two voices: `de-DE-KatjaNeural` (the current one) and a male German voice
@@ -300,6 +309,9 @@ course calls the same `recordCorrectAnswer`.
   manifest entries.
 - The service worker's audio cache cap (400 entries) is raised to fit the
   course.
+
+Measured on unit 1, lesson 1: about 41 KB per sentence for the normal and
+slow clip together, so 900 sentences come to roughly 37 MB.
 
 Expected size: roughly 30–50 MB of new audio. This is an estimate; measure
 after unit 1 and multiply.
@@ -335,7 +347,7 @@ to try.
 
 ### Stage A: prepare the ground
 
-- [ ] **E0. Restructure the home path.** Add the "Von Null auf A1" section
+- [x] **E0. Restructure the home path.** Add the "Von Null auf A1" section
       first (empty, marked "coming soon"), rename Grundlagen to Wortschatz,
       keep ÖSD third, delete the Testing section and the der Vogel
       walkthrough screens, point the "Start lesson" button at the learner's
@@ -344,31 +356,31 @@ to try.
       _Done when:_ the home screen shows the three sections in the new
       order, every vocabulary test still opens with its saved progress
       intact, and `index.tsx` no longer contains the Vogel screens.
-- [ ] **E1. Test tooling.** Add vitest, a `test` script and a CI step. Cover
+- [x] **E1. Test tooling.** Add vitest, a `test` script and a CI step. Cover
       `quiz-engine.ts` and `progress-store.ts` first, since they already
       exist and must not regress.
       _Done when:_ `bun run test` passes locally and in CI.
-- [ ] **E2. Line endings.** Make the Windows checkout lint clean (set
+- [x] **E2. Line endings.** Make the Windows checkout lint clean (set
       `eol=lf` in `.gitattributes` or `endOfLine: "auto"` in Prettier).
       _Done when:_ `bun run lint` passes on Windows.
 
 ### Stage B: a vertical slice (unit 1, lesson 1)
 
-- [ ] **E3. Course data model and validation.** Types from section 8,
-      `src/data/course/index.ts`, and `scripts/validate-course.mjs` wired
+- [x] **E3. Course data model and validation.** Types from section 8,
+      `src/data/course/index.ts`, and `scripts/validate-course.ts` wired
       into CI.
       _Done when:_ a deliberately broken sentence fails validation.
-- [ ] **C1a. Unit 1, lesson 1 content.** "Hallo und Tschüss": words,
+- [x] **C1a. Unit 1, lesson 1 content.** "Hallo und Tschüss": words,
       sentences and one tip in all three languages.
-- [ ] **E4. Sentence audio pipeline.** Course mode in `generate-audio.mjs`,
+- [x] **E4. Sentence audio pipeline.** `scripts/generate-course-audio.ts`,
       two voices, slow renderings, generated manifest.
       _Done when:_ every sentence of lesson 1 has a normal and a slow clip.
-- [ ] **E5. Course engine and store.** `course-engine.ts` and
+- [x] **E5. Course engine and store.** `course-engine.ts` and
       `course-store.ts` with tests, for the exercise types `bankToDe`,
       `bankFromDe`, `listenBank`, `listenPick`, `tip`, `newWord`.
       _Done when:_ tests cover queue building, answer checking, wrong-answer
       re-queueing and store reconciliation.
-- [ ] **E6. Lesson player.** Route, `LessonPlayer`, `WordBank`, `TipCard`,
+- [x] **E6. Lesson player.** Route, `LessonPlayer`, `WordBank`, `TipCard`,
       progress bar, end-of-lesson summary.
       _Done when:_ lesson 1 can be played start to finish on a phone, with
       audio, in each of the three languages.

@@ -74,7 +74,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "WortWunder" },
-      { name: "description", content: "A playful German vocabulary adventure for young learners." },
+      {
+        name: "description",
+        content: "A playful way to learn German for the A1 exam, for learners of any age.",
+      },
       { name: "author", content: "WortWunder" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

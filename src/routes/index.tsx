@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import {
   Check,
@@ -10,29 +10,12 @@ import {
   SquarePlus,
   Sparkles,
   Trash2,
-  Volume2,
   X,
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { playLetter, playWord, preloadLetters, preloadWords } from "@/lib/word-audio";
-import { playCorrectSound, playWrongSound } from "@/lib/feedback-sound";
-import {
-  AnswerGrid,
-  Continue,
-  LessonFrame,
-  LetterBuilder,
-  LetterOptions,
-  MatchPairs,
-  OptionGrid,
-  Picture,
-  PictureOptions,
-  ResultCard,
-  TrainingCard,
-  WordCard,
-} from "@/components/quiz/pieces";
 import { VocabQuiz } from "@/components/quiz/VocabQuiz";
 import { TierSteps } from "@/components/quiz/TierSteps";
 import { getTestStatus, type TestStatus } from "@/lib/progress-store";
@@ -42,11 +25,16 @@ import {
   getSparks,
   getTodayMinutes,
   notifyStats,
-  recordCorrectAnswer,
   startActiveTimeTracking,
   subscribeStats,
 } from "@/lib/stats-store";
-import type { Tier } from "@/lib/quiz-engine";
+import {
+  COURSE_MEANING,
+  COURSE_TITLE,
+  COURSE_UNITS,
+  courseIds,
+  type CourseUnit,
+} from "@/data/course";
 import {
   findVocabLesson,
   findVocabTest,
@@ -61,11 +49,11 @@ import { WEATHER_LESSON_ID } from "@/data/weather";
 import { HOBBIES_LESSON_ID } from "@/data/hobbies";
 import { JOBS_LESSON_ID } from "@/data/jobs";
 import { FOOD_LESSON_ID } from "@/data/food";
-import { TIERE_WORDS, type VocabWord } from "@/data/vocabulary";
 import { MOTHER_TONGUES, TRANSLATIONS, type MotherTongue, type Strings } from "@/lib/i18n";
 
-const PROFILE_KEY = "wortwunder:profile";
-type Profile = { name: string; age: string; motherTongue: MotherTongue };
+import { readProfile, writeProfile, type Profile } from "@/lib/profile";
+import { requestFullscreen } from "@/lib/fullscreen";
+import { getFinishedLessonIds, reconcileCourse } from "@/lib/course-store";
 
 interface InstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -75,16 +63,16 @@ interface InstallPromptEvent extends Event {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "WortWunder — German vocabulary for kids" },
+      { title: "WortWunder — learn German for the A1 exam" },
       {
         name: "description",
         content:
           "Learn beginner German words through playful picture, spelling, and listening lessons.",
       },
-      { property: "og:title", content: "WortWunder — German vocabulary for kids" },
+      { property: "og:title", content: "WortWunder — learn German for the A1 exam" },
       {
         property: "og:description",
-        content: "A playful German vocabulary adventure for young learners.",
+        content: "A playful way to learn German for the A1 exam, for learners of any age.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -93,33 +81,11 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type Screen =
-  | "home"
-  | "quiz"
-  | "training"
-  | "trainingCheck"
-  | "picture"
-  | "wordPicture"
-  | "meaning"
-  | "translate"
-  | "article"
-  | "build"
-  | "missing"
-  | "unscramble"
-  | "listen"
-  | "listenPicture"
-  | "listenBuild"
-  | "match";
+type Screen = "home" | "quiz";
 
 function Index() {
   const [screen, setScreen] = useState<Screen>("home");
   const [activeTest, setActiveTest] = useState<VocabTest | null>(null);
-  const [answer, setAnswer] = useState<string | null>(null);
-  const [letters, setLetters] = useState<number[]>([]);
-  const [heard, setHeard] = useState(false);
-  const [checked, setChecked] = useState(false);
-  const [lastCorrect, setLastCorrect] = useState(false);
-  const [attempts, setAttempts] = useState(0);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileChecked, setProfileChecked] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
@@ -129,85 +95,15 @@ function Index() {
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const lang: MotherTongue = profile?.motherTongue ?? "english";
   const t = TRANSLATIONS[lang];
-  const letterTiles = useMemo(() => ["G", "V", "O", "L", "E", "O"], []);
-  const unscrambleTiles = useMemo(() => ["L", "O", "G", "E", "V"], []);
-  const listenBuildTiles = useMemo(() => ["E", "V", "L", "O", "G"], []);
-  const missingLetterOptions = useMemo(() => ["O", "A", "U", "I"], []);
-  const vogel = useMemo(() => TIERE_WORDS.find((w) => w.id === "vogel")!, []);
-  const meaningOptions = useMemo(() => TIERE_WORDS.map((w) => w[lang]), [lang]);
-  const translateOptions = useMemo(() => TIERE_WORDS.map((w) => w.full), []);
-  const pictureOptions = useMemo(
-    () => TIERE_WORDS.map((w) => ({ id: w.id, image: w.image, label: w[lang] })),
-    [lang],
-  );
+  const navigate = useNavigate();
   // Server snapshot is 0 (icon only) — localStorage isn't visible there.
   const gems = useSyncExternalStore(subscribeStats, getGems, () => 0);
   const sparks = useSyncExternalStore(subscribeStats, getSparks, () => 0);
 
   useEffect(() => startActiveTimeTracking(), []);
 
-  // Fetch a screen's word/letter clips as soon as it mounts, so tapping a
-  // tile plays instantly instead of waiting on the network the first time.
   useEffect(() => {
-    switch (screen) {
-      case "picture":
-      case "listen":
-        preloadWords(["der Hund", "der Vogel", "das Pferd", "die Katze"]);
-        break;
-      case "training":
-        preloadWords(["der Vogel", "Der Vogel singt."]);
-        break;
-      case "trainingCheck":
-      case "wordPicture":
-      case "listenPicture":
-        preloadWords(["der Vogel"]);
-        break;
-      case "translate":
-        preloadWords(translateOptions);
-        break;
-      case "article":
-        preloadWords(["der", "die", "das"]);
-        break;
-      case "build":
-        preloadLetters(letterTiles);
-        break;
-      case "missing":
-        preloadLetters(missingLetterOptions);
-        break;
-      case "unscramble":
-        preloadLetters(unscrambleTiles);
-        break;
-      case "listenBuild":
-        preloadWords(["der Vogel"]);
-        preloadLetters(listenBuildTiles);
-        break;
-      case "match":
-        preloadWords(TIERE_WORDS.map((w) => w.full));
-        break;
-    }
-  }, [
-    screen,
-    translateOptions,
-    letterTiles,
-    missingLetterOptions,
-    unscrambleTiles,
-    listenBuildTiles,
-  ]);
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(PROFILE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as Partial<Profile>;
-        setProfile({
-          name: parsed.name ?? "",
-          age: parsed.age ?? "",
-          motherTongue: parsed.motherTongue ?? "english",
-        });
-      }
-    } catch {
-      /* localStorage unavailable — treat as no saved profile */
-    }
+    setProfile(readProfile());
     setProfileChecked(true);
     setInstalled(
       window.matchMedia("(display-mode: standalone)").matches ||
@@ -254,11 +150,7 @@ function Index() {
   }, []);
 
   const saveProfile = (next: Profile) => {
-    try {
-      localStorage.setItem(PROFILE_KEY, JSON.stringify(next));
-    } catch {
-      /* localStorage unavailable — profile still works for this session */
-    }
+    writeProfile(next);
     setProfile(next);
   };
 
@@ -288,86 +180,17 @@ function Index() {
       /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
     if (isIOS) setShowInstallHelp(true);
   };
-  // Opens with the Training level (an intro screen teaching the word, then
-  // one word-to-picture check), then mirrors quiz-engine.ts's TEST_TIERS
-  // grouping (easy -> medium -> hard) so
-  // this hand-written walkthrough exercises the same difficulty order as
-  // the data-driven VocabQuiz. "match" stays last regardless of tier —
-  // MatchPairs always exits via its own onComplete straight to "home"
-  // rather than through this sequence, so anything placed after it here
-  // would be unreachable.
-  const sequence: Screen[] = [
-    "home",
-    "training",
-    "trainingCheck",
-    "picture",
-    "wordPicture",
-    "meaning",
-    "listen",
-    "article",
-    "missing",
-    "listenPicture",
-    "translate",
-    "unscramble",
-    "listenBuild",
-    "build",
-    "match",
-  ];
-  const step = sequence.indexOf(screen);
-
-  const go = (next: Screen) => {
-    setAnswer(null);
-    setLetters([]);
-    setHeard(false);
-    setChecked(false);
-    setAttempts(0);
-    setScreen(next);
+  const go = setScreen;
+  const startTest = (testId: string) => {
+    const test = findVocabTest(testId);
+    if (!test) return;
+    requestFullscreen();
+    setActiveTest(test);
+    go("quiz");
   };
-  const checkAnswer = (isCorrect: boolean) => {
-    setChecked(true);
-    setLastCorrect(isCorrect);
-    if (isCorrect) {
-      recordCorrectAnswer();
-      playCorrectSound();
-    } else {
-      playWrongSound();
-      setAttempts((a) => a + 1);
-    }
-  };
-  const retry = () => {
-    setChecked(false);
-    setAnswer(null);
-    setLetters([]);
-  };
-  const startLesson = (nodeId: string) => {
-    if (typeof document !== "undefined") {
-      const root = document.documentElement as HTMLElement & {
-        webkitRequestFullscreen?: () => Promise<void> | void;
-        mozRequestFullScreen?: () => Promise<void> | void;
-        msRequestFullscreen?: () => Promise<void> | void;
-      };
-      const request =
-        root.requestFullscreen ??
-        root.webkitRequestFullscreen ??
-        root.mozRequestFullScreen ??
-        root.msRequestFullscreen;
-      try {
-        request?.call(root)?.catch?.(() => {});
-      } catch {
-        /* fullscreen unsupported (e.g. iOS Safari) — layout still fills the viewport */
-      }
-    }
-    const test = findVocabTest(nodeId);
-    if (test) {
-      setActiveTest(test);
-      go("quiz");
-    } else {
-      go("training");
-    }
-  };
-  const speak = () => {
-    setHeard(true);
-    playWord("der Vogel");
+  const startCourseLesson = (unitId: string, lessonId: string) => {
+    requestFullscreen();
+    void navigate({ to: "/kurs/$unitId/$lessonId", params: { unitId, lessonId } });
   };
 
   return (
@@ -417,395 +240,11 @@ function Index() {
             <Home
               t={t}
               lang={lang}
-              onStart={startLesson}
+              onStart={startTest}
+              onStartLesson={startCourseLesson}
               name={profile?.name}
               showInstall={!installed}
               onAddToHomeScreen={addToHomeScreen}
-            />
-          )}
-
-          {screen === "picture" && (
-            <LessonFrame
-              t={t}
-              eyebrow={t.pictureChallenge}
-              title="Was ist das?"
-              subtitle={t.chooseGermanWordForPicture}
-            >
-              <Picture src={vogel.image} alt={vogel.full} caption={vogel[lang]} />
-              <AnswerGrid
-                options={["der Hund", "der Vogel", "das Pferd", "die Katze"]}
-                selected={answer}
-                correct="der Vogel"
-                revealed={checked}
-                onSelect={setAnswer}
-              />
-              {!checked && (
-                <Continue
-                  t={t}
-                  disabled={!answer}
-                  onClick={() => checkAnswer(answer === "der Vogel")}
-                />
-              )}
-            </LessonFrame>
-          )}
-
-          {screen === "training" && (
-            <TrainingCard t={t} lang={lang} word={vogel} onContinue={() => go("trainingCheck")} />
-          )}
-
-          {(screen === "wordPicture" || screen === "trainingCheck") && (
-            <LessonFrame
-              t={t}
-              eyebrow={
-                screen === "trainingCheck"
-                  ? `${t.training} · ${t.wordPictureChallenge}`
-                  : t.wordPictureChallenge
-              }
-              title="Welches Bild ist das?"
-              subtitle={t.chooseGermanPictureForWord}
-            >
-              <WordCard t={t} text="der Vogel" speak />
-              <PictureOptions
-                options={pictureOptions}
-                selected={answer}
-                correct="vogel"
-                revealed={checked}
-                onSelect={setAnswer}
-              />
-              {!checked && (
-                <Continue
-                  t={t}
-                  disabled={!answer}
-                  onClick={() => checkAnswer(answer === "vogel")}
-                />
-              )}
-            </LessonFrame>
-          )}
-
-          {screen === "meaning" && (
-            <LessonFrame
-              t={t}
-              eyebrow={t.meaningCheck}
-              title="Was bedeutet das?"
-              subtitle={t.chooseMeaning}
-            >
-              <WordCard t={t} text="der Vogel" speak />
-              <AnswerGrid
-                options={meaningOptions}
-                selected={answer}
-                correct={vogel[lang]}
-                revealed={checked}
-                onSelect={setAnswer}
-                speak={false}
-              />
-              {!checked && (
-                <Continue
-                  t={t}
-                  disabled={!answer}
-                  onClick={() => checkAnswer(answer === vogel[lang])}
-                />
-              )}
-            </LessonFrame>
-          )}
-
-          {screen === "translate" && (
-            <LessonFrame
-              t={t}
-              eyebrow={t.translationChallenge}
-              title="Wie sagt man das auf Deutsch?"
-              subtitle={t.chooseGermanWord}
-            >
-              <WordCard t={t} text={vogel[lang]} />
-              <AnswerGrid
-                options={translateOptions}
-                selected={answer}
-                correct="der Vogel"
-                revealed={checked}
-                onSelect={setAnswer}
-              />
-              {!checked && (
-                <Continue
-                  t={t}
-                  disabled={!answer}
-                  onClick={() => checkAnswer(answer === "der Vogel")}
-                />
-              )}
-            </LessonFrame>
-          )}
-
-          {screen === "article" && (
-            <LessonFrame
-              t={t}
-              eyebrow={t.articleChallenge}
-              title="Welcher Artikel passt?"
-              subtitle={t.chooseCorrectArticle}
-            >
-              <Picture src={vogel.image} alt={vogel.full} caption={vogel[lang]} />
-              <div className="my-5 flex items-center justify-center gap-2">
-                <span
-                  className={cn(
-                    "grid h-12 min-w-20 place-items-center rounded-xl px-3 font-display text-xl font-extrabold",
-                    "border-2 bg-glass",
-                    !checked && "border-dashed border-ring/50",
-                    checked && lastCorrect && "border-success text-success",
-                    checked && !lastCorrect && "border-destructive text-destructive",
-                  )}
-                >
-                  {checked ? (answer ?? "___") : "___"}
-                </span>
-                <span className="font-display text-xl font-extrabold">Vogel</span>
-              </div>
-              <OptionGrid
-                options={["der", "die", "das"]}
-                selected={answer}
-                correct="der"
-                revealed={checked}
-                onSelect={setAnswer}
-              />
-              {!checked && (
-                <Continue t={t} disabled={!answer} onClick={() => checkAnswer(answer === "der")} />
-              )}
-            </LessonFrame>
-          )}
-
-          {screen === "build" && (
-            <LessonFrame
-              t={t}
-              eyebrow={t.wordBuilder}
-              title="Baue das Wort"
-              subtitle={t.tapLettersToSpell("Vogel")}
-            >
-              <Picture src={vogel.image} alt={vogel.full} caption={vogel[lang]} />
-              <LetterBuilder
-                t={t}
-                answerLength={5}
-                tiles={letterTiles}
-                letters={letters}
-                disabled={checked}
-                onTapTile={(i, letter) => {
-                  playLetter(letter);
-                  setLetters((old) => [...old, i]);
-                }}
-                onReset={() => setLetters([])}
-              />
-              {!checked && (
-                <Continue
-                  t={t}
-                  disabled={letters.length !== 5}
-                  onClick={() =>
-                    checkAnswer(letters.map((i) => letterTiles[i]).join("") === "VOGEL")
-                  }
-                />
-              )}
-            </LessonFrame>
-          )}
-
-          {screen === "missing" && (
-            <LessonFrame
-              t={t}
-              eyebrow={t.missingLetter}
-              title="Welcher Buchstabe fehlt?"
-              subtitle={t.pickLetterThatCompletes}
-            >
-              <Picture src={vogel.image} alt={vogel.full} caption={vogel[lang]} />
-              <div className="my-5 flex justify-center gap-2">
-                {["V", checked ? (answer ?? "_") : "_", "G", "E", "L"].map((ch, i) => (
-                  <span
-                    key={i}
-                    className={cn(
-                      "grid size-12 place-items-center rounded-xl font-display text-xl font-extrabold",
-                      i === 1
-                        ? cn(
-                            "border-2 bg-glass",
-                            !checked && "border-dashed border-ring/50",
-                            checked && lastCorrect && "border-success text-success",
-                            checked && !lastCorrect && "border-destructive text-destructive",
-                          )
-                        : "bg-card ring-1 ring-border",
-                    )}
-                  >
-                    {ch}
-                  </span>
-                ))}
-              </div>
-              <LetterOptions
-                options={missingLetterOptions}
-                selected={answer}
-                correct="O"
-                revealed={checked}
-                onSelect={setAnswer}
-              />
-              {!checked && (
-                <Continue t={t} disabled={!answer} onClick={() => checkAnswer(answer === "O")} />
-              )}
-            </LessonFrame>
-          )}
-
-          {screen === "unscramble" && (
-            <LessonFrame
-              t={t}
-              eyebrow={t.unscramble}
-              title="Ordne die Buchstaben"
-              subtitle={t.arrangeLetters}
-            >
-              <Picture src={vogel.image} alt={vogel.full} caption={vogel[lang]} />
-              <LetterBuilder
-                t={t}
-                answerLength={5}
-                tiles={unscrambleTiles}
-                letters={letters}
-                disabled={checked}
-                onTapTile={(i, letter) => {
-                  playLetter(letter);
-                  setLetters((old) => [...old, i]);
-                }}
-                onReset={() => setLetters([])}
-              />
-              {!checked && (
-                <Continue
-                  t={t}
-                  disabled={letters.length !== 5}
-                  onClick={() =>
-                    checkAnswer(letters.map((i) => unscrambleTiles[i]).join("") === "VOGEL")
-                  }
-                />
-              )}
-            </LessonFrame>
-          )}
-
-          {screen === "listen" && (
-            <LessonFrame
-              t={t}
-              eyebrow={t.listeningChallenge}
-              title="Was hörst du?"
-              subtitle={t.listenThenChoose}
-            >
-              <div className="my-5 flex justify-center">
-                <Button
-                  onClick={speak}
-                  className="size-24 rounded-full bg-berry text-primary-foreground shadow-[0_8px_0_var(--primary-shadow)] hover:bg-berry/90 active:translate-y-1 active:shadow-none"
-                  aria-label={t.playGermanWord}
-                >
-                  <Volume2 className="size-10" />
-                </Button>
-              </div>
-              {heard && (
-                <p className="mb-4 text-center text-sm font-bold text-ink-soft">{t.listenAgain}</p>
-              )}
-              <AnswerGrid
-                options={["der Hund", "der Vogel", "das Pferd", "die Katze"]}
-                selected={answer}
-                correct="der Vogel"
-                revealed={checked}
-                onSelect={setAnswer}
-              />
-              {!checked && (
-                <Continue
-                  t={t}
-                  disabled={!answer}
-                  onClick={() => checkAnswer(answer === "der Vogel")}
-                />
-              )}
-            </LessonFrame>
-          )}
-
-          {screen === "listenPicture" && (
-            <LessonFrame
-              t={t}
-              eyebrow={t.listeningChallenge}
-              title="Welches Bild hörst du?"
-              subtitle={t.listenThenTapPicture}
-            >
-              <div className="my-5 flex justify-center">
-                <Button
-                  onClick={speak}
-                  className="size-24 rounded-full bg-berry text-primary-foreground shadow-[0_8px_0_var(--primary-shadow)] hover:bg-berry/90 active:translate-y-1 active:shadow-none"
-                  aria-label={t.playGermanWord}
-                >
-                  <Volume2 className="size-10" />
-                </Button>
-              </div>
-              {heard && (
-                <p className="mb-4 text-center text-sm font-bold text-ink-soft">{t.listenAgain}</p>
-              )}
-              <PictureOptions
-                options={pictureOptions}
-                selected={answer}
-                correct="vogel"
-                revealed={checked}
-                onSelect={setAnswer}
-              />
-              {!checked && (
-                <Continue
-                  t={t}
-                  disabled={!answer}
-                  onClick={() => checkAnswer(answer === "vogel")}
-                />
-              )}
-            </LessonFrame>
-          )}
-
-          {screen === "listenBuild" && (
-            <LessonFrame
-              t={t}
-              eyebrow={t.listeningChallenge}
-              title="Baue das Wort"
-              subtitle={t.listenThenSpell}
-            >
-              <div className="my-5 flex justify-center">
-                <Button
-                  onClick={speak}
-                  className="size-24 rounded-full bg-berry text-primary-foreground shadow-[0_8px_0_var(--primary-shadow)] hover:bg-berry/90 active:translate-y-1 active:shadow-none"
-                  aria-label={t.playGermanWord}
-                >
-                  <Volume2 className="size-10" />
-                </Button>
-              </div>
-              {heard && (
-                <p className="mb-4 text-center text-sm font-bold text-ink-soft">{t.listenAgain}</p>
-              )}
-              <LetterBuilder
-                t={t}
-                answerLength={5}
-                tiles={listenBuildTiles}
-                letters={letters}
-                disabled={checked}
-                onTapTile={(i, letter) => {
-                  playLetter(letter);
-                  setLetters((old) => [...old, i]);
-                }}
-                onReset={() => setLetters([])}
-              />
-              {!checked && (
-                <Continue
-                  t={t}
-                  disabled={letters.length !== 5}
-                  onClick={() =>
-                    checkAnswer(letters.map((i) => listenBuildTiles[i]).join("") === "VOGEL")
-                  }
-                />
-              )}
-            </LessonFrame>
-          )}
-
-          {screen === "match" && (
-            <LessonFrame
-              t={t}
-              eyebrow={t.roundUp}
-              title="Finde die Paare"
-              subtitle={t.matchWordsToMeaning}
-            >
-              <MatchPairs t={t} lang={lang} words={TIERE_WORDS} onComplete={() => go("home")} />
-            </LessonFrame>
-          )}
-
-          {checked && screen !== "home" && (
-            <ResultCard
-              correct={lastCorrect}
-              correctText={t.correctMeaning("der Vogel", vogel[lang])}
-              hint={attempts >= 2 ? t.hintBird : undefined}
-              actionLabel={lastCorrect ? "Weiter" : t.tryAgain}
-              onAction={lastCorrect ? () => go(sequence[step + 1] ?? "home") : retry}
             />
           )}
         </main>
@@ -864,8 +303,12 @@ type PathNode = {
   id: string;
   title: string;
   icon: React.ReactNode;
-  state: "done" | "active";
+  // "soon" marks something that isn't playable yet (the course lessons still
+  // to be written): shown muted, with "coming soon" in its meaning line.
+  state: "done" | "active" | "soon";
   meaning: string;
+  // The course lesson this node opens, if any.
+  lesson?: { unitId: string; lessonId: string };
   // The VocabQuiz test this node opens, if any — drives its tier badge and
   // completed tick (see getTestStatus).
   testId?: string;
@@ -899,7 +342,7 @@ function collectTestIds(nodes: PathNode[]): string[] {
 }
 
 // A vocab lesson as a path node, expanding to its numbered tests. ÖSD lists
-// some Grundlagen lessons again under its own title: those copies get an
+// some Wortschatz lessons again under its own title: those copies get an
 // id prefix (node ids must be unique in the tree) but open the same tests,
 // so progress is shared between both places.
 function lessonPathNode(
@@ -926,7 +369,27 @@ function lessonPathNode(
   };
 }
 
-// Grundlagen lessons repeated under the ÖSD section, optionally renamed.
+// A course unit as a path node, expanding to its lessons. A unit is done
+// once every one of its lessons is finished (see course-store.ts).
+function unitPathNode(unit: CourseUnit, lang: MotherTongue, finished: Set<string>): PathNode {
+  return {
+    id: `kurs-${unit.id}`,
+    title: unit.title,
+    icon: unit.icon,
+    state: unit.lessons.every((lesson) => finished.has(lesson.id)) ? "done" : "active",
+    meaning: unit.meaning[lang],
+    children: unit.lessons.map((lesson) => ({
+      id: `kurs-${lesson.id}`,
+      title: lesson.title,
+      icon: unit.icon,
+      state: finished.has(lesson.id) ? "done" : "active",
+      meaning: lesson.meaning[lang],
+      lesson: { unitId: unit.id, lessonId: lesson.id },
+    })),
+  };
+}
+
+// Wortschatz lessons repeated under the ÖSD section, optionally renamed.
 const OESD_LESSONS: {
   lessonId: string;
   title?: string;
@@ -951,16 +414,37 @@ const OESD_LESSONS: {
 ];
 
 const PATH_MEANINGS = {
-  grundlagen: { english: "Basics", tamil: "அடிப்படைகள்", sinhala: "මූලික කරුණු" },
+  wortschatz: { english: "Vocabulary", tamil: "சொற்களஞ்சியம்", sinhala: "වචන මාලාව" },
   oesd: { english: "ÖSD exam", tamil: "ÖSD தேர்வு", sinhala: "ÖSD විභාගය" },
-  testing: { english: "Testing", tamil: "சோதனை", sinhala: "පරීක්ෂණ" },
-  tiere: { english: "Animals", tamil: "விலங்குகள்", sinhala: "සතුන්" },
 } satisfies Record<string, Record<MotherTongue, string>>;
+
+// What the "Start lesson" button opens. The course comes first: its first
+// unfinished lesson. Once the course lessons written so far are done, it is
+// the vocabulary test the learner is partway through if there is one,
+// otherwise the first one not finished yet. With everything finished it
+// falls back to the first test, for practice.
+function nextCourseLesson(finished: Set<string>) {
+  for (const unit of COURSE_UNITS) {
+    const lesson = unit.lessons.find((l) => !finished.has(l.id));
+    if (lesson) return { unitId: unit.id, lessonId: lesson.id };
+  }
+  return undefined;
+}
+
+function nextTestId(statuses: Record<string, TestStatus>): string | undefined {
+  const testIds = VOCAB_LESSONS.flatMap((lesson) => lesson.tests.map((test) => test.testId));
+  return (
+    testIds.find((id) => statuses[id]?.kind === "inProgress") ??
+    testIds.find((id) => statuses[id]?.kind !== "completed") ??
+    testIds[0]
+  );
+}
 
 function Home({
   t,
   lang,
   onStart,
+  onStartLesson,
   name,
   showInstall,
   onAddToHomeScreen,
@@ -968,6 +452,7 @@ function Home({
   t: Strings;
   lang: MotherTongue;
   onStart: (nodeId: string) => void;
+  onStartLesson: (unitId: string, lessonId: string) => void;
   name?: string | undefined;
   showInstall: boolean;
   onAddToHomeScreen: () => void;
@@ -975,14 +460,38 @@ function Home({
   const todayMinutes = useSyncExternalStore(subscribeStats, getTodayMinutes, () => 0);
   const goalMinutes = DAILY_GOAL_SECONDS / 60;
   const goalReached = todayMinutes >= goalMinutes;
+  // Read after mount, like `statuses` below: course progress lives in
+  // localStorage, which the server render can't see.
+  const [finishedLessons, setFinishedLessons] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    reconcileCourse(courseIds());
+    setFinishedLessons(new Set(getFinishedLessonIds()));
+  }, []);
   const path = useMemo<PathNode[]>(
     () => [
       {
-        id: "grundlagen",
-        title: "Grundlagen",
+        id: "kurs",
+        title: COURSE_TITLE,
+        icon: "🎓",
+        state: "active",
+        meaning: COURSE_MEANING[lang],
+        children: [
+          ...COURSE_UNITS.map((unit) => unitPathNode(unit, lang, finishedLessons)),
+          {
+            id: "kurs-more",
+            title: "Mehr Lektionen",
+            icon: "⏳",
+            state: "soon",
+            meaning: `${t.moreLessons} · ${t.comingSoon}`,
+          },
+        ],
+      },
+      {
+        id: "wortschatz",
+        title: "Wortschatz",
         icon: "🔤",
         state: "active",
-        meaning: PATH_MEANINGS.grundlagen[lang],
+        meaning: PATH_MEANINGS.wortschatz[lang],
         children: VOCAB_LESSONS.map((lesson) => lessonPathNode(lesson, lang)),
       },
       {
@@ -999,29 +508,17 @@ function Home({
           }),
         ),
       },
-      {
-        id: "testing",
-        title: "Testing",
-        icon: "🧪",
-        state: "active",
-        meaning: PATH_MEANINGS.testing[lang],
-        children: [
-          {
-            id: "tiere",
-            title: "Tiere",
-            icon: "🐕",
-            state: "active",
-            meaning: PATH_MEANINGS.tiere[lang],
-          },
-        ],
-      },
     ],
-    [lang],
+    [lang, t, finishedLessons],
   );
-  // Only the top-level sections start open; each lesson (Hallo, Familie, ...)
-  // expands to its numbered tests on tap.
+  // The top-level sections and the course units start open; each vocabulary
+  // lesson (Hallo, Familie, ...) expands to its numbered tests on tap.
   const [expanded, setExpanded] = useState<Set<string>>(
-    () => new Set(path.filter((node) => node.children).map((node) => node.id)),
+    () =>
+      new Set([
+        ...path.filter((node) => node.children).map((node) => node.id),
+        ...COURSE_UNITS.map((unit) => `kurs-${unit.id}`),
+      ]),
   );
   const toggleNode = (id: string) =>
     setExpanded((prev) => {
@@ -1030,12 +527,12 @@ function Home({
       else next.add(id);
       return next;
     });
-  // Sections/lessons toggle open; only playable nodes (a vocab test or the
-  // Tiere demo) start a lesson.
+  // Sections, units and vocabulary lessons toggle open; a course lesson or a
+  // vocab test starts playing.
   const handleCardClick = (node: PathNode) => {
     if (node.children?.length) toggleNode(node.id);
+    else if (node.lesson) onStartLesson(node.lesson.unitId, node.lesson.lessonId);
     else if (node.testId) onStart(node.testId);
-    else if (node.id === "tiere") onStart(node.id);
   };
   // Read after mount rather than during render: progress lives in
   // localStorage, which the server render can't see.
@@ -1111,7 +608,12 @@ function Home({
           variant="adventure"
           size="lesson"
           className="w-full"
-          onClick={() => onStart("tiere")}
+          onClick={() => {
+            const lesson = nextCourseLesson(finishedLessons);
+            if (lesson) return onStartLesson(lesson.unitId, lesson.lessonId);
+            const testId = nextTestId(statuses);
+            if (testId) onStart(testId);
+          }}
         >
           {t.startLesson} <Zap />
         </Button>
@@ -1157,6 +659,7 @@ function PathTree({
               className={cn(
                 "flex items-center gap-3 rounded-2xl bg-card p-3 ring-1 ring-border transition",
                 depth === 0 && "p-4",
+                state === "soon" && "opacity-70",
               )}
             >
               <button
@@ -1168,6 +671,7 @@ function PathTree({
                   depth === 0 ? "size-14 text-2xl" : "size-11 text-lg",
                   state === "done" && "bg-mint",
                   state === "active" && "animate-bob bg-frost",
+                  state === "soon" && "bg-frost",
                 )}
               >
                 {node.icon}

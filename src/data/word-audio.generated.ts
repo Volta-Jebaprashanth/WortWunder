@@ -820,4 +820,6 @@ export const WORD_AUDIO: Record<string, string> = {
   "Welches Bild hörst du?": "/audio/title-welches-bild-hoerst-du.mp3",
   "Finde die Paare": "/audio/title-finde-die-paare.mp3",
   "Neues Wort": "/audio/title-neues-wort.mp3",
+  "Gut zu wissen": "/audio/title-gut-zu-wissen.mp3",
+  "Lektion geschafft!": "/audio/title-lektion-geschafft.mp3",
 };

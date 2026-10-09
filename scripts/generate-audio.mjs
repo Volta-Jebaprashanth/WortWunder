@@ -864,6 +864,9 @@ const TITLES = [
   { word: "Welches Bild hörst du?", slug: "title-welches-bild-hoerst-du" },
   { word: "Finde die Paare", slug: "title-finde-die-paare" },
   { word: "Neues Wort", slug: "title-neues-wort" },
+  // Course lesson player (src/components/course/).
+  { word: "Gut zu wissen", slug: "title-gut-zu-wissen" },
+  { word: "Lektion geschafft!", slug: "title-lektion-geschafft" },
 ];
 
 // The German alphabet, for the word-builder's letter tiles. `name` spells out

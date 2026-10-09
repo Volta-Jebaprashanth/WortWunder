@@ -24,11 +24,16 @@ bun run build:dev # build in development mode
 bun run preview   # preview a production build
 bun run lint      # eslint .
 bun run typecheck # tsc --noEmit
+bun run test      # vitest run
 bun run format    # prettier --write .
 ```
 
-There is no test framework configured — no test script, no vitest/jest dependency.
-CI (`.github/workflows/ci.yml`) runs lint, typecheck and build on every PR.
+Unit tests use vitest (`vitest.config.ts`, separate from the Vite config so
+tests don't load the TanStack Start/Nitro plugins). Test files sit next to
+the module they cover as `src/**/*.test.ts`; `localStorage` is stubbed with
+an in-memory object rather than a DOM environment (see
+`src/lib/progress-store.test.ts`). CI (`.github/workflows/ci.yml`) runs lint,
+typecheck, test and build on every PR.
 
 ## Architecture
 
@@ -41,10 +46,9 @@ Vite 8 + Nitro.
   `$.tsx` for splats, `_layout.tsx` for layouts). `src/routeTree.gen.ts` is
   auto-generated — never hand-edit it. `src/routes/__root.tsx` is the only app
   shell; it must keep `<Outlet />`.
-- **Single-page app today**: despite the routing setup, almost the entire app
-  currently lives in one route, `src/routes/index.tsx` (~300+ lines) — a client
-  state machine (`Screen = "home" | "picture" | "build" | "listen"`) rather than
-  separate route files. Profile (`{ name, age }`) is persisted to `localStorage`
+- **Mostly one route**: apart from the course lesson player (see "The
+  course" below), the app lives in one route, `src/routes/index.tsx` (~1000 lines) — a client
+  state machine (`Screen = "home" | "quiz"`) rather than separate route files. Profile (`{ name, age }`) is persisted to `localStorage`
   under the key `wortwunder:profile`.
 - **Vite config**: `vite.config.ts` is a plain Vite config that registers
   `tailwindcss`, `tsConfigPaths`, `tanstackStart` (server entry redirected to
@@ -189,8 +193,44 @@ Vite 8 + Nitro.
   `src/routes/index.tsx` are generated from it. Nouns keep their
   der/die/das in `full` (shown and spoken); spelling screens drop it via
   `spellingOf`.
-- **Path layout**: 1 Grundlagen (the vocabulary lessons), 2 ÖSD
+- **The course ("Von Null auf A1")**: sentence-based lessons, separate from
+  the vocabulary tests. `ROADMAP.md` is the plan; what exists so far:
+  - **Data**: `src/data/course/` — `types.ts` (the model), one file per unit
+    (`u01.ts`), and `index.ts` (`COURSE_UNITS`, lookups, `resolveWord`). A
+    lesson holds its `sentences` and an ordered list of `steps` (tip, word,
+    sentence). Ids (`u01`, `u01.l01`, `u01.l01.s03`, `u01.g01`) are stable
+    forever: progress and audio files are keyed by them, so never renumber
+    or reuse one. Vocabulary is referenced as `<lessonId>/<wordId>`
+    (`1.1/hallo`). Every text exists in English, Tamil and Sinhala.
+  - **Validation**: `bun run validate-course` (also a CI step) fails on
+    duplicate ids, missing translations, bad references or a sentence
+    without audio. The checks are in `src/lib/course-validate.ts`.
+  - **Audio**: after adding or changing sentences run
+    `bun run generate-course-audio` (bun, not node: it imports the
+    TypeScript data). It writes `public/course/<unit>/audio/<sentenceId>.mp3`
+    and `.slow.mp3`, in the female or male voice the sentence asks for, and
+    regenerates `src/data/course-audio.generated.ts` (don't hand-edit).
+    `playSentence` in `word-audio.ts` plays them.
+  - **Engine and progress**: `src/lib/course-engine.ts` (pure: builds a
+    lesson's exercise queue, tile pools, answer checks; randomness is
+    injected so tests are deterministic) and `src/lib/course-store.ts`
+    (`localStorage` key `wortwunder:course`: finished lessons, sentence
+    strength and due day, streak).
+  - **Screens**: the route `src/routes/kurs.$unitId.$lessonId.tsx` renders
+    `LessonPlayer` from `src/components/course/`. It is a real route, not a
+    `Screen` state in `index.tsx`; it reads the learner's language through
+    `useProfile` (`src/lib/profile.ts`). A wrong answer shows the right one
+    and the question returns at the end of the lesson; there is no retry in
+    place, unlike the vocabulary quiz.
+  - New German screen titles need an entry in `TITLES` in
+    `scripts/generate-audio.mjs`, or they fall back to speech synthesis.
+- **Path layout**: 1 Von Null auf A1 (course units expanding to their
+  lessons, plus a "coming soon" placeholder for lessons not written yet;
+  name and meaning in `src/data/course/index.ts`), 2 Wortschatz (the
+  vocabulary lessons), 3 ÖSD
   (no lessons of its own: `OESD_LESSONS` in `index.tsx` lists
-  Grundlagen lessons again, optionally renamed, e.g. 1.2 Familie as "Die
-  Familienmitglieder"; they open the same tests and share progress), 3 Testing (the hand-written "Tiere" /
-  der Vogel walkthrough screens in `index.tsx`).
+  Wortschatz lessons again, optionally renamed, e.g. 1.2 Familie as "Die
+  Familienmitglieder"; they open the same tests and share progress). The
+  "Start lesson" button opens the learner's next unfinished course lesson,
+  or, once those are done, the next unfinished vocabulary test
+  (`nextCourseLesson` / `nextTestId` in `index.tsx`).

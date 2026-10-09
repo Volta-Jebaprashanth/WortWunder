@@ -1,9 +1,8 @@
 import type { MotherTongue } from "@/lib/i18n";
 import type { VocabWord } from "@/data/vocabulary";
 
-// Vocabulary for the "Hallo!" (greetings) lesson, 1.1. Unlike
-// TIERE_WORDS these are phrases, not nouns, so they have no der/die/das
-// article.
+// Vocabulary for the "Hallo!" (greetings) lesson, 1.1. These are phrases,
+// not nouns, so they have no der/die/das article.
 //
 // Per-test asset layout (see AGENTS.md for the full convention): this
 // test's own audio/images live under `public/1.1 greetings/`, split into

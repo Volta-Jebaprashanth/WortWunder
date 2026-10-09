@@ -148,6 +148,22 @@ export function VocabQuiz({
     return { word, mcOptions, tiles, segments, answerLength, missing };
   }, [item, byId]);
 
+  // The word behind the option the kid picked, for the wrong-answer card.
+  // Each multiple-choice type keys its options differently; letter and
+  // spelling questions have no picked word.
+  const pickedWord = (() => {
+    if (!item || !derived || answer === null) return undefined;
+    const keyOf: ((w: VocabWord) => string) | null =
+      item.kind === "picture" || item.kind === "translate" || item.kind === "listen"
+        ? (w) => w.full
+        : item.kind === "meaning"
+          ? (w) => w[lang]
+          : item.kind === "wordPicture" || item.kind === "training" || item.kind === "listenPicture"
+            ? (w) => w.id
+            : null;
+    return keyOf ? derived.mcOptions.find((w) => keyOf(w) === answer) : undefined;
+  })();
+
   // Once the current round runs out, the next round comes from whatever
   // tier is now active: more of the same tier if fails left rows pending in
   // it, otherwise the next tier down the line. Only once every tier is
@@ -593,6 +609,9 @@ export function VocabQuiz({
             correct={lastCorrect}
             correctText={t.correctMeaning(derived.word.full, derived.word[lang])}
             hint={attempts >= 2 ? t.hintGeneric : undefined}
+            wrongPick={pickedWord}
+            t={t}
+            lang={lang}
             actionLabel={lastCorrect ? "Weiter" : t.tryAgain}
             onAction={lastCorrect ? goNext : retry}
           />

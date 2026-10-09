@@ -217,7 +217,6 @@ export function AnswerGrid({
               selected === option &&
               option !== correct &&
               "border-destructive bg-danger-soft",
-            revealed && option === correct && "border-success",
           )}
         >
           {option}
@@ -263,7 +262,6 @@ export function OptionGrid({
               selected === option &&
               option !== correct &&
               "border-destructive bg-danger-soft",
-            revealed && option === correct && "border-success",
           )}
         >
           {option}
@@ -335,7 +333,6 @@ export function LetterOptions({
               selected === option &&
               option !== correct &&
               "border-destructive bg-danger-soft",
-            revealed && option === correct && "border-success",
           )}
         >
           {option}
@@ -377,7 +374,6 @@ export function PictureOptions({
               selected === option.id &&
               option.id !== correct &&
               "ring-destructive bg-danger-soft",
-            revealed && option.id === correct && "ring-success",
           )}
         >
           <span className="grid aspect-square w-full place-items-center">
@@ -820,16 +816,26 @@ export function TrainingCard({
   );
 }
 
+// On a wrong multiple-choice pick, `wrongPick` is the word the kid chose:
+// the card shows what THAT option actually is (picture, German word with a
+// tap-to-hear button, meaning) instead of revealing the right answer, so
+// they learn something from the miss and still have to find it on retry.
 export function ResultCard({
   correct,
   correctText,
   hint,
+  wrongPick,
+  t,
+  lang,
   actionLabel,
   onAction,
 }: {
   correct: boolean;
   correctText: string;
   hint?: string | undefined;
+  wrongPick?: VocabWord | undefined;
+  t?: Strings;
+  lang?: MotherTongue;
   actionLabel: string;
   onAction: () => void;
 }) {
@@ -837,7 +843,7 @@ export function ResultCard({
     <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4">
       <div
         className={cn(
-          "animate-slide-in-up w-full max-w-3xl rounded-t-[28px] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-[0_-12px_30px_rgba(0,0,0,0.18)] sm:p-7",
+          "animate-slide-in-up max-h-[92dvh] w-full max-w-3xl overflow-y-auto rounded-t-[28px] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-[0_-12px_30px_rgba(0,0,0,0.18)] sm:p-7",
           correct ? "bg-success-soft" : "bg-danger-soft",
         )}
       >
@@ -867,6 +873,32 @@ export function ResultCard({
             {!correct && hint && <p className="text-sm font-bold text-ink-soft">💡 {hint}</p>}
           </div>
         </div>
+        {!correct && wrongPick && (
+          <div className="mt-4 flex flex-col items-center gap-2 rounded-[24px] bg-card p-4 text-center ring-1 ring-border sm:p-5">
+            <div className="size-40 shrink-0 overflow-hidden rounded-[24px] bg-card ring-1 ring-border sm:size-48">
+              <LoadingImage
+                src={wrongPick.image}
+                alt={wrongPick.full}
+                className="size-full"
+                imgClassName="object-cover"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => playWord(wrongPick.full)}
+              aria-label={t?.tapToHear(wrongPick.full) ?? wrongPick.full}
+              className="mt-1 inline-flex max-w-full items-center justify-center gap-2 font-display text-3xl font-extrabold break-words sm:text-4xl"
+            >
+              <span className="min-w-0">
+                <ArticleWord text={wrongPick.full} />
+              </span>
+              <Volume2 className="size-7 shrink-0 text-ink-soft sm:size-8" />
+            </button>
+            <p className="max-w-full font-display text-2xl font-extrabold break-words text-ink-soft sm:text-3xl">
+              {wrongPick[lang ?? "english"]}
+            </p>
+          </div>
+        )}
         <Button variant="adventure" size="lesson" className="mt-4 w-full" onClick={onAction}>
           {actionLabel}
         </Button>

@@ -4,7 +4,9 @@ import {
   Check,
   ChevronRight,
   ExternalLink,
+  Flag,
   Gem,
+  Lock,
   Share,
   Smartphone,
   SquarePlus,
@@ -28,13 +30,7 @@ import {
   startActiveTimeTracking,
   subscribeStats,
 } from "@/lib/stats-store";
-import {
-  COURSE_MEANING,
-  COURSE_TITLE,
-  COURSE_UNITS,
-  courseIds,
-  type CourseUnit,
-} from "@/data/course";
+import { COURSE_MEANING, COURSE_TITLE, COURSE_UNITS, type CourseUnit } from "@/data/course";
 import {
   findVocabLesson,
   findVocabTest,
@@ -53,7 +49,16 @@ import { MOTHER_TONGUES, TRANSLATIONS, type MotherTongue, type Strings } from "@
 
 import { readProfile, writeProfile, type Profile } from "@/lib/profile";
 import { requestFullscreen } from "@/lib/fullscreen";
-import { getFinishedLessonIds, reconcileCourse } from "@/lib/course-store";
+import {
+  checkpointStatus,
+  hasCheckpoint,
+  isUnitComplete,
+  isUnitOpen,
+  lessonStatus,
+  nextCourseStep,
+  type CourseProgress,
+} from "@/lib/course-path";
+import { useCourseProgress } from "@/lib/use-course-progress";
 
 interface InstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -192,6 +197,11 @@ function Index() {
     requestFullscreen();
     void navigate({ to: "/kurs/$unitId/$lessonId", params: { unitId, lessonId } });
   };
+  const startCheckpoint = (unitId: string) => {
+    requestFullscreen();
+    void navigate({ to: "/kurs/$unitId/checkpoint", params: { unitId } });
+  };
+  const openUnit = (unitId: string) => void navigate({ to: "/kurs/$unitId", params: { unitId } });
 
   return (
     <div className="app-sky relative min-h-dvh overflow-hidden text-foreground [padding:env(safe-area-inset-top)_env(safe-area-inset-right)_env(safe-area-inset-bottom)_env(safe-area-inset-left)]">
@@ -242,6 +252,8 @@ function Index() {
               lang={lang}
               onStart={startTest}
               onStartLesson={startCourseLesson}
+              onStartCheckpoint={startCheckpoint}
+              onOpenUnit={openUnit}
               name={profile?.name}
               showInstall={!installed}
               onAddToHomeScreen={addToHomeScreen}
@@ -305,10 +317,17 @@ type PathNode = {
   icon: React.ReactNode;
   // "soon" marks something that isn't playable yet (the course lessons still
   // to be written): shown muted, with "coming soon" in its meaning line.
-  state: "done" | "active" | "soon";
+  // "locked" is a course lesson or checkpoint whose turn hasn't come: shown
+  // muted with a padlock, and a tap does nothing.
+  state: "done" | "active" | "soon" | "locked";
   meaning: string;
+  // The course unit whose page this node opens, if any (its chevron still
+  // expands it to its lessons).
+  unitId?: string;
   // The course lesson this node opens, if any.
   lesson?: { unitId: string; lessonId: string };
+  // The unit whose checkpoint this node opens, if any.
+  checkpoint?: string;
   // The VocabQuiz test this node opens, if any — drives its tier badge and
   // completed tick (see getTestStatus).
   testId?: string;
@@ -369,23 +388,46 @@ function lessonPathNode(
   };
 }
 
-// A course unit as a path node, expanding to its lessons. A unit is done
-// once every one of its lessons is finished (see course-store.ts).
-function unitPathNode(unit: CourseUnit, lang: MotherTongue, finished: Set<string>): PathNode {
+const STEP_STATES = { done: "done", open: "active", locked: "locked" } as const;
+
+// A course unit as a path node, expanding to its lessons and its checkpoint.
+// What is open, locked or done is decided in src/lib/course-path.ts.
+function unitPathNode(
+  unit: CourseUnit,
+  lang: MotherTongue,
+  t: Strings,
+  progress: CourseProgress,
+): PathNode {
+  const open = isUnitOpen(COURSE_UNITS, unit.id, progress);
   return {
     id: `kurs-${unit.id}`,
     title: unit.title,
     icon: unit.icon,
-    state: unit.lessons.every((lesson) => finished.has(lesson.id)) ? "done" : "active",
+    state: isUnitComplete(unit, progress) ? "done" : open ? "active" : "locked",
     meaning: unit.meaning[lang],
-    children: unit.lessons.map((lesson) => ({
-      id: `kurs-${lesson.id}`,
-      title: lesson.title,
-      icon: unit.icon,
-      state: finished.has(lesson.id) ? "done" : "active",
-      meaning: lesson.meaning[lang],
-      lesson: { unitId: unit.id, lessonId: lesson.id },
-    })),
+    unitId: unit.id,
+    children: [
+      ...unit.lessons.map((lesson): PathNode => ({
+        id: `kurs-${lesson.id}`,
+        title: lesson.title,
+        icon: unit.icon,
+        state: STEP_STATES[lessonStatus(COURSE_UNITS, unit, lesson.id, progress)],
+        meaning: lesson.meaning[lang],
+        lesson: { unitId: unit.id, lessonId: lesson.id },
+      })),
+      ...(hasCheckpoint(unit)
+        ? [
+            {
+              id: `kurs-${unit.id}-checkpoint`,
+              title: "Test",
+              icon: <Flag />,
+              state: STEP_STATES[checkpointStatus(COURSE_UNITS, unit, progress)],
+              meaning: t.checkpoint,
+              checkpoint: unit.id,
+            } satisfies PathNode,
+          ]
+        : []),
+    ],
   };
 }
 
@@ -418,19 +460,11 @@ const PATH_MEANINGS = {
   oesd: { english: "ÖSD exam", tamil: "ÖSD தேர்வு", sinhala: "ÖSD විභාගය" },
 } satisfies Record<string, Record<MotherTongue, string>>;
 
-// What the "Start lesson" button opens. The course comes first: its first
-// unfinished lesson. Once the course lessons written so far are done, it is
-// the vocabulary test the learner is partway through if there is one,
-// otherwise the first one not finished yet. With everything finished it
-// falls back to the first test, for practice.
-function nextCourseLesson(finished: Set<string>) {
-  for (const unit of COURSE_UNITS) {
-    const lesson = unit.lessons.find((l) => !finished.has(l.id));
-    if (lesson) return { unitId: unit.id, lessonId: lesson.id };
-  }
-  return undefined;
-}
-
+// What the "Start lesson" button opens. The course comes first: its next
+// lesson or checkpoint (nextCourseStep). Once the units written so far are
+// complete, it is the vocabulary test the learner is partway through if
+// there is one, otherwise the first one not finished yet. With everything
+// finished it falls back to the first test, for practice.
 function nextTestId(statuses: Record<string, TestStatus>): string | undefined {
   const testIds = VOCAB_LESSONS.flatMap((lesson) => lesson.tests.map((test) => test.testId));
   return (
@@ -445,6 +479,8 @@ function Home({
   lang,
   onStart,
   onStartLesson,
+  onStartCheckpoint,
+  onOpenUnit,
   name,
   showInstall,
   onAddToHomeScreen,
@@ -453,6 +489,8 @@ function Home({
   lang: MotherTongue;
   onStart: (nodeId: string) => void;
   onStartLesson: (unitId: string, lessonId: string) => void;
+  onStartCheckpoint: (unitId: string) => void;
+  onOpenUnit: (unitId: string) => void;
   name?: string | undefined;
   showInstall: boolean;
   onAddToHomeScreen: () => void;
@@ -462,11 +500,7 @@ function Home({
   const goalReached = todayMinutes >= goalMinutes;
   // Read after mount, like `statuses` below: course progress lives in
   // localStorage, which the server render can't see.
-  const [finishedLessons, setFinishedLessons] = useState<Set<string>>(new Set());
-  useEffect(() => {
-    reconcileCourse(courseIds());
-    setFinishedLessons(new Set(getFinishedLessonIds()));
-  }, []);
+  const progress = useCourseProgress();
   const path = useMemo<PathNode[]>(
     () => [
       {
@@ -476,7 +510,7 @@ function Home({
         state: "active",
         meaning: COURSE_MEANING[lang],
         children: [
-          ...COURSE_UNITS.map((unit) => unitPathNode(unit, lang, finishedLessons)),
+          ...COURSE_UNITS.map((unit) => unitPathNode(unit, lang, t, progress)),
           {
             id: "kurs-more",
             title: "Mehr Lektionen",
@@ -509,7 +543,7 @@ function Home({
         ),
       },
     ],
-    [lang, t, finishedLessons],
+    [lang, t, progress],
   );
   // The top-level sections and the course units start open; each vocabulary
   // lesson (Hallo, Familie, ...) expands to its numbered tests on tap.
@@ -527,11 +561,15 @@ function Home({
       else next.add(id);
       return next;
     });
-  // Sections, units and vocabulary lessons toggle open; a course lesson or a
-  // vocab test starts playing.
+  // A course unit opens its own page (its chevron expands it); sections and
+  // vocabulary lessons toggle open; a course lesson, a checkpoint or a vocab
+  // test starts playing, unless it is still locked.
   const handleCardClick = (node: PathNode) => {
-    if (node.children?.length) toggleNode(node.id);
+    if (node.unitId) onOpenUnit(node.unitId);
+    else if (node.children?.length) toggleNode(node.id);
+    else if (node.state === "locked") return;
     else if (node.lesson) onStartLesson(node.lesson.unitId, node.lesson.lessonId);
+    else if (node.checkpoint) onStartCheckpoint(node.checkpoint);
     else if (node.testId) onStart(node.testId);
   };
   // Read after mount rather than during render: progress lives in
@@ -609,8 +647,9 @@ function Home({
           size="lesson"
           className="w-full"
           onClick={() => {
-            const lesson = nextCourseLesson(finishedLessons);
-            if (lesson) return onStartLesson(lesson.unitId, lesson.lessonId);
+            const step = nextCourseStep(COURSE_UNITS, progress);
+            if (step?.kind === "lesson") return onStartLesson(step.unitId, step.lessonId);
+            if (step?.kind === "checkpoint") return onStartCheckpoint(step.unitId);
             const testId = nextTestId(statuses);
             if (testId) onStart(testId);
           }}
@@ -659,7 +698,7 @@ function PathTree({
               className={cn(
                 "flex items-center gap-3 rounded-2xl bg-card p-3 ring-1 ring-border transition",
                 depth === 0 && "p-4",
-                state === "soon" && "opacity-70",
+                (state === "soon" || state === "locked") && "opacity-70",
               )}
             >
               <button
@@ -671,10 +710,18 @@ function PathTree({
                   depth === 0 ? "size-14 text-2xl" : "size-11 text-lg",
                   state === "done" && "bg-mint",
                   state === "active" && "animate-bob bg-frost",
-                  state === "soon" && "bg-frost",
+                  (state === "soon" || state === "locked") && "bg-frost",
                 )}
               >
                 {node.icon}
+                {state === "locked" && (
+                  <span
+                    className="absolute -bottom-1 -right-1 grid size-5 place-items-center rounded-full bg-card ring-2 ring-frost"
+                    aria-label={t.locked}
+                  >
+                    <Lock className="size-3 text-ink-soft" />
+                  </span>
+                )}
                 {state === "done" && (
                   <span className="absolute -bottom-1 -right-1 grid size-5 place-items-center rounded-full bg-success ring-2 ring-frost">
                     <Check className="size-3 text-primary-foreground" />

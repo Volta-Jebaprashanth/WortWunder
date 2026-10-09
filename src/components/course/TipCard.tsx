@@ -5,23 +5,21 @@ import { playSentence } from "@/lib/word-audio";
 import type { GrammarNote, Sentence } from "@/data/course/types";
 import type { MotherTongue, Strings } from "@/lib/i18n";
 
-// A short grammar or usage note in the learner's mother tongue, shown before
-// a new pattern: a few lines of text and example sentences to tap and hear.
-export function TipCard({
+// The text of a grammar note and its example sentences, each tappable to
+// hear. Shared by the tip screen of a lesson and the unit's guidebook.
+export function NoteBody({
   t,
   lang,
   note,
   examples,
-  onContinue,
 }: {
   t: Strings;
   lang: MotherTongue;
   note: GrammarNote;
   examples: Sentence[];
-  onContinue: () => void;
 }) {
   return (
-    <LessonFrame t={t} eyebrow={t.tip} title="Gut zu wissen" subtitle={note.title[lang]}>
+    <>
       <div className="space-y-3 rounded-[24px] bg-card p-5 ring-1 ring-border">
         {note.body[lang].split("\n").map((line, i) => (
           <p key={i} className="font-bold leading-snug">
@@ -51,6 +49,28 @@ export function TipCard({
           ))}
         </ul>
       )}
+    </>
+  );
+}
+
+// A short grammar or usage note in the learner's mother tongue, shown before
+// a new pattern: a few lines of text and example sentences to tap and hear.
+export function TipCard({
+  t,
+  lang,
+  note,
+  examples,
+  onContinue,
+}: {
+  t: Strings;
+  lang: MotherTongue;
+  note: GrammarNote;
+  examples: Sentence[];
+  onContinue: () => void;
+}) {
+  return (
+    <LessonFrame t={t} eyebrow={t.tip} title="Gut zu wissen" subtitle={note.title[lang]}>
+      <NoteBody t={t} lang={lang} note={note} examples={examples} />
       <Button variant="adventure" size="lesson" className="mt-6 w-full" onClick={onContinue}>
         Weiter
       </Button>

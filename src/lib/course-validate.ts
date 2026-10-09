@@ -53,8 +53,10 @@ export function validateCourse(units: CourseUnit[], ctx: ValidationContext): str
     }
     for (const id of unit.guidebook)
       if (!noteIds.has(id)) errors.push(`${unit.id} guidebook refers to unknown note ${id}`);
+    // The checkpoint tests this unit, so it draws on this unit's sentences only.
+    const ownIds = new Set(unit.lessons.flatMap((lesson) => lesson.sentences.map((s) => s.id)));
     for (const id of unit.checkpoint)
-      if (!sentenceIds.has(id)) errors.push(`${unit.id} checkpoint refers to unknown id ${id}`);
+      if (!ownIds.has(id)) errors.push(`${unit.id} checkpoint refers to unknown id ${id}`);
 
     for (const dialogue of unit.dialogues) {
       claim(dialogue.id, "dialogue");
@@ -102,6 +104,11 @@ export function validateCourse(units: CourseUnit[], ctx: ValidationContext): str
             errors.push(`${sentence.id} gap token ${sentence.gap.token} is out of range`);
           if (sentence.gap.options.length === 0)
             errors.push(`${sentence.id} gap has no wrong options`);
+          // A wrong option equal to the answer, or listed twice, would put
+          // the same word on two buttons.
+          const choices = [tokens[sentence.gap.token], ...sentence.gap.options];
+          if (new Set(choices).size < choices.length)
+            errors.push(`${sentence.id} gap options repeat a word`);
         }
         for (const ref of sentence.words ?? [])
           if (!ctx.hasWord(ref)) errors.push(`${sentence.id} refers to unknown word ${ref}`);

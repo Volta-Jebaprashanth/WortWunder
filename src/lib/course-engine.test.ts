@@ -1,19 +1,27 @@
 import { describe, expect, it } from "vitest";
-import { COURSE_UNITS, resolveWord } from "@/data/course";
+import { checkpointSentences, COURSE_UNITS, resolveWord } from "@/data/course";
 import type { CourseLesson, GrammarNote, Sentence } from "@/data/course/types";
 import type { VocabWord } from "@/data/vocabulary";
 import {
+  buildCheckpointQueue,
   buildLessonQueue,
   buildTiles,
   checkBank,
+  checkGap,
   checkPick,
+  checkpointPassed,
+  checkTyped,
+  CHECKPOINT_SIZE,
   exerciseMedia,
   isQuestion,
   KNOWN_STRENGTH,
+  normalizeTyped,
   requeueWrong,
   sameTokens,
+  splitAtToken,
   tokenize,
   type BankExercise,
+  type GapExercise,
   type PickExercise,
   type QueueContext,
   type Rng,
@@ -75,6 +83,22 @@ const LESSON: CourseLesson = {
   ],
 };
 
+// A longer lesson with two marked gaps, for the grammar and typing passes.
+const GRAMMAR_SENTENCES: Sentence[] = [
+  { ...sentence(1, "Ich heiße Anna.", "My name is Anna."), accept: ["Mein Name ist Anna."] },
+  sentence(2, "Ich bin Tom.", "I am Tom."),
+  { ...sentence(3, "Wie heißt du?", "What is your name?"), gap: { token: 1, options: ["heiße"] } },
+  sentence(4, "Wer bist du?", "Who are you?"),
+  sentence(5, "Guten Morgen! Ich bin Anna.", "Good morning! I am Anna."),
+  { ...sentence(6, "Bist du Anna?", "Are you Anna?"), gap: { token: 0, options: ["Sind", "Bin"] } },
+];
+const GRAMMAR_LESSON: CourseLesson = {
+  ...LESSON,
+  newWords: [],
+  sentences: GRAMMAR_SENTENCES,
+  steps: GRAMMAR_SENTENCES.map((s) => ({ kind: "sentence", id: s.id })),
+};
+
 function context(overrides: Partial<QueueContext> = {}): QueueContext {
   return {
     lang: "english",
@@ -96,6 +120,31 @@ describe("tokenize", () => {
   it("keeps Tamil and Sinhala words whole, including their vowel signs", () => {
     expect(tokenize("வணக்கம், அன்னா!")).toEqual(["வணக்கம்", "அன்னா"]);
     expect(tokenize("ආයුබෝවන්, ඇනා!")).toEqual(["ආයුබෝවන්", "ඇනා"]);
+  });
+});
+
+describe("splitAtToken", () => {
+  it("cuts a sentence around one word and keeps the punctuation", () => {
+    expect(splitAtToken("Wie heißt du?", 1)).toEqual({
+      before: "Wie ",
+      word: "heißt",
+      after: " du?",
+    });
+    expect(splitAtToken("Bist du Anna?", 0)).toEqual({
+      before: "",
+      word: "Bist",
+      after: " du Anna?",
+    });
+    expect(splitAtToken("Guten Tag, Herr Weber.", 3)).toEqual({
+      before: "Guten Tag, Herr ",
+      word: "Weber",
+      after: ".",
+    });
+    expect(splitAtToken("Guten Tag! Wie heißen Sie?", 1).after).toBe("! Wie heißen Sie?");
+  });
+
+  it("returns no word for a position the sentence does not have", () => {
+    expect(splitAtToken("Hallo, Anna!", 5).word).toBe("");
   });
 });
 
@@ -133,13 +182,11 @@ describe("buildLessonQueue", () => {
     const first = queue.slice(0, 6).filter(isQuestion);
     expect(first.map((e) => e.sentence.id)).toEqual(SENTENCES.map((s) => s.id));
 
+    // One to put in order (or a word bank, if it is too short for that),
+    // two word banks, one to type.
     const production = queue.slice(6);
-    expect(production.map((e) => e.kind)).toEqual([
-      "bankToDe",
-      "listenBank",
-      "bankToDe",
-      "listenBank",
-    ]);
+    expect(["order", "bankToDe"]).toContain(production[0]!.kind);
+    expect(production.slice(1).map((e) => e.kind)).toEqual(["bankToDe", "listenBank", "type"]);
     expect(
       production
         .filter(isQuestion)
@@ -188,7 +235,9 @@ describe("buildLessonQueue", () => {
     );
     const firstPass = queue.filter((e) => e.kind === "bankFromDe" || e.kind === "listenPick");
     expect(firstPass.filter(isQuestion).map((e) => e.sentence.id)).not.toContain("u09.l01.s01");
-    const secondPass = queue.filter((e) => e.kind === "bankToDe" || e.kind === "listenBank");
+    const secondPass = queue.filter(
+      (e) => isQuestion(e) && e.kind !== "bankFromDe" && e.kind !== "listenPick",
+    );
     expect(secondPass).toHaveLength(SENTENCES.length);
   });
 
@@ -196,6 +245,156 @@ describe("buildLessonQueue", () => {
     const queue = buildLessonQueue(LESSON, context({ notes: [], resolveWord: () => undefined }));
     expect(queue.some((e) => e.kind === "tip" || e.kind === "newWord")).toBe(false);
     expect(queue).toHaveLength(SENTENCES.length * 2);
+  });
+});
+
+describe("the grammar and typing passes", () => {
+  it("asks every marked gap between recognition and production", () => {
+    for (let seed = 1; seed <= 20; seed++) {
+      const queue = buildLessonQueue(GRAMMAR_LESSON, context({ rng: seeded(seed) }));
+      expect(queue).toHaveLength(6 + 2 + 6);
+      const gaps = queue.slice(6, 8) as GapExercise[];
+      expect(gaps.map((e) => e.kind)).toEqual(["gap", "gap"]);
+      expect(gaps.map((e) => e.answer)).toEqual(["heißt", "Bist"]);
+      expect(gaps[1]!.options.slice().sort()).toEqual(["Bin", "Bist", "Sind"]);
+    }
+  });
+
+  it("runs production from ordering through word banks to typing", () => {
+    for (let seed = 1; seed <= 20; seed++) {
+      const production = buildLessonQueue(GRAMMAR_LESSON, context({ rng: seeded(seed) })).slice(8);
+      expect(production.map((e) => e.kind)).toEqual([
+        "order",
+        "order",
+        "bankToDe",
+        "listenBank",
+        "type",
+        "listenType",
+      ]);
+      expect(
+        production
+          .filter(isQuestion)
+          .map((e) => e.sentence.id)
+          .sort(),
+      ).toEqual(GRAMMAR_SENTENCES.map((s) => s.id));
+    }
+  });
+
+  it("orders a sentence with its own words only, never already in order", () => {
+    for (let seed = 1; seed <= 40; seed++) {
+      const queue = buildLessonQueue(GRAMMAR_LESSON, context({ rng: seeded(seed) }));
+      for (const exercise of queue) {
+        if (exercise.kind !== "order") continue;
+        expect(exercise.tiles.slice().sort()).toEqual(exercise.answer.slice().sort());
+        expect(sameTokens(exercise.tiles, exercise.answer)).toBe(false);
+        expect(checkBank(exercise, exercise.answer)).toBe(true);
+      }
+    }
+  });
+
+  it("accepts only the missing word for a gap", () => {
+    const queue = buildLessonQueue(GRAMMAR_LESSON, context());
+    const gap = queue.find((e) => e.kind === "gap") as GapExercise;
+    expect(checkGap(gap, "heißt")).toBe(true);
+    expect(checkGap(gap, "heiße")).toBe(false);
+    expect(checkGap(gap, "")).toBe(false);
+  });
+});
+
+describe("checkTyped", () => {
+  const [name, , ask] = GRAMMAR_SENTENCES as [Sentence, Sentence, Sentence];
+
+  it("ignores case, punctuation and spacing", () => {
+    expect(normalizeTyped("  Wie   geht's?! ")).toBe("wie gehts");
+    expect(checkTyped(name, "ich heiße anna")).toMatchObject({ verdict: "exact", correct: true });
+    expect(checkTyped(name, " Ich  heiße Anna!! ").verdict).toBe("exact");
+  });
+
+  it("accepts a listed alternative and says which one matched", () => {
+    expect(checkTyped(name, "mein name ist anna")).toEqual({
+      verdict: "exact",
+      correct: true,
+      target: "Mein Name ist Anna.",
+    });
+  });
+
+  it("accepts ss and ae/oe/ue spellings, but points them out", () => {
+    expect(checkTyped(name, "Ich heisse Anna")).toMatchObject({
+      verdict: "spelling",
+      correct: true,
+      target: "Ich heiße Anna.",
+    });
+    const hear = sentence(7, "Schreib, was du hörst.", "Write what you hear.");
+    expect(checkTyped(hear, "schreib was du hoerst").verdict).toBe("spelling");
+  });
+
+  it("accepts one character off as almost right and names the word", () => {
+    expect(checkTyped(name, "Ich heiße Ana")).toEqual({
+      verdict: "almost",
+      correct: true,
+      target: "Ich heiße Anna.",
+      diffToken: 2,
+    });
+    expect(checkTyped(name, "Ich heißee Anna")).toMatchObject({ verdict: "almost", diffToken: 1 });
+    expect(checkTyped(name, "Ich heise Anna")).toMatchObject({ verdict: "almost", diffToken: 1 });
+    expect(checkTyped(name, "Ichheiße Anna").verdict).toBe("almost");
+  });
+
+  it("rejects anything further off, and an empty answer", () => {
+    expect(checkTyped(name, "Ich heie Ana").correct).toBe(false);
+    expect(checkTyped(name, "Ich bin Anna").correct).toBe(false);
+    expect(checkTyped(name, "   ")).toEqual({
+      verdict: "wrong",
+      correct: false,
+      target: "Ich heiße Anna.",
+    });
+  });
+
+  it("never passes the gap's wrong word as a near miss", () => {
+    // "heiße" is one character from "heißt", and exactly the mistake the
+    // sentence is there to catch.
+    expect(checkTyped(ask, "Wie heiße du?").correct).toBe(false);
+    expect(checkTyped(ask, "Wie heisse du").correct).toBe(false);
+    expect(checkTyped(ask, "Wie heißt du").verdict).toBe("exact");
+    expect(checkTyped(ask, "Wie heißt da").verdict).toBe("almost");
+  });
+
+  it("does not stretch a very short answer", () => {
+    expect(checkTyped(sentence(8, "Ja.", "Yes."), "Je").correct).toBe(false);
+  });
+});
+
+describe("buildCheckpointQueue", () => {
+  const pool = [...SENTENCES, ...GRAMMAR_SENTENCES.map((s) => ({ ...s, id: `${s.id}b` }))];
+
+  it("asks each drawn sentence once, in a mix of exercise types", () => {
+    for (let seed = 1; seed <= 20; seed++) {
+      const queue = buildCheckpointQueue(pool, { lang: "english", rng: seeded(seed) });
+      expect(queue).toHaveLength(pool.length);
+      expect(new Set(queue.map((e) => e.sentence.id)).size).toBe(pool.length);
+      expect(new Set(queue.map((e) => e.key)).size).toBe(pool.length);
+      const kinds = new Set(queue.map((e) => e.kind));
+      for (const kind of ["listenPick", "bankToDe", "listenBank", "type", "listenType"])
+        expect(kinds, `seed ${seed}`).toContain(kind);
+      for (const exercise of queue)
+        if (exercise.kind === "gap") expect(exercise.sentence.gap).toBeDefined();
+    }
+  });
+
+  it("draws no more than the checkpoint size from a larger pool", () => {
+    const large = Array.from({ length: 30 }, (_, i) => ({
+      ...sentence(1, `Satz Nummer ${i} hier.`, `Sentence number ${i} here.`),
+      id: `u09.l01.s${i + 10}`,
+    }));
+    const queue = buildCheckpointQueue(large, { lang: "english", rng: seeded(3) });
+    expect(queue).toHaveLength(CHECKPOINT_SIZE);
+  });
+
+  it("passes at 80 percent right", () => {
+    expect(checkpointPassed(10, 12)).toBe(true);
+    expect(checkpointPassed(9, 12)).toBe(false);
+    expect(checkpointPassed(12, 12)).toBe(true);
+    expect(checkpointPassed(0, 0)).toBe(false);
   });
 });
 
@@ -255,13 +454,21 @@ describe("the real course", () => {
         for (const lang of ["english", "tamil", "sinhala"] as const) {
           const queue = buildLessonQueue(lesson, { lang, notes: unit.notes, resolveWord });
           const questions = queue.filter(isQuestion);
-          expect(questions).toHaveLength(lesson.sentences.length * 2);
+          const gaps = lesson.sentences.filter((s) => s.gap).length;
+          expect(questions).toHaveLength(lesson.sentences.length * 2 + gaps);
           expect(queue.length - questions.length).toBe(
             lesson.steps.filter((s) => s.kind !== "sentence").length,
           );
           for (const exercise of questions) {
             if (exercise.kind === "listenPick") {
-              expect(exercise.optionIds.length, exercise.key).toBeGreaterThanOrEqual(2);
+              expect(exercise.optionIds.length, exercise.key).toBe(3);
+            } else if (exercise.kind === "gap") {
+              expect(exercise.answer, exercise.key).not.toBe("");
+              expect(new Set(exercise.options).size, exercise.key).toBe(exercise.options.length);
+            } else if (exercise.kind === "order") {
+              expect(exercise.tiles.length, exercise.key).toBe(exercise.answer.length);
+            } else if (!("tiles" in exercise)) {
+              expect(checkTyped(exercise.sentence, exercise.sentence.german).verdict).toBe("exact");
             } else {
               expect(exercise.answer.length, exercise.key).toBeGreaterThan(0);
               expect(exercise.tiles.length, exercise.key).toBeGreaterThan(exercise.answer.length);
@@ -269,6 +476,24 @@ describe("the real course", () => {
           }
         }
       }
+    }
+  });
+
+  it("types every accepted alternative as right", () => {
+    for (const unit of COURSE_UNITS)
+      for (const lesson of unit.lessons)
+        for (const s of lesson.sentences)
+          for (const alternative of s.accept ?? [])
+            expect(checkTyped(s, alternative).verdict, `${s.id}: ${alternative}`).toBe("exact");
+  });
+
+  it("builds a full checkpoint for every unit that has one", () => {
+    for (const unit of COURSE_UNITS) {
+      const pool = checkpointSentences(unit);
+      if (pool.length === 0) continue;
+      expect(pool).toHaveLength(unit.checkpoint.length);
+      for (const lang of ["english", "tamil", "sinhala"] as const)
+        expect(buildCheckpointQueue(pool, { lang })).toHaveLength(CHECKPOINT_SIZE);
     }
   });
 });

@@ -31,6 +31,14 @@ export function allSentences(units: CourseUnit[] = COURSE_UNITS): Sentence[] {
   return units.flatMap((unit) => unit.lessons.flatMap((lesson) => lesson.sentences));
 }
 
+// The sentences a unit's checkpoint draws on, in the order the unit lists them.
+export function checkpointSentences(unit: CourseUnit): Sentence[] {
+  const byId = new Map(allSentences([unit]).map((sentence) => [sentence.id, sentence]));
+  return unit.checkpoint
+    .map((id) => byId.get(id))
+    .filter((sentence): sentence is Sentence => sentence !== undefined);
+}
+
 // Vocabulary is referenced as "<lessonId>/<wordId>" ("1.1/hallo") because
 // word ids repeat across vocabulary lessons.
 const WORDS_BY_REF = new Map<string, VocabWord>(

@@ -198,7 +198,11 @@ Vite 8 + Nitro.
   - **Data**: `src/data/course/` — `types.ts` (the model), one file per unit
     (`u01.ts`), and `index.ts` (`COURSE_UNITS`, lookups, `resolveWord`). A
     lesson holds its `sentences` and an ordered list of `steps` (tip, word,
-    sentence). Ids (`u01`, `u01.l01`, `u01.l01.s03`, `u01.g01`) are stable
+    sentence). A sentence may mark a `gap` (one word and its wrong options,
+    for the grammar question), list `accept`ed other answers for typing, and
+    give a `say` text for the voice where the German would be misread
+    (spelled-out letters). A unit also has its guidebook notes and the
+    `checkpoint` list of sentence ids its unit test draws on. Ids (`u01`, `u01.l01`, `u01.l01.s03`, `u01.g01`) are stable
     forever: progress and audio files are keyed by them, so never renumber
     or reuse one. Vocabulary is referenced as `<lessonId>/<wordId>`
     (`1.1/hallo`). Every text exists in English, Tamil and Sinhala.
@@ -212,25 +216,45 @@ Vite 8 + Nitro.
     regenerates `src/data/course-audio.generated.ts` (don't hand-edit).
     `playSentence` in `word-audio.ts` plays them.
   - **Engine and progress**: `src/lib/course-engine.ts` (pure: builds a
-    lesson's exercise queue, tile pools, answer checks; randomness is
-    injected so tests are deterministic) and `src/lib/course-store.ts`
-    (`localStorage` key `wortwunder:course`: finished lessons, sentence
-    strength and due day, streak).
-  - **Screens**: the route `src/routes/kurs.$unitId.$lessonId.tsx` renders
-    `LessonPlayer` from `src/components/course/`. It is a real route, not a
-    `Screen` state in `index.tsx`; it reads the learner's language through
-    `useProfile` (`src/lib/profile.ts`). A wrong answer shows the right one
-    and the question returns at the end of the lesson; there is no retry in
-    place, unlike the vocabulary quiz.
+    lesson's exercise queue and a unit's checkpoint queue, tile pools,
+    answer checks including typed answers; randomness is injected so tests
+    are deterministic), `src/lib/course-store.ts` (`localStorage` key
+    `wortwunder:course`: finished lessons, passed checkpoints, sentence
+    strength and due day, streak) and `src/lib/course-path.ts` (pure: what
+    is open, locked or done, and the learner's next step).
+  - **Exercise types**: word banks (`bankFromDe`, `bankToDe`, `listenBank`),
+    `listenPick`, `gap`, `order`, and typing (`type`, `listenType`). A
+    lesson asks each sentence for recognition, then each marked gap, then
+    each sentence for production: ordering first, word banks next, typing
+    last. Typed answers ignore case and punctuation; `ss`/`ae`/`oe`/`ue`
+    spellings and a one-character slip are accepted and pointed out, except
+    a slip that lands on one of the sentence's own wrong gap options.
+  - **Locking**: lessons open in order inside a unit; a unit opens when the
+    one before is complete, which means its checkpoint is passed (or, for a
+    unit without one, all lessons are finished). The checkpoint is open
+    from the start of its unit, so passing it early skips ahead.
+  - **Screens**: real routes, not `Screen` states in `index.tsx`:
+    `kurs.$unitId.index.tsx` (unit page: can-do list, guidebook link,
+    lessons, checkpoint), `kurs.$unitId.guide.tsx` (guidebook),
+    `kurs.$unitId.$lessonId.tsx` (`LessonPlayer`) and
+    `kurs.$unitId.checkpoint.tsx` (`CheckpointPlayer`). Components are in
+    `src/components/course/`; `CourseShell.tsx` holds what the routes share
+    (language through `useProfile`, backdrop, header). A wrong answer shows
+    the right one and the question returns at the end of the lesson; there
+    is no retry in place, unlike the vocabulary quiz. The checkpoint asks
+    each question once and passes at 80%.
   - New German screen titles need an entry in `TITLES` in
     `scripts/generate-audio.mjs`, or they fall back to speech synthesis.
 - **Path layout**: 1 Von Null auf A1 (course units expanding to their
-  lessons, plus a "coming soon" placeholder for lessons not written yet;
+  lessons and checkpoint, locked ones shown with a padlock; tapping a unit
+  opens its page, its chevron expands it; plus a "coming soon" placeholder
+  for units not written yet;
   name and meaning in `src/data/course/index.ts`), 2 Wortschatz (the
   vocabulary lessons), 3 ÖSD
   (no lessons of its own: `OESD_LESSONS` in `index.tsx` lists
   Wortschatz lessons again, optionally renamed, e.g. 1.2 Familie as "Die
   Familienmitglieder"; they open the same tests and share progress). The
-  "Start lesson" button opens the learner's next unfinished course lesson,
-  or, once those are done, the next unfinished vocabulary test
-  (`nextCourseLesson` / `nextTestId` in `index.tsx`).
+  "Start lesson" button opens the learner's next course lesson or
+  checkpoint, or, once the units written so far are complete, the next
+  unfinished vocabulary test (`nextCourseStep` in `course-path.ts`,
+  `nextTestId` in `index.tsx`).

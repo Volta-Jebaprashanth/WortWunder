@@ -119,6 +119,12 @@ export function isCheckpointPassed(unitId: string): boolean {
   return readStore().units[unitId]?.checkpoint ?? false;
 }
 
+export function getPassedCheckpointUnitIds(): string[] {
+  return Object.entries(readStore().units)
+    .filter(([, state]) => state.checkpoint)
+    .map(([id]) => id);
+}
+
 export function passCheckpoint(unitId: string) {
   const store = readStore();
   store.units[unitId] = { checkpoint: true };

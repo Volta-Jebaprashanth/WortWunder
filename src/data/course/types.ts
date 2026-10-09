@@ -15,6 +15,7 @@ export interface Sentence {
   accept?: string[]; // other correct German answers for typing
   gap?: { token: number; options: string[] }; // for the `gap` exercise
   voice?: "f" | "m"; // which voice reads it; default "f"
+  say?: string; // what the voice is given to read, where `german` would be misread (letter names)
   grammar?: string[]; // tags such as "verb-second", "akkusativ"
   words?: string[]; // vocabulary used, as "<lessonId>/<wordId>"
 }

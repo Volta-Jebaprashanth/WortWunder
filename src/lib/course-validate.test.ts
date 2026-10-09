@@ -48,6 +48,15 @@ describe("validateCourse", () => {
     ]);
   });
 
+  it("fails on a gap option that repeats the answer or another option", () => {
+    expect(broken((_, s) => (s.gap = { token: 0, options: ["Hallo"] }))).toEqual([
+      "u01.l01.s01 gap options repeat a word",
+    ]);
+    expect(broken((_, s) => (s.gap = { token: 0, options: ["Tschüss", "Tschüss"] }))).toEqual([
+      "u01.l01.s01 gap options repeat a word",
+    ]);
+  });
+
   it("fails on a reference to an unknown word", () => {
     expect(broken((_, s) => (s.words = ["1.1/nope"]))).toEqual([
       "u01.l01.s01 refers to unknown word 1.1/nope",
@@ -81,7 +90,7 @@ describe("validateCourse", () => {
   it("fails on a sentence with no audio", () => {
     const unit = structuredClone(COURSE_UNITS[0]!);
     const errors = validateCourse([unit], { ...REAL_CONTEXT, audioIds: new Set() });
-    expect(errors).toHaveLength(unit.lessons[0]!.sentences.length);
+    expect(errors).toHaveLength(unit.lessons.flatMap((lesson) => lesson.sentences).length);
     expect(errors[0]).toBe("u01.l01.s01 has no audio");
   });
 

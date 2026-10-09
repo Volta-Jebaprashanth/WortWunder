@@ -5,6 +5,7 @@ import {
   getDueSentenceIds,
   getFinishedLessonIds,
   getLessonState,
+  getPassedCheckpointUnitIds,
   getSentenceState,
   getSentenceStrength,
   getStreak,
@@ -59,6 +60,7 @@ describe("unit checkpoints", () => {
     passCheckpoint("u01");
     expect(isCheckpointPassed("u01")).toBe(true);
     expect(isCheckpointPassed("u02")).toBe(false);
+    expect(getPassedCheckpointUnitIds()).toEqual(["u01"]);
   });
 });
 

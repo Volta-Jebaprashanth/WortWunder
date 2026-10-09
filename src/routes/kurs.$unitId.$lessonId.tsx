@@ -1,10 +1,10 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { CourseBackdrop, CourseNotFound, useCourseScreen } from "@/components/course/CourseShell";
 import { LessonPlayer } from "@/components/course/LessonPlayer";
-import { COURSE_TITLE, findLesson, findUnit } from "@/data/course";
-import { TRANSLATIONS } from "@/lib/i18n";
-import { useProfile } from "@/lib/profile";
-import { startActiveTimeTracking } from "@/lib/stats-store";
+import { COURSE_TITLE, COURSE_UNITS, findLesson, findUnit } from "@/data/course";
+import { lessonStatus } from "@/lib/course-path";
+import { useCourseProgress } from "@/lib/use-course-progress";
 
 // The lesson player for one course lesson, e.g. /kurs/u01/u01.l01.
 export const Route = createFileRoute("/kurs/$unitId/$lessonId")({
@@ -20,41 +20,34 @@ export const Route = createFileRoute("/kurs/$unitId/$lessonId")({
 function LessonRoute() {
   const { unitId, lessonId } = Route.useParams();
   const navigate = useNavigate();
-  const { profile, checked } = useProfile();
+  const { ready, lang, t } = useCourseScreen();
+  const progress = useCourseProgress();
   const unit = findUnit(unitId);
   const lesson = findLesson(unitId, lessonId);
-  const lang = profile?.motherTongue ?? "english";
+  const locked =
+    unit !== undefined &&
+    lesson !== undefined &&
+    progress.checked &&
+    lessonStatus(COURSE_UNITS, unit, lesson.id, progress) === "locked";
 
-  useEffect(() => startActiveTimeTracking(), []);
-
-  // Name, age and mother tongue are asked for on the home screen; a learner
-  // who lands here first is sent there.
+  // Lessons open in order: a locked one sends the learner to the unit page,
+  // which shows what comes first.
   useEffect(() => {
-    if (checked && !profile) void navigate({ to: "/", replace: true });
-  }, [checked, profile, navigate]);
+    if (locked) void navigate({ to: "/kurs/$unitId", params: { unitId }, replace: true });
+  }, [locked, navigate, unitId]);
 
   return (
-    <div className="app-sky relative min-h-dvh overflow-hidden text-foreground [padding:env(safe-area-inset-top)_env(safe-area-inset-right)_env(safe-area-inset-bottom)_env(safe-area-inset-left)]">
-      {unit && lesson && profile && (
+    <CourseBackdrop>
+      {(!unit || !lesson) && <CourseNotFound t={t} />}
+      {unit && lesson && ready && progress.checked && !locked && (
         <LessonPlayer
           unit={unit}
           lesson={lesson}
-          t={TRANSLATIONS[lang]}
+          t={t}
           lang={lang}
           onExit={() => void navigate({ to: "/" })}
         />
       )}
-      {(!unit || !lesson) && (
-        <main className="mx-auto max-w-md px-4 py-16 text-center">
-          <h1 className="font-display text-3xl font-extrabold">{COURSE_TITLE}</h1>
-          <Link
-            to="/"
-            className="mt-6 inline-flex rounded-2xl bg-primary px-6 py-3 font-display font-extrabold text-primary-foreground"
-          >
-            {TRANSLATIONS[lang].backToPath}
-          </Link>
-        </main>
-      )}
-    </div>
+    </CourseBackdrop>
   );
 }

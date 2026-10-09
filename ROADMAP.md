@@ -159,6 +159,19 @@ recognition to production: tip → new words → `bankFromDe` / `listenPick` →
 `gap` / `order` → `bankToDe` / `listenBank` → `type` / `speak`. An exercise
 answered wrongly comes back at the end of the lesson until it is right.
 
+As built: every sentence is asked twice, once for recognition and once for
+production, and each sentence with a marked gap once more in between. In the
+production pass the first third of the sentences is put in order, the last
+third typed and the rest built from a word bank, so a lesson of six
+sentences with two gaps has 14 questions.
+
+### Unit checkpoint
+
+Twelve questions drawn from the sentences the unit lists in `checkpoint`,
+in a mix of every exercise type, each asked once with nothing re-queued.
+80% right passes. The checkpoint is open as soon as its unit is, so passing
+it early opens the unit's remaining lessons and the next unit.
+
 ## 7. Speaking and writing in the browser
 
 **Speaking**
@@ -200,6 +213,7 @@ interface Sentence {
   accept?: string[]; // other correct German answers for typing
   gap?: { token: number; options: string[] }; // for the `gap` exercise
   voice?: "f" | "m"; // which voice reads it; default "f"
+  say?: string; // what the voice reads, where the German would be misread (letter names)
   grammar?: string[]; // tags such as "verb-second", "akkusativ"
   words?: string[]; // vocabulary used, as "<lessonId>/<wordId>"
 }
@@ -387,15 +401,16 @@ to try.
 
 ### Stage C: a complete unit
 
-- [ ] **E7. Course path on the home screen.** Unit cards, lesson nodes,
+- [x] **E7. Course path on the home screen.** Unit cards, lesson nodes,
       locked and finished states, unit page with can-do list.
-- [ ] **E8. Grammar exercises.** `gap` and `order`, plus the guidebook
+- [x] **E8. Grammar exercises.** `gap` and `order`, plus the guidebook
       screen.
-- [ ] **E9. Typing.** `type` and `listenType`, the ä ö ü ß helper row,
+- [x] **E9. Typing.** `type` and `listenType`, the ä ö ü ß helper row,
       accepted alternatives and "almost right" feedback.
-- [ ] **C1b. Unit 1 complete.** Remaining five lessons, guidebook and
-      checkpoint content.
-- [ ] **E10. Unit checkpoint.** Mixed test, pass mark, skip-ahead rule.
+- [x] **C1b. Unit 1 complete.** Remaining five lessons, guidebook and
+      checkpoint content. The Tamil and Sinhala are drafts: the native
+      review (section 13) is still open.
+- [x] **E10. Unit checkpoint.** Mixed test, pass mark, skip-ahead rule.
       _Done when:_ a new learner can go from zero through all of unit 1.
 
 **Stop here and try it with real learners** in each of the three languages

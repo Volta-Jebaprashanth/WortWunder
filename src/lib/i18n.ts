@@ -100,6 +100,27 @@ export interface Strings {
   exitLesson: string;
   correctAnswer: string;
   lessonScore: (right: number, total: number) => string;
+  locked: string;
+  grammarChallenge: string;
+  fillGap: string;
+  orderWords: string;
+  typeGerman: string;
+  listenTypeSentence: string;
+  typeHere: string;
+  almostRight: string;
+  mindSpecialLetters: string;
+  guidebook: string;
+  guidebookHint: string;
+  unitGoals: string;
+  lessons: string;
+  checkpoint: string;
+  checkpointIntro: (questions: number, percent: number) => string;
+  skipAhead: string;
+  startCheckpoint: string;
+  checkpointPassed: string;
+  checkpointFailed: string;
+  checkpointScore: (right: number, total: number) => string;
+  backToUnit: string;
 }
 
 export const TRANSLATIONS: Record<MotherTongue, Strings> = {
@@ -192,6 +213,28 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     exitLesson: "Leave the lesson",
     correctAnswer: "Correct answer:",
     lessonScore: (right, total) => `${right} of ${total} right first time`,
+    locked: "Locked",
+    grammarChallenge: "Grammar",
+    fillGap: "Choose the word that fits the gap.",
+    orderWords: "Put the words in the right order.",
+    typeGerman: "Type the sentence in German.",
+    listenTypeSentence: "Listen, then type what you hear.",
+    typeHere: "Type here",
+    almostRight: "Almost right. Look at the marked word again.",
+    mindSpecialLetters: "Right! Mind the special letters ä, ö, ü and ß.",
+    guidebook: "Guidebook",
+    guidebookHint: "The grammar and key phrases of this unit",
+    unitGoals: "After this unit you can:",
+    lessons: "Lessons",
+    checkpoint: "Unit test",
+    checkpointIntro: (questions, percent) =>
+      `${questions} mixed questions on the whole unit. Get ${percent}% right to pass.`,
+    skipAhead: "Know this already? Pass the test to skip ahead.",
+    startCheckpoint: "Start the test",
+    checkpointPassed: "You passed! This unit is complete.",
+    checkpointFailed: "Not quite yet. Practise the lessons and try again.",
+    checkpointScore: (right, total) => `${right} of ${total} right`,
+    backToUnit: "Back to the unit",
   },
   tamil: {
     openProfileMenu: "சுயவிவரப் பட்டியலைத் திற",
@@ -283,6 +326,28 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     exitLesson: "பாடத்திலிருந்து வெளியேறு",
     correctAnswer: "சரியான விடை:",
     lessonScore: (right, total) => `${total}-இல் ${right} முதல் முயற்சியிலேயே சரி`,
+    locked: "பூட்டப்பட்டுள்ளது",
+    grammarChallenge: "இலக்கணம்",
+    fillGap: "இடைவெளிக்குப் பொருந்தும் சொல்லைத் தேர்ந்தெடுங்கள்.",
+    orderWords: "சொற்களைச் சரியான வரிசையில் அமைக்கவும்.",
+    typeGerman: "வாக்கியத்தை ஜெர்மன் மொழியில் தட்டச்சு செய்யுங்கள்.",
+    listenTypeSentence: "கேளுங்கள், பிறகு கேட்டதைத் தட்டச்சு செய்யுங்கள்.",
+    typeHere: "இங்கே தட்டச்சு செய்யுங்கள்",
+    almostRight: "கிட்டத்தட்ட சரி. குறிக்கப்பட்ட சொல்லை மீண்டும் பாருங்கள்.",
+    mindSpecialLetters: "சரி! ä, ö, ü, ß ஆகிய சிறப்பு எழுத்துக்களைக் கவனியுங்கள்.",
+    guidebook: "வழிகாட்டி",
+    guidebookHint: "இந்த அலகின் இலக்கணமும் முக்கிய சொற்றொடர்களும்",
+    unitGoals: "இந்த அலகுக்குப் பிறகு உங்களால் முடியும்:",
+    lessons: "பாடங்கள்",
+    checkpoint: "அலகுத் தேர்வு",
+    checkpointIntro: (questions, percent) =>
+      `அலகு முழுவதிலிருந்தும் ${questions} கலப்புக் கேள்விகள். தேர்ச்சி பெற ${percent}% சரியாக இருக்க வேண்டும்.`,
+    skipAhead: "இது ஏற்கனவே தெரியுமா? தேர்வில் தேர்ச்சி பெற்று முன்னே செல்லுங்கள்.",
+    startCheckpoint: "தேர்வைத் தொடங்கு",
+    checkpointPassed: "தேர்ச்சி பெற்றுவிட்டீர்கள்! இந்த அலகு முடிந்தது.",
+    checkpointFailed: "இன்னும் இல்லை. பாடங்களைப் பயிற்சி செய்து மீண்டும் முயலுங்கள்.",
+    checkpointScore: (right, total) => `${total}-இல் ${right} சரி`,
+    backToUnit: "அலகுக்குத் திரும்பு",
   },
   sinhala: {
     openProfileMenu: "පැතිකඩ මෙනුව විවෘත කරන්න",
@@ -373,5 +438,27 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     exitLesson: "පාඩමෙන් ඉවත් වන්න",
     correctAnswer: "නිවැරදි පිළිතුර:",
     lessonScore: (right, total) => `${total}න් ${right}ක් පළමු වරම නිවැරදියි`,
+    locked: "අගුලු දමා ඇත",
+    grammarChallenge: "ව්‍යාකරණ",
+    fillGap: "හිස්තැනට ගැලපෙන වචනය තෝරන්න.",
+    orderWords: "වචන නිවැරදි පිළිවෙළට සකසන්න.",
+    typeGerman: "වාක්‍යය ජර්මානු භාෂාවෙන් ටයිප් කරන්න.",
+    listenTypeSentence: "අහන්න, පසුව ඔබ ඇසූ දේ ටයිප් කරන්න.",
+    typeHere: "මෙතන ටයිප් කරන්න",
+    almostRight: "බොහෝ දුරට නිවැරදියි. සලකුණු කළ වචනය නැවත බලන්න.",
+    mindSpecialLetters: "නිවැරදියි! ä, ö, ü සහ ß විශේෂ අකුරු ගැන සැලකිලිමත් වන්න.",
+    guidebook: "මාර්ගෝපදේශය",
+    guidebookHint: "මෙම ඒකකයේ ව්‍යාකරණ සහ ප්‍රධාන වාක්‍ය ඛණ්ඩ",
+    unitGoals: "මෙම ඒකකයෙන් පසු ඔබට පුළුවන්:",
+    lessons: "පාඩම්",
+    checkpoint: "ඒකක පරීක්ෂණය",
+    checkpointIntro: (questions, percent) =>
+      `මුළු ඒකකයෙන්ම මිශ්‍ර ප්‍රශ්න ${questions}ක්. සමත් වීමට ${percent}%ක් නිවැරදි විය යුතුයි.`,
+    skipAhead: "මෙය දැනටමත් දන්නවාද? පරීක්ෂණය සමත් වී ඉදිරියට යන්න.",
+    startCheckpoint: "පරීක්ෂණය අරඹන්න",
+    checkpointPassed: "ඔබ සමත්! මෙම ඒකකය සම්පූර්ණයි.",
+    checkpointFailed: "තවම නැහැ. පාඩම් පුහුණු වී නැවත උත්සාහ කරන්න.",
+    checkpointScore: (right, total) => `${total}න් ${right}ක් නිවැරදියි`,
+    backToUnit: "ඒකකයට ආපසු",
   },
 };

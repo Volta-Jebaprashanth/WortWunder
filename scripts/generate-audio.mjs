@@ -867,6 +867,12 @@ const TITLES = [
   // Course lesson player (src/components/course/).
   { word: "Gut zu wissen", slug: "title-gut-zu-wissen" },
   { word: "Lektion geschafft!", slug: "title-lektion-geschafft" },
+  { word: "Was fehlt?", slug: "title-was-fehlt" },
+  { word: "Ordne die Wörter", slug: "title-ordne-die-woerter" },
+  { word: "Schreib auf Deutsch", slug: "title-schreib-auf-deutsch" },
+  { word: "Schreib, was du hörst", slug: "title-schreib-was-du-hoerst" },
+  { word: "Einheit geschafft!", slug: "title-einheit-geschafft" },
+  { word: "Noch nicht geschafft", slug: "title-noch-nicht-geschafft" },
 ];
 
 // The German alphabet, for the word-builder's letter tiles. `name` spells out

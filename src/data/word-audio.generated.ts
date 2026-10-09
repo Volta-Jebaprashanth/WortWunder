@@ -822,4 +822,10 @@ export const WORD_AUDIO: Record<string, string> = {
   "Neues Wort": "/audio/title-neues-wort.mp3",
   "Gut zu wissen": "/audio/title-gut-zu-wissen.mp3",
   "Lektion geschafft!": "/audio/title-lektion-geschafft.mp3",
+  "Was fehlt?": "/audio/title-was-fehlt.mp3",
+  "Ordne die Wörter": "/audio/title-ordne-die-woerter.mp3",
+  "Schreib auf Deutsch": "/audio/title-schreib-auf-deutsch.mp3",
+  "Schreib, was du hörst": "/audio/title-schreib-was-du-hoerst.mp3",
+  "Einheit geschafft!": "/audio/title-einheit-geschafft.mp3",
+  "Noch nicht geschafft": "/audio/title-noch-nicht-geschafft.mp3",
 };

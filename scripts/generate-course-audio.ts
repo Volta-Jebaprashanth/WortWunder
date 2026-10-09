@@ -9,7 +9,9 @@
 // Every sentence in src/data/course/ gets two clips, named after its id:
 //   public/course/<unit>/audio/<sentenceId>.mp3       normal speed
 //   public/course/<unit>/audio/<sentenceId>.slow.mp3  for "play slowly"
-// read by the voice the sentence asks for ("f" by default). The manifest
+// read by the voice the sentence asks for ("f" by default). A sentence's
+// `say` text is read in place of its German where the voice would misread
+// it (spelled-out letters). The manifest
 // src/data/course-audio.generated.ts is rewritten on every run.
 
 import { MsEdgeTTS, OUTPUT_FORMAT } from "msedge-tts";
@@ -57,18 +59,9 @@ for (const unit of COURSE_UNITS) {
     for (const sentence of lesson.sentences) {
       const voice = VOICES[sentence.voice ?? "f"];
       const base = `/course/${unit.id}/audio/${sentence.id}`;
-      await writeIfMissing(
-        path.join(dir, `${sentence.id}.mp3`),
-        sentence.german,
-        voice,
-        NORMAL_RATE,
-      );
-      await writeIfMissing(
-        path.join(dir, `${sentence.id}.slow.mp3`),
-        sentence.german,
-        voice,
-        SLOW_RATE,
-      );
+      const text = sentence.say ?? sentence.german;
+      await writeIfMissing(path.join(dir, `${sentence.id}.mp3`), text, voice, NORMAL_RATE);
+      await writeIfMissing(path.join(dir, `${sentence.id}.slow.mp3`), text, voice, SLOW_RATE);
       entries.push(
         `  ${JSON.stringify(sentence.id)}: { src: "${base}.mp3", slow: "${base}.slow.mp3" },`,
       );

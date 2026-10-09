@@ -3,6 +3,7 @@ import { Check, Loader2, Turtle, Volume2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { isSentenceReady, playSentence, subscribeAudio } from "@/lib/word-audio";
+import { splitAtToken } from "@/lib/course-engine";
 import type { Sentence } from "@/data/course/types";
 import type { MotherTongue, Strings } from "@/lib/i18n";
 
@@ -60,20 +61,29 @@ export function SentenceCard({ t, sentence }: { t: Strings; sentence: Sentence }
 
 // The sheet that slides up once an answer is checked. Unlike the vocabulary
 // quiz's ResultCard there is no retry in place: a wrong answer shows the
-// right one and the question comes back at the end of the lesson.
+// right one and the question comes back at the end of the lesson. A typed
+// answer that was accepted with a slip passes `note` (what to watch) and,
+// for a near miss, `markToken`: the word of the sentence to look at again.
 export function CourseResult({
   t,
   lang,
   correct,
   sentence,
+  title,
+  note,
+  markToken,
   onContinue,
 }: {
   t: Strings;
   lang: MotherTongue;
   correct: boolean;
   sentence: Sentence;
+  title?: string | undefined;
+  note?: string | undefined;
+  markToken?: number | undefined;
   onContinue: () => void;
 }) {
+  const marked = markToken === undefined ? undefined : splitAtToken(sentence.german, markToken);
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4">
       <div
@@ -102,8 +112,9 @@ export function CourseResult({
                 correct ? "text-success" : "text-destructive",
               )}
             >
-              {correct ? "Richtig!" : "Nicht ganz."}
+              {title ?? (correct ? "Richtig!" : "Nicht ganz.")}
             </p>
+            {note && <p className="text-sm font-bold text-ink-soft">{note}</p>}
             {!correct && <p className="text-sm font-bold text-ink-soft">{t.correctAnswer}</p>}
             <button
               type="button"
@@ -111,7 +122,17 @@ export function CourseResult({
               aria-label={t.tapToHear(sentence.german)}
               className="mt-1 flex items-center gap-2 text-left font-display text-lg font-extrabold"
             >
-              <span className="min-w-0 break-words">{sentence.german}</span>
+              <span className="min-w-0 whitespace-pre-wrap break-words">
+                {marked?.word ? (
+                  <>
+                    {marked.before}
+                    <mark className="rounded-md bg-sun px-1 text-foreground">{marked.word}</mark>
+                    {marked.after}
+                  </>
+                ) : (
+                  sentence.german
+                )}
+              </span>
               <Volume2 className="size-5 shrink-0 text-ink-soft" />
             </button>
             <p className="font-bold text-ink-soft">{sentence[lang]}</p>

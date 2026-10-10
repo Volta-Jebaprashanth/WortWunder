@@ -1,5 +1,6 @@
 import type { MotherTongue } from "@/lib/i18n";
 import type { VocabWord } from "@/data/vocabulary";
+import type { TestType } from "@/lib/quiz-engine";
 import { GREETINGS_LESSON_ID, GREETINGS_WORDS } from "@/data/greetings";
 import { FAMILY_LESSON_ID, FAMILY_WORDS } from "@/data/family";
 import { FOOD_LESSON_ID, FOOD_WORDS } from "@/data/food";
@@ -43,6 +44,8 @@ export interface VocabTest {
   testId: string;
   part: number;
   words: VocabWord[];
+  // Limits the test to these question types; every type when left out.
+  testTypes?: TestType[];
 }
 
 export interface VocabLesson {

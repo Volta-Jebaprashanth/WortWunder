@@ -77,6 +77,9 @@ export interface Strings {
   listenAgain: string;
   check: string;
   tryAgain: string;
+  youChose: string;
+  youWrote: string;
+  correctSpelling: string;
   resetLetters: string;
   openKeyboard: string;
   playGermanWord: string;
@@ -157,6 +160,9 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     listenAgain: "Listen again as many times as you like.",
     check: "Check",
     tryAgain: "Try again",
+    youChose: "You chose",
+    youWrote: "You wrote",
+    correctSpelling: "Correct spelling",
     resetLetters: "Reset letters",
     openKeyboard: "Type with the keyboard",
     playGermanWord: "Play German word",
@@ -236,6 +242,9 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     listenAgain: "நீங்கள் விரும்பும் அளவுக்கு மீண்டும் கேளுங்கள்.",
     check: "சரிபார்",
     tryAgain: "மீண்டும் முயற்சி செய்",
+    youChose: "நீங்கள் தேர்ந்தெடுத்தது",
+    youWrote: "நீங்கள் எழுதியது",
+    correctSpelling: "சரியான எழுத்துக்கூட்டல்",
     resetLetters: "எழுத்துக்களை மீட்டமை",
     openKeyboard: "விசைப்பலகையில் தட்டச்சு செய்",
     playGermanWord: "ஜெர்மன் சொல்லைக் கேள்",
@@ -314,6 +323,9 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     listenAgain: "ඔබට කැමති තරම් නැවත අහන්න.",
     check: "පරීක්ෂා කරන්න",
     tryAgain: "නැවත උත්සාහ කරන්න",
+    youChose: "ඔබ තෝරාගත්තේ",
+    youWrote: "ඔබ ලිව්වේ",
+    correctSpelling: "නිවැරදි අක්ෂර වින්‍යාසය",
     resetLetters: "අකුරු යළි සකසන්න",
     openKeyboard: "යතුරුපුවරුවෙන් ටයිප් කරන්න",
     playGermanWord: "ජර්මානු වචනය ඇසෙන්න",

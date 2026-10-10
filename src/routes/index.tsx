@@ -56,6 +56,7 @@ import {
   type VocabLesson,
   type VocabTest,
 } from "@/data/lessons";
+import { GREETINGS_WORDS } from "@/data/greetings";
 import { FAMILY_LESSON_ID } from "@/data/family";
 import { WEATHER_LESSON_ID } from "@/data/weather";
 import { HOBBIES_LESSON_ID } from "@/data/hobbies";
@@ -357,7 +358,7 @@ function Index() {
         /* fullscreen unsupported (e.g. iOS Safari) — layout still fills the viewport */
       }
     }
-    const test = findVocabTest(nodeId);
+    const test = findVocabTest(nodeId) ?? TESTING_TESTS.find((t) => t.testId === nodeId);
     if (test) {
       setActiveTest(test);
       go("quiz");
@@ -405,6 +406,7 @@ function Index() {
           key={activeTest.testId}
           testId={activeTest.testId}
           words={activeTest.words}
+          testTypes={activeTest.testTypes}
           t={t}
           lang={lang}
           onExit={() => go("home")}
@@ -950,11 +952,27 @@ const OESD_LESSONS: {
   },
 ];
 
+// Testing-section tests that aren't part of any lesson. This one runs a
+// single word through just the question types that aren't a pick-a-word
+// multiple choice, for trying out their wrong-answer feedback quickly.
+const SPELLING_TEST: VocabTest = {
+  testId: "testing.spelling",
+  part: 1,
+  words: GREETINGS_WORDS.slice(0, 1),
+  testTypes: ["missing", "build", "listenBuild"],
+};
+const TESTING_TESTS: VocabTest[] = [SPELLING_TEST];
+
 const PATH_MEANINGS = {
   grundlagen: { english: "Basics", tamil: "அடிப்படைகள்", sinhala: "මූලික කරුණු" },
   oesd: { english: "ÖSD exam", tamil: "ÖSD தேர்வு", sinhala: "ÖSD විභාගය" },
   testing: { english: "Testing", tamil: "சோதனை", sinhala: "පරීක්ෂණ" },
   tiere: { english: "Animals", tamil: "விலங்குகள்", sinhala: "සතුන්" },
+  spelling: {
+    english: "Spelling check",
+    tamil: "எழுத்துக்கூட்டல் சோதனை",
+    sinhala: "අක්ෂර වින්‍යාස පරීක්ෂණය",
+  },
 } satisfies Record<string, Record<MotherTongue, string>>;
 
 function Home({
@@ -1012,6 +1030,14 @@ function Home({
             icon: "🐕",
             state: "active",
             meaning: PATH_MEANINGS.tiere[lang],
+          },
+          {
+            id: SPELLING_TEST.testId,
+            title: "Buchstabieren",
+            icon: "✏️",
+            state: "active",
+            meaning: PATH_MEANINGS.spelling[lang],
+            testId: SPELLING_TEST.testId,
           },
         ],
       },

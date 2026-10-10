@@ -38,6 +38,7 @@ import {
   tierOfType,
   wordSegments,
   type QuizItem,
+  type TestType,
 } from "@/lib/quiz-engine";
 import { ensureTestEntered, getActiveTierRows, recordFail, recordPass } from "@/lib/progress-store";
 import { recordCorrectAnswer } from "@/lib/stats-store";
@@ -64,12 +65,14 @@ function segmentRanges(segments: number[]) {
 export function VocabQuiz({
   testId,
   words,
+  testTypes = ALL_TEST_TYPES,
   t,
   lang,
   onExit,
 }: {
   testId: string;
   words: VocabWord[];
+  testTypes?: TestType[] | undefined;
   t: Strings;
   lang: MotherTongue;
   onExit: () => void;
@@ -78,6 +81,9 @@ export function VocabQuiz({
   const [queue, setQueue] = useState<QuizItem[]>([]);
   const [ready, setReady] = useState(false);
   const [index, setIndex] = useState(0);
+  // Counts rebuilt rounds, so a match board can be told apart from the same
+  // board coming up again at the same position in the next round.
+  const [round, setRound] = useState(0);
   const [answer, setAnswer] = useState<string | null>(null);
   const [letters, setLetters] = useState<number[]>([]);
   const [checked, setChecked] = useState(false);
@@ -104,18 +110,20 @@ export function VocabQuiz({
   useEffect(() => {
     preloadFeedbackSounds();
     const wordIds = words.map((w) => w.id);
-    ensureTestEntered(testId, wordIds, ALL_TEST_TYPES);
+    ensureTestEntered(testId, wordIds, testTypes);
     setQueue(buildRoundFromRows(getActiveTierRows(testId), words));
     setReady(true);
-  }, [testId, words]);
+  }, [testId, words, testTypes]);
 
+  // Keyed on the queue as well as the index: a one-question round followed by
+  // a new round stays at index 0, and must still start the next question clean.
   useEffect(() => {
     setAnswer(null);
     setLetters([]);
     setChecked(false);
     setAttempts(0);
     setIntroDone(false);
-  }, [index]);
+  }, [queue, index]);
 
   // Fetch only what this question and the next few need (audio and pictures),
   // current question first — see word-audio.ts / image-preload.ts. The queue
@@ -148,6 +156,27 @@ export function VocabQuiz({
     return { word, mcOptions, tiles, segments, answerLength, missing };
   }, [item, byId]);
 
+  // The option the learner picked on a multiple-choice question, for the
+  // wrong card. Each question type keys its options differently (word id,
+  // German word or meaning); spelling and missing-letter have no word to show.
+  const pickedWord = (() => {
+    if (!item || !derived || answer === null) return undefined;
+    switch (item.kind) {
+      case "wordPicture":
+      case "training":
+      case "listenPicture":
+        return derived.mcOptions.find((w) => w.id === answer);
+      case "meaning":
+        return derived.mcOptions.find((w) => w[lang] === answer);
+      case "picture":
+      case "translate":
+      case "listen":
+        return derived.mcOptions.find((w) => w.full === answer);
+      default:
+        return undefined;
+    }
+  })();
+
   // Once the current round runs out, the next round comes from whatever
   // tier is now active: more of the same tier if fails left rows pending in
   // it, otherwise the next tier down the line. Only once every tier is
@@ -161,6 +190,7 @@ export function VocabQuiz({
     const nextRows = getActiveTierRows(testId);
     setQueue(nextRows.length > 0 ? buildRoundFromRows(nextRows, words) : []);
     setIndex(0);
+    setRound((r) => r + 1);
   };
   const checkAnswer = (isCorrect: boolean) => {
     setChecked(true);
@@ -571,7 +601,7 @@ export function VocabQuiz({
             subtitle={t.matchWordsToMeaning}
           >
             <MatchPairs
-              key={item.words.map((w) => w.id).join("-")}
+              key={`${round}:${index}`}
               t={t}
               lang={lang}
               words={item.words}
@@ -593,6 +623,25 @@ export function VocabQuiz({
             correct={lastCorrect}
             correctText={t.correctMeaning(derived.word.full, derived.word[lang])}
             hint={attempts >= 2 ? t.hintGeneric : undefined}
+            picked={
+              pickedWord && {
+                word: pickedWord,
+                meaning: pickedWord[lang],
+                label: t.youChose,
+                hearLabel: t.tapToHear(pickedWord.full),
+              }
+            }
+            spelling={
+              item.kind === "build" || item.kind === "listenBuild"
+                ? {
+                    typed: letters.map((i) => derived.tiles[i]).join(""),
+                    answer: answerLetters(spellingOf(derived.word)),
+                    segments: derived.segments,
+                    typedLabel: t.youWrote,
+                    answerLabel: t.correctSpelling,
+                  }
+                : undefined
+            }
             actionLabel={lastCorrect ? "Weiter" : t.tryAgain}
             onAction={lastCorrect ? goNext : retry}
           />

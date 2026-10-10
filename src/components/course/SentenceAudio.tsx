@@ -59,36 +59,25 @@ export function SentenceCard({ t, sentence }: { t: Strings; sentence: Sentence }
   );
 }
 
-// The sheet that slides up once an answer is checked. Unlike the vocabulary
-// quiz's ResultCard there is no retry in place: a wrong answer shows the
-// right one and the question comes back at the end of the lesson. A typed
-// answer that was accepted with a slip passes `note` (what to watch) and,
-// for a near miss, `markToken`: the word of the sentence to look at again.
-export function CourseResult({
-  t,
-  lang,
+// The sheet that slides up once an answer is checked: green or red, a
+// verdict, whatever the screen wants to show about the right answer, and
+// the button to go on.
+export function ResultSheet({
   correct,
-  sentence,
   title,
-  note,
-  markToken,
+  children,
   onContinue,
 }: {
-  t: Strings;
-  lang: MotherTongue;
   correct: boolean;
-  sentence: Sentence;
   title?: string | undefined;
-  note?: string | undefined;
-  markToken?: number | undefined;
+  children?: React.ReactNode;
   onContinue: () => void;
 }) {
-  const marked = markToken === undefined ? undefined : splitAtToken(sentence.german, markToken);
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4">
       <div
         className={cn(
-          "animate-slide-in-up w-full max-w-3xl rounded-t-[28px] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-[0_-12px_30px_rgba(0,0,0,0.18)] sm:p-7",
+          "animate-slide-in-up max-h-[80dvh] w-full max-w-3xl overflow-y-auto rounded-t-[28px] p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-[0_-12px_30px_rgba(0,0,0,0.18)] sm:p-7",
           correct ? "bg-success-soft" : "bg-danger-soft",
         )}
       >
@@ -114,28 +103,7 @@ export function CourseResult({
             >
               {title ?? (correct ? "Richtig!" : "Nicht ganz.")}
             </p>
-            {note && <p className="text-sm font-bold text-ink-soft">{note}</p>}
-            {!correct && <p className="text-sm font-bold text-ink-soft">{t.correctAnswer}</p>}
-            <button
-              type="button"
-              onClick={() => playSentence(sentence)}
-              aria-label={t.tapToHear(sentence.german)}
-              className="mt-1 flex items-center gap-2 text-left font-display text-lg font-extrabold"
-            >
-              <span className="min-w-0 whitespace-pre-wrap break-words">
-                {marked?.word ? (
-                  <>
-                    {marked.before}
-                    <mark className="rounded-md bg-sun px-1 text-foreground">{marked.word}</mark>
-                    {marked.after}
-                  </>
-                ) : (
-                  sentence.german
-                )}
-              </span>
-              <Volume2 className="size-5 shrink-0 text-ink-soft" />
-            </button>
-            <p className="font-bold text-ink-soft">{sentence[lang]}</p>
+            {children}
           </div>
         </div>
         <Button variant="adventure" size="lesson" className="mt-4 w-full" onClick={onContinue}>
@@ -143,5 +111,79 @@ export function CourseResult({
         </Button>
       </div>
     </div>
+  );
+}
+
+// A German sentence with its meaning below, tappable to hear: one line of a
+// result sheet, a dialogue transcript or a model answer.
+export function SentenceLine({
+  t,
+  lang,
+  sentence,
+  markToken,
+}: {
+  t: Strings;
+  lang: MotherTongue;
+  sentence: Sentence;
+  // The word of the sentence to highlight, counted as tokenize counts them.
+  markToken?: number | undefined;
+}) {
+  const marked = markToken === undefined ? undefined : splitAtToken(sentence.german, markToken);
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => playSentence(sentence)}
+        aria-label={t.tapToHear(sentence.german)}
+        className="mt-1 flex items-center gap-2 text-left font-display text-lg font-extrabold"
+      >
+        <span className="min-w-0 whitespace-pre-wrap break-words">
+          {marked?.word ? (
+            <>
+              {marked.before}
+              <mark className="rounded-md bg-sun px-1 text-foreground">{marked.word}</mark>
+              {marked.after}
+            </>
+          ) : (
+            sentence.german
+          )}
+        </span>
+        <Volume2 className="size-5 shrink-0 text-ink-soft" />
+      </button>
+      <p className="font-bold text-ink-soft">{sentence[lang]}</p>
+    </div>
+  );
+}
+
+// The result of a question about one sentence. Unlike the vocabulary quiz's
+// ResultCard there is no retry in place: a wrong answer shows the right one
+// and the question comes back at the end of the lesson. A typed or spoken
+// answer passes `note` (what to watch, or what was heard) and, for a near
+// miss, `markToken`: the word of the sentence to look at again.
+export function CourseResult({
+  t,
+  lang,
+  correct,
+  sentence,
+  title,
+  note,
+  markToken,
+  onContinue,
+}: {
+  t: Strings;
+  lang: MotherTongue;
+  correct: boolean;
+  sentence: Sentence;
+  title?: string | undefined;
+  note?: string | undefined;
+  markToken?: number | undefined;
+  onContinue: () => void;
+}) {
+  return (
+    <ResultSheet correct={correct} title={title} onContinue={onContinue}>
+      {note && <p className="text-sm font-bold text-ink-soft">{note}</p>}
+      {!correct && <p className="text-sm font-bold text-ink-soft">{t.correctAnswer}</p>}
+      <SentenceLine t={t} lang={lang} sentence={sentence} markToken={markToken} />
+    </ResultSheet>
   );
 }

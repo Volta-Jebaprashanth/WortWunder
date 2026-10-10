@@ -1,5 +1,5 @@
 import { MOTHER_TONGUES } from "@/lib/i18n";
-import type { CourseUnit, Translations } from "@/data/course/types";
+import type { ComprehensionQuestion, CourseUnit, Translations } from "@/data/course/types";
 import { tokenize } from "@/lib/course-engine";
 
 // Checks the course data for the mistakes that would otherwise only show up
@@ -26,6 +26,18 @@ export function validateCourse(units: CourseUnit[], ctx: ValidationContext): str
   };
   const needText = (text: Partial<Translations> | undefined, what: string) => {
     for (const lang of missingLanguages(text)) errors.push(`${what} is missing ${lang}`);
+  };
+
+  const needQuestion = (question: ComprehensionQuestion, what: string) => {
+    if (question.format === "richtigFalsch") {
+      needText(question.statement, `${what} statement`);
+      return;
+    }
+    needText(question.prompt, `${what} prompt`);
+    if (question.options.length < 2) errors.push(`${what} needs at least two options`);
+    question.options.forEach((option, i) => needText(option, `${what} option ${i + 1}`));
+    if (!Number.isInteger(question.correct) || !(question.correct in question.options))
+      errors.push(`${what} correct answer ${question.correct} is out of range`);
   };
 
   const sentenceIds = new Set(
@@ -61,9 +73,28 @@ export function validateCourse(units: CourseUnit[], ctx: ValidationContext): str
     for (const dialogue of unit.dialogues) {
       claim(dialogue.id, "dialogue");
       needText(dialogue.title, `${dialogue.id} title`);
+      if (dialogue.lines.length === 0) errors.push(`${dialogue.id} has no lines`);
       for (const line of dialogue.lines)
         if (!sentenceIds.has(line.sentenceId))
           errors.push(`${dialogue.id} refers to unknown sentence ${line.sentenceId}`);
+      if (dialogue.question) needQuestion(dialogue.question, `${dialogue.id} question`);
+    }
+    const dialoguesById = new Map(unit.dialogues.map((dialogue) => [dialogue.id, dialogue]));
+
+    const readingIds = new Set(unit.readings.map((text) => text.id));
+    for (const text of unit.readings) {
+      claim(text.id, "reading");
+      if (!text.german.trim()) errors.push(`${text.id} has no German text`);
+      needQuestion(text.question, `${text.id} question`);
+    }
+
+    const speakTaskIds = new Set(unit.speakTasks.map((task) => task.id));
+    for (const task of unit.speakTasks) {
+      claim(task.id, "speaking task");
+      needText(task.cue, `${task.id} cue`);
+      if (task.models.length === 0) errors.push(`${task.id} has no model answer`);
+      for (const id of [...(task.question ? [task.question] : []), ...task.models])
+        if (!sentenceIds.has(id)) errors.push(`${task.id} refers to unknown sentence ${id}`);
     }
 
     for (const lesson of unit.lessons) {
@@ -85,8 +116,21 @@ export function validateCourse(units: CourseUnit[], ctx: ValidationContext): str
         } else if (step.kind === "word") {
           if (!ctx.hasWord(step.ref))
             errors.push(`${lesson.id} step refers to unknown word ${step.ref}`);
-        } else if (!noteIds.has(step.noteId)) {
-          errors.push(`${lesson.id} step refers to unknown note ${step.noteId}`);
+        } else if (step.kind === "tip") {
+          if (!noteIds.has(step.noteId))
+            errors.push(`${lesson.id} step refers to unknown note ${step.noteId}`);
+        } else if (step.kind === "dialogue" || step.kind === "listen") {
+          const dialogue = dialoguesById.get(step.id);
+          if (!dialogue) errors.push(`${lesson.id} step refers to unknown dialogue ${step.id}`);
+          else if (step.kind === "listen" && !dialogue.question)
+            errors.push(`${lesson.id} listens to ${step.id}, which has no question`);
+          // A line written for a dialogue need not be drilled on its own.
+          for (const line of dialogue?.lines ?? []) usedSentences.add(line.sentenceId);
+        } else if (step.kind === "read") {
+          if (!readingIds.has(step.id))
+            errors.push(`${lesson.id} step refers to unknown reading ${step.id}`);
+        } else if (!speakTaskIds.has(step.id)) {
+          errors.push(`${lesson.id} step refers to unknown speaking task ${step.id}`);
         }
       }
 

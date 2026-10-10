@@ -33,6 +33,8 @@ interface CourseStore {
   units: Record<string, { checkpoint: boolean }>;
   sentences: Record<string, SentenceState>;
   streak: { day: string; run: number };
+  // Per grammar tag: wrong answers not yet made up for by right ones.
+  misses: Record<string, number>;
 }
 
 // Local time, not UTC, so a day rolls over at the learner's own midnight.
@@ -52,6 +54,7 @@ function emptyStore(): CourseStore {
     units: {},
     sentences: {},
     streak: { day: "", run: 0 },
+    misses: {},
   };
 }
 
@@ -84,11 +87,13 @@ export function reconcileCourse(known: {
   unitIds: readonly string[];
   lessonIds: readonly string[];
   sentenceIds: readonly string[];
+  grammarTags?: readonly string[];
 }) {
   const store = readStore();
   store.units = keep(store.units, known.unitIds);
   store.lessons = keep(store.lessons, known.lessonIds);
   store.sentences = keep(store.sentences, known.sentenceIds);
+  if (known.grammarTags) store.misses = keep(store.misses, known.grammarTags);
   writeStore(store);
 }
 
@@ -108,10 +113,21 @@ export function finishLesson(lessonId: string, score: number, today: string = lo
   const store = readStore();
   const best = Math.max(store.lessons[lessonId]?.best ?? 0, Math.round(score));
   store.lessons[lessonId] = { done: true, best };
-  if (store.streak.day !== today) {
-    const continues = store.streak.day === addDays(today, -1);
-    store.streak = { day: today, run: continues ? store.streak.run + 1 : 1 };
-  }
+  countDay(store, today);
+  writeStore(store);
+}
+
+function countDay(store: CourseStore, today: string) {
+  if (store.streak.day === today) return;
+  const continues = store.streak.day === addDays(today, -1);
+  store.streak = { day: today, run: continues ? store.streak.run + 1 : 1 };
+}
+
+// Counts today towards the streak. Finishing a lesson does this by itself;
+// a review session or a checkpoint calls it when it ends.
+export function markActiveDay(today: string = localDay()) {
+  const store = readStore();
+  countDay(store, today);
   writeStore(store);
 }
 
@@ -139,10 +155,13 @@ export function getSentenceStrength(sentenceId: string): number {
   return readStore().sentences[sentenceId]?.strength ?? 0;
 }
 
+// `grammar` are the sentence's grammar tags: a wrong answer counts against
+// each of them and a right one makes up for one earlier miss.
 export function recordSentenceAnswer(
   sentenceId: string,
   correct: boolean,
   today: string = localDay(),
+  grammar: readonly string[] = [],
 ) {
   const store = readStore();
   const before = store.sentences[sentenceId]?.strength ?? 0;
@@ -150,7 +169,20 @@ export function recordSentenceAnswer(
   const days =
     correct && before === MAX_STRENGTH ? DUE_AT_FULL_STRENGTH : DUE_AFTER_DAYS[strength]!;
   store.sentences[sentenceId] = { strength, due: addDays(today, days) };
+  for (const tag of grammar) {
+    const misses = Math.max(0, (store.misses[tag] ?? 0) + (correct ? -1 : 1));
+    if (misses > 0) store.misses[tag] = misses;
+    else delete store.misses[tag];
+  }
   writeStore(store);
+}
+
+// The grammar tags the learner currently misses most, worst first.
+export function getWeakGrammarTags(limit = 3): string[] {
+  return Object.entries(readStore().misses)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, limit)
+    .map(([tag]) => tag);
 }
 
 export function getDueSentenceIds(today: string = localDay()): string[] {

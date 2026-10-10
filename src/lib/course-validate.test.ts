@@ -87,6 +87,59 @@ describe("validateCourse", () => {
     ]);
   });
 
+  it("fails on a broken dialogue, reading or speaking task", () => {
+    expect(broken((u) => u.dialogues[0]!.lines.push({ speaker: "a", sentenceId: "nope" }))).toEqual(
+      ["u01.d01 refers to unknown sentence nope"],
+    );
+    expect(
+      broken((u) => {
+        const question = u.dialogues[0]!.question!;
+        if (question.format === "choice") question.correct = 3;
+      }),
+    ).toEqual(["u01.d01 question correct answer 3 is out of range"]);
+    expect(
+      broken((u) => {
+        const question = u.readings[0]!.question;
+        if (question.format === "richtigFalsch") question.statement.tamil = "";
+      }),
+    ).toEqual(["u01.r01 question statement is missing tamil"]);
+    expect(broken((u) => (u.readings[0]!.german = " "))).toEqual(["u01.r01 has no German text"]);
+    expect(broken((u) => (u.speakTasks[0]!.models = []))).toEqual(["u01.q01 has no model answer"]);
+    expect(broken((u) => (u.speakTasks[0]!.question = "nope"))).toEqual([
+      "u01.q01 refers to unknown sentence nope",
+    ]);
+  });
+
+  it("fails on a step that refers to a task the unit does not have", () => {
+    const push = (step: CourseUnit["lessons"][number]["steps"][number]) =>
+      broken((u) => u.lessons[0]!.steps.push(step));
+    expect(push({ kind: "dialogue", id: "u01.d99" })).toEqual([
+      "u01.l01 step refers to unknown dialogue u01.d99",
+    ]);
+    expect(push({ kind: "read", id: "u01.r99" })).toEqual([
+      "u01.l01 step refers to unknown reading u01.r99",
+    ]);
+    expect(push({ kind: "speakQ", id: "u01.q99" })).toEqual([
+      "u01.l01 step refers to unknown speaking task u01.q99",
+    ]);
+    expect(push({ kind: "listen", id: "u01.d04" })).toEqual([
+      "u01.l01 listens to u01.d04, which has no question",
+    ]);
+  });
+
+  it("counts a sentence as used when a dialogue of the lesson speaks it", () => {
+    expect(
+      broken((u) => {
+        const lesson = u.lessons[1]!;
+        lesson.steps = lesson.steps.filter((s) => s.kind !== "dialogue");
+      }),
+    ).toEqual([
+      "u01.l02.s07 is not used by any step of u01.l02",
+      "u01.l02.s08 is not used by any step of u01.l02",
+      "u01.l02.s09 is not used by any step of u01.l02",
+    ]);
+  });
+
   it("fails on a sentence with no audio", () => {
     const unit = structuredClone(COURSE_UNITS[0]!);
     const errors = validateCourse([unit], { ...REAL_CONTEXT, audioIds: new Set() });

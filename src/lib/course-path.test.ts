@@ -20,6 +20,8 @@ function unit(id: string, lessons: number, withCheckpoint: boolean): CourseUnit 
     notes: [],
     guidebook: [],
     dialogues: [],
+    readings: [],
+    speakTasks: [],
     lessons: Array.from({ length: lessons }, (_, i) => ({
       id: `${id}.l0${i + 1}`,
       title: id,

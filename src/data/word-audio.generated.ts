@@ -828,4 +828,11 @@ export const WORD_AUDIO: Record<string, string> = {
   "Schreib, was du hörst": "/audio/title-schreib-was-du-hoerst.mp3",
   "Einheit geschafft!": "/audio/title-einheit-geschafft.mp3",
   "Noch nicht geschafft": "/audio/title-noch-nicht-geschafft.mp3",
+  "Was passt?": "/audio/title-was-passt.mp3",
+  "Hör zu": "/audio/title-hoer-zu.mp3",
+  "Lies den Text": "/audio/title-lies-den-text.mp3",
+  "Sprich nach": "/audio/title-sprich-nach.mp3",
+  "Antworte": "/audio/title-antworte.mp3",
+  "Üben": "/audio/title-ueben.mp3",
+  "Übung geschafft!": "/audio/title-uebung-geschafft.mp3",
 };

@@ -45,6 +45,9 @@ let audioCtx: AudioContext | null = null;
 // letter by letter) pile up overlapping audio.
 let activeSource: AudioBufferSourceNode | null = null;
 let activeElement: HTMLAudioElement | null = null;
+// Goes up whenever something new is played, so a sequence of clips (a
+// dialogue) knows it has been interrupted and stops.
+let playToken = 0;
 
 export function constrainedNetwork(): boolean {
   if (typeof navigator === "undefined") return false;
@@ -186,6 +189,9 @@ export function subscribeAudio(listener: () => void): () => void {
 }
 
 function stopActive() {
+  // A clip that is cut off must not report that it ended.
+  if (activeSource) activeSource.onended = null;
+  if (activeElement) activeElement.onended = null;
   activeElement?.pause();
   try {
     activeSource?.stop();
@@ -226,7 +232,7 @@ function context(): AudioContext {
   return audioCtx;
 }
 
-function playClip(src: string) {
+function playClip(src: string, onEnded?: () => void) {
   stopActive();
   const ready = clips.get(src);
   if (ready) {
@@ -236,24 +242,27 @@ function playClip(src: string) {
     const source = ctx.createBufferSource();
     source.buffer = ready.buffer;
     source.connect(ctx.destination);
+    source.onended = onEnded ?? null;
     source.start(0, ready.offset);
     activeSource = source;
     return;
   }
   enqueue([src], true);
   const audio = new Audio(src);
+  audio.onended = onEnded ?? null;
   activeElement = audio;
   audio.play().catch(() => {
     /* autoplay/decoding blocked — user can just tap again */
   });
 }
 
-function speak(text: string, rate = 0.78) {
+function speak(text: string, rate = 0.78, onEnded?: () => void) {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "de-DE";
   utterance.rate = rate;
+  utterance.onend = onEnded ?? null;
   window.speechSynthesis.speak(utterance);
 }
 
@@ -261,9 +270,31 @@ function speak(text: string, rate = 0.78) {
 // scripts/generate-course-audio.ts), at normal speed or slowly. Falls back
 // to speech synthesis for a sentence whose audio hasn't been generated yet.
 export function playSentence(sentence: { id: string; german: string }, slow = false) {
+  playToken++;
+  playSentenceClip(sentence, slow);
+}
+
+function playSentenceClip(
+  sentence: { id: string; german: string },
+  slow: boolean,
+  onEnded?: () => void,
+) {
   const clip = COURSE_AUDIO[sentence.id];
-  if (clip) playClip(slow ? clip.slow : clip.src);
-  else speak(sentence.german, slow ? 0.5 : 0.78);
+  if (clip) playClip(slow ? clip.slow : clip.src, onEnded);
+  else speak(sentence.german, slow ? 0.5 : 0.78, onEnded);
+}
+
+// Plays several sentences one after another with a short pause between
+// them: the lines of a dialogue. Playing anything else stops the sequence.
+const SEQUENCE_PAUSE_MS = 450;
+export function playSentenceSequence(sentences: readonly { id: string; german: string }[]) {
+  const token = ++playToken;
+  const step = (i: number) => {
+    const sentence = sentences[i];
+    if (!sentence || token !== playToken) return;
+    playSentenceClip(sentence, false, () => setTimeout(() => step(i + 1), SEQUENCE_PAUSE_MS));
+  };
+  step(0);
 }
 
 // Plays a recorded pronunciation for `word` if one has been generated
@@ -271,6 +302,7 @@ export function playSentence(sentence: { id: string; german: string }, slow = fa
 // synthesis for words that don't have an audio file yet, so new vocabulary
 // still speaks something before its audio is recorded.
 export function playWord(word: string) {
+  playToken++;
   const src = WORD_AUDIO[word];
   if (src) playClip(src);
   else speak(word);
@@ -279,6 +311,7 @@ export function playWord(word: string) {
 // Plays the German name of a single letter (e.g. "P" -> "peh"), for the
 // word-builder's letter tiles.
 export function playLetter(letter: string) {
+  playToken++;
   const src = LETTER_AUDIO[letter.toUpperCase()];
   if (src) playClip(src);
   else speak(letter);

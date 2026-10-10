@@ -9,6 +9,8 @@ import {
   getSentenceState,
   getSentenceStrength,
   getStreak,
+  getWeakGrammarTags,
+  markActiveDay,
   isCheckpointPassed,
   MAX_STRENGTH,
   passCheckpoint,
@@ -94,7 +96,38 @@ describe("sentence strength", () => {
   });
 });
 
+describe("weak grammar", () => {
+  it("names the tags missed most, and forgets one once it is made up for", () => {
+    expect(getWeakGrammarTags()).toEqual([]);
+    recordSentenceAnswer("s1", false, TODAY, ["du-sie", "verb"]);
+    recordSentenceAnswer("s2", false, TODAY, ["du-sie"]);
+    recordSentenceAnswer("s3", false, TODAY, ["plural"]);
+    expect(getWeakGrammarTags()[0]).toBe("du-sie");
+    expect(getWeakGrammarTags(1)).toEqual(["du-sie"]);
+    expect(getWeakGrammarTags().slice().sort()).toEqual(["du-sie", "plural", "verb"]);
+
+    recordSentenceAnswer("s3", true, TODAY, ["plural"]);
+    expect(getWeakGrammarTags()).not.toContain("plural");
+    recordSentenceAnswer("s3", true, TODAY, ["plural"]);
+    expect(getWeakGrammarTags().slice().sort()).toEqual(["du-sie", "verb"]);
+  });
+
+  it("is dropped for tags the course no longer has", () => {
+    recordSentenceAnswer("s1", false, TODAY, ["old", "kept"]);
+    reconcileCourse({ unitIds: [], lessonIds: [], sentenceIds: ["s1"], grammarTags: ["kept"] });
+    expect(getWeakGrammarTags()).toEqual(["kept"]);
+  });
+});
+
 describe("streak", () => {
+  it("counts a day on which only a review or a checkpoint was done", () => {
+    markActiveDay(TODAY);
+    markActiveDay(TODAY);
+    expect(getStreak(TODAY)).toBe(1);
+    markActiveDay(addDays(TODAY, 1));
+    expect(getStreak(addDays(TODAY, 1))).toBe(2);
+  });
+
   it("counts consecutive days on which a lesson was finished", () => {
     expect(getStreak(TODAY)).toBe(0);
     finishLesson("u01.l01", 100, TODAY);

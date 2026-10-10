@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UebenRouteImport } from './routes/ueben'
 import { Route as KursUnitIdIndexRouteImport } from './routes/kurs.$unitId.index'
 import { Route as KursUnitIdLessonIdRouteImport } from './routes/kurs.$unitId.$lessonId'
 import { Route as KursUnitIdCheckpointRouteImport } from './routes/kurs.$unitId.checkpoint'
@@ -18,6 +19,11 @@ import { Route as KursUnitIdGuideRouteImport } from './routes/kurs.$unitId.guide
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UebenRoute = UebenRouteImport.update({
+  id: '/ueben',
+  path: '/ueben',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KursUnitIdIndexRoute = KursUnitIdIndexRouteImport.update({
@@ -43,6 +49,7 @@ const KursUnitIdGuideRoute = KursUnitIdGuideRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ueben': typeof UebenRoute
   '/kurs/$unitId/$lessonId': typeof KursUnitIdLessonIdRoute
   '/kurs/$unitId/checkpoint': typeof KursUnitIdCheckpointRoute
   '/kurs/$unitId/guide': typeof KursUnitIdGuideRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ueben': typeof UebenRoute
   '/kurs/$unitId/$lessonId': typeof KursUnitIdLessonIdRoute
   '/kurs/$unitId/checkpoint': typeof KursUnitIdCheckpointRoute
   '/kurs/$unitId/guide': typeof KursUnitIdGuideRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ueben': typeof UebenRoute
   '/kurs/$unitId/$lessonId': typeof KursUnitIdLessonIdRoute
   '/kurs/$unitId/checkpoint': typeof KursUnitIdCheckpointRoute
   '/kurs/$unitId/guide': typeof KursUnitIdGuideRoute
@@ -67,6 +76,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ueben'
     | '/kurs/$unitId/$lessonId'
     | '/kurs/$unitId/checkpoint'
     | '/kurs/$unitId/guide'
@@ -74,6 +84,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ueben'
     | '/kurs/$unitId/$lessonId'
     | '/kurs/$unitId/checkpoint'
     | '/kurs/$unitId/guide'
@@ -81,6 +92,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/ueben'
     | '/kurs/$unitId/$lessonId'
     | '/kurs/$unitId/checkpoint'
     | '/kurs/$unitId/guide'
@@ -89,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  UebenRoute: typeof UebenRoute
   KursUnitIdLessonIdRoute: typeof KursUnitIdLessonIdRoute
   KursUnitIdCheckpointRoute: typeof KursUnitIdCheckpointRoute
   KursUnitIdGuideRoute: typeof KursUnitIdGuideRoute
@@ -102,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ueben': {
+      id: '/ueben'
+      path: '/ueben'
+      fullPath: '/ueben'
+      preLoaderRoute: typeof UebenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kurs/$unitId/': {
@@ -137,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  UebenRoute: UebenRoute,
   KursUnitIdLessonIdRoute: KursUnitIdLessonIdRoute,
   KursUnitIdCheckpointRoute: KursUnitIdCheckpointRoute,
   KursUnitIdGuideRoute: KursUnitIdGuideRoute,

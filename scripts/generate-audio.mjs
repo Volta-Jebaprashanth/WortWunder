@@ -873,6 +873,13 @@ const TITLES = [
   { word: "Schreib, was du hörst", slug: "title-schreib-was-du-hoerst" },
   { word: "Einheit geschafft!", slug: "title-einheit-geschafft" },
   { word: "Noch nicht geschafft", slug: "title-noch-nicht-geschafft" },
+  { word: "Was passt?", slug: "title-was-passt" },
+  { word: "Hör zu", slug: "title-hoer-zu" },
+  { word: "Lies den Text", slug: "title-lies-den-text" },
+  { word: "Sprich nach", slug: "title-sprich-nach" },
+  { word: "Antworte", slug: "title-antworte" },
+  { word: "Üben", slug: "title-ueben" },
+  { word: "Übung geschafft!", slug: "title-uebung-geschafft" },
 ];
 
 // The German alphabet, for the word-builder's letter tiles. `name` spells out

@@ -9,6 +9,10 @@ import type { CourseUnit } from "@/data/course/types";
 // one exception: where German tells du from Sie, the translation does too
 // (நீ / நீங்கள், ඔයා / ඔබ), because that difference is what the unit teaches.
 //
+// Some sentences are written for a dialogue and are not drilled on their
+// own: they appear in a lesson's `sentences` (so they get audio and
+// progress) but in no sentence step, only in the lines of a dialogue.
+//
 // `accept` lists other German sentences that answer the same prompt just as
 // well ("Mein Name ist Anna." for "Ich heiße Anna."), so a typed answer is
 // not marked wrong for being a different right one.
@@ -193,7 +197,187 @@ export const UNIT_01: CourseUnit = {
     },
   ],
   guidebook: ["u01.g01", "u01.g02", "u01.g03", "u01.g04", "u01.g05", "u01.g06"],
-  dialogues: [],
+  dialogues: [
+    {
+      id: "u01.d01",
+      title: {
+        english: "Meeting someone new",
+        tamil: "புதியவரைச் சந்தித்தல்",
+        sinhala: "අලුත් කෙනෙකු හමුවීම",
+      },
+      lines: [
+        { speaker: "a", sentenceId: "u01.l02.s07" },
+        { speaker: "b", sentenceId: "u01.l02.s08" },
+        { speaker: "a", sentenceId: "u01.l02.s02" },
+        { speaker: "b", sentenceId: "u01.l02.s09" },
+      ],
+      question: {
+        format: "choice",
+        prompt: {
+          english: "What is the man's name?",
+          tamil: "ஆணின் பெயர் என்ன?",
+          sinhala: "පිරිමියාගේ නම මොකක්ද?",
+        },
+        options: [
+          { english: "Tom", tamil: "டாம்", sinhala: "ටොම්" },
+          { english: "Anna", tamil: "அன்னா", sinhala: "ඇනා" },
+          { english: "Weber", tamil: "வேபர்", sinhala: "වෙබර්" },
+        ],
+        correct: 0,
+      },
+    },
+    {
+      id: "u01.d02",
+      title: {
+        english: "Two friends meet",
+        tamil: "இரு நண்பர்கள் சந்திக்கிறார்கள்",
+        sinhala: "යාළුවන් දෙදෙනෙක් හමුවෙයි",
+      },
+      lines: [
+        { speaker: "b", sentenceId: "u01.l02.s09" },
+        { speaker: "a", sentenceId: "u01.l03.s08" },
+        { speaker: "b", sentenceId: "u01.l03.s05" },
+        { speaker: "a", sentenceId: "u01.l03.s04" },
+      ],
+      question: {
+        format: "richtigFalsch",
+        statement: {
+          english: "Tom is feeling very well.",
+          tamil: "டாம் மிகவும் நலமாக இருக்கிறார்.",
+          sinhala: "ටොම් ඉතා හොඳින් ඉන්නවා.",
+        },
+        correct: false,
+      },
+    },
+    {
+      id: "u01.d03",
+      title: {
+        english: "At the reception",
+        tamil: "வரவேற்பறையில்",
+        sinhala: "පිළිගැනීමේ කවුළුවේ",
+      },
+      lines: [
+        { speaker: "a", sentenceId: "u01.l05.s01" },
+        { speaker: "b", sentenceId: "u01.l05.s02" },
+        { speaker: "a", sentenceId: "u01.l05.s03" },
+        { speaker: "b", sentenceId: "u01.l05.s04" },
+        { speaker: "a", sentenceId: "u01.l05.s08" },
+      ],
+      question: {
+        format: "choice",
+        prompt: {
+          english: "What is the woman asked to do?",
+          tamil: "பெண்ணிடம் என்ன செய்யச் சொல்கிறார்கள்?",
+          sinhala: "කාන්තාවගෙන් ඉල්ලන්නේ කුමක්ද?",
+        },
+        options: [
+          {
+            english: "Spell her name",
+            tamil: "தன் பெயரை எழுத்துக்கூட்டிச் சொல்ல",
+            sinhala: "ඇගේ නම අකුරෙන් අකුර කියන්න",
+          },
+          { english: "Say goodbye", tamil: "விடைபெற", sinhala: "සමුගන්න" },
+          { english: "Say how she is", tamil: "நலம் சொல்ல", sinhala: "සැප දුක් කියන්න" },
+        ],
+        correct: 0,
+      },
+    },
+    {
+      id: "u01.d04",
+      title: {
+        english: "A polite conversation",
+        tamil: "மரியாதையான உரையாடல்",
+        sinhala: "ගෞරවනීය සංවාදයක්",
+      },
+      lines: [
+        { speaker: "a", sentenceId: "u01.l06.s07" },
+        { speaker: "b", sentenceId: "u01.l06.s08" },
+        { speaker: "a", sentenceId: "u01.l06.s09" },
+        { speaker: "b", sentenceId: "u01.l06.s10" },
+      ],
+    },
+  ],
+  readings: [
+    {
+      id: "u01.r01",
+      layout: "message",
+      german: "Hallo Tom!\nIch bin Anna.\nWie geht's?",
+      question: {
+        format: "richtigFalsch",
+        statement: {
+          english: "Tom wrote this message.",
+          tamil: "இந்தச் செய்தியை டாம் எழுதினார்.",
+          sinhala: "මෙම පණිවිඩය ලිව්වේ ටොම්.",
+        },
+        correct: false,
+      },
+    },
+    {
+      id: "u01.r02",
+      layout: "note",
+      german: "Guten Morgen, Frau Klein!\nWie geht es Ihnen?\nTom Weber",
+      question: {
+        format: "choice",
+        prompt: {
+          english: "Who is the note for?",
+          tamil: "இந்தக் குறிப்பு யாருக்கு?",
+          sinhala: "මෙම සටහන කාටද?",
+        },
+        options: [
+          { english: "Mrs Klein", tamil: "திருமதி க்ளைன்", sinhala: "ක්ලයින් මහත්මිය" },
+          { english: "Tom Weber", tamil: "டாம் வேபர்", sinhala: "ටොම් වෙබර්" },
+          { english: "Anna", tamil: "அன்னா", sinhala: "ඇනා" },
+        ],
+        correct: 0,
+      },
+    },
+    {
+      id: "u01.r03",
+      layout: "sign",
+      german: "Frau Dr. Klein\nGuten Tag!",
+      question: {
+        format: "richtigFalsch",
+        statement: {
+          english: "This is a man's door.",
+          tamil: "இது ஒரு ஆணின் அறைக் கதவு.",
+          sinhala: "මෙය පිරිමියෙකුගේ දොරකි.",
+        },
+        correct: false,
+      },
+    },
+  ],
+  speakTasks: [
+    {
+      id: "u01.q01",
+      cue: {
+        english: "Listen to the question and say your name.",
+        tamil: "கேள்வியைக் கேட்டு உங்கள் பெயரைச் சொல்லுங்கள்.",
+        sinhala: "ප්‍රශ්නය අසා ඔබේ නම කියන්න.",
+      },
+      question: "u01.l02.s03",
+      models: ["u01.l02.s01", "u01.l02.s02"],
+    },
+    {
+      id: "u01.q02",
+      cue: {
+        english: "Listen to the question and say how you are.",
+        tamil: "கேள்வியைக் கேட்டு நீங்கள் எப்படி இருக்கிறீர்கள் என்று சொல்லுங்கள்.",
+        sinhala: "ප්‍රශ්නය අසා ඔබට කොහොමද කියා කියන්න.",
+      },
+      question: "u01.l03.s01",
+      models: ["u01.l03.s02", "u01.l03.s03", "u01.l03.s04", "u01.l03.s07"],
+    },
+    {
+      id: "u01.q03",
+      cue: {
+        english: "A stranger asks your name. Answer politely.",
+        tamil: "அறிமுகமில்லாதவர் உங்கள் பெயரைக் கேட்கிறார். மரியாதையாகப் பதில் சொல்லுங்கள்.",
+        sinhala: "නාඳුනන කෙනෙක් ඔබේ නම අසයි. ගෞරවයෙන් පිළිතුරු දෙන්න.",
+      },
+      question: "u01.l06.s01",
+      models: ["u01.l05.s02", "u01.l02.s01"],
+    },
+  ],
   lessons: [
     {
       id: "u01.l01",
@@ -348,6 +532,30 @@ export const UNIT_01: CourseUnit = {
           grammar: ["sein-heissen"],
           words: ["1.1/guten-morgen"],
         },
+        {
+          id: "u01.l02.s07",
+          german: "Hallo! Wie heißt du?",
+          english: "Hello! What is your name?",
+          tamil: "வணக்கம்! உன் பெயர் என்ன?",
+          sinhala: "ආයුබෝවන්! ඔයාගේ නම මොකක්ද?",
+          voice: "m",
+        },
+        {
+          id: "u01.l02.s08",
+          german: "Ich heiße Anna. Und du?",
+          english: "My name is Anna. And you?",
+          tamil: "என் பெயர் அன்னா. உன் பெயர்?",
+          sinhala: "මගේ නම ඇනා. ඔයාගේ?",
+          voice: "f",
+        },
+        {
+          id: "u01.l02.s09",
+          german: "Hallo, Tom!",
+          english: "Hello, Tom!",
+          tamil: "வணக்கம், டாம்!",
+          sinhala: "ආයුබෝවන්, ටොම්!",
+          voice: "f",
+        },
       ],
       steps: [
         { kind: "tip", noteId: "u01.g02" },
@@ -358,6 +566,9 @@ export const UNIT_01: CourseUnit = {
         { kind: "sentence", id: "u01.l02.s05" },
         { kind: "word", ref: "1.1/guten-morgen" },
         { kind: "sentence", id: "u01.l02.s06" },
+        { kind: "dialogue", id: "u01.d01" },
+        { kind: "read", id: "u01.r01" },
+        { kind: "speakQ", id: "u01.q01" },
       ],
     },
     {
@@ -444,6 +655,14 @@ export const UNIT_01: CourseUnit = {
           voice: "f",
           grammar: ["wie-gehts"],
         },
+        {
+          id: "u01.l03.s08",
+          german: "Hallo, Anna! Wie geht's?",
+          english: "Hello, Anna! How are you?",
+          tamil: "வணக்கம், அன்னா! எப்படி இருக்கிறாய்?",
+          sinhala: "ආයුබෝවන්, ඇනා! කොහොමද?",
+          voice: "m",
+        },
       ],
       steps: [
         { kind: "word", ref: "1.1/wie-gehts" },
@@ -456,6 +675,8 @@ export const UNIT_01: CourseUnit = {
         { kind: "sentence", id: "u01.l03.s05" },
         { kind: "sentence", id: "u01.l03.s06" },
         { kind: "sentence", id: "u01.l03.s07" },
+        { kind: "dialogue", id: "u01.d02" },
+        { kind: "speakQ", id: "u01.q02" },
       ],
     },
     {
@@ -538,6 +759,7 @@ export const UNIT_01: CourseUnit = {
         { kind: "sentence", id: "u01.l04.s04" },
         { kind: "sentence", id: "u01.l04.s05" },
         { kind: "sentence", id: "u01.l04.s06" },
+        { kind: "listen", id: "u01.d01" },
       ],
     },
     {
@@ -623,6 +845,14 @@ export const UNIT_01: CourseUnit = {
           grammar: ["spelling"],
           words: ["1.1/bitte"],
         },
+        {
+          id: "u01.l05.s08",
+          german: "Danke, Frau Weber.",
+          english: "Thank you, Mrs Weber.",
+          tamil: "நன்றி, திருமதி வேபர்.",
+          sinhala: "ස්තූතියි, වෙබර් මහත්මිය.",
+          voice: "m",
+        },
       ],
       steps: [
         { kind: "word", ref: "1.1/bitte" },
@@ -635,6 +865,9 @@ export const UNIT_01: CourseUnit = {
         { kind: "word", ref: "1.1/entschuldigung" },
         { kind: "sentence", id: "u01.l05.s06" },
         { kind: "sentence", id: "u01.l05.s07" },
+        { kind: "dialogue", id: "u01.d03" },
+        { kind: "listen", id: "u01.d02" },
+        { kind: "read", id: "u01.r02" },
       ],
     },
     {
@@ -717,6 +950,30 @@ export const UNIT_01: CourseUnit = {
           grammar: ["du-sie", "wie-gehts"],
           words: ["1.1/guten-abend"],
         },
+        {
+          id: "u01.l06.s08",
+          german: "Danke, gut. Und Ihnen?",
+          english: "Fine, thanks. And you?",
+          tamil: "நன்றி, நலம். நீங்கள்?",
+          sinhala: "ස්තූතියි, හොඳින්. ඔබට?",
+          voice: "f",
+        },
+        {
+          id: "u01.l06.s09",
+          german: "Auch gut, danke.",
+          english: "Also fine, thanks.",
+          tamil: "நானும் நலம், நன்றி.",
+          sinhala: "මමත් හොඳින්, ස්තූතියි.",
+          voice: "m",
+        },
+        {
+          id: "u01.l06.s10",
+          german: "Auf Wiedersehen, Herr Weber.",
+          english: "Goodbye, Mr Weber.",
+          tamil: "மீண்டும் சந்திப்போம், திரு வேபர்.",
+          sinhala: "නැවත හමුවෙමු, වෙබර් මහතා.",
+          voice: "f",
+        },
       ],
       steps: [
         { kind: "tip", noteId: "u01.g06" },
@@ -728,6 +985,10 @@ export const UNIT_01: CourseUnit = {
         { kind: "sentence", id: "u01.l06.s06" },
         { kind: "word", ref: "1.1/guten-abend" },
         { kind: "sentence", id: "u01.l06.s07" },
+        { kind: "dialogue", id: "u01.d04" },
+        { kind: "listen", id: "u01.d03" },
+        { kind: "read", id: "u01.r03" },
+        { kind: "speakQ", id: "u01.q03" },
       ],
     },
   ],

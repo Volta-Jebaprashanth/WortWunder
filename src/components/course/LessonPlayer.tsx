@@ -17,11 +17,22 @@ import {
   SentenceAudioButtons,
   SentenceCard,
 } from "@/components/course/SentenceAudio";
-import { allSentences, checkpointSentences, courseIds, resolveWord } from "@/data/course";
+import { DialoguePlayer } from "@/components/course/DialoguePlayer";
+import { HearTask, ReadTask } from "@/components/course/ComprehensionTask";
+import { SpeakQScreen, SpeakScreen, useSpeakingOff } from "@/components/course/SpeakPrompt";
+import {
+  allSentences,
+  checkpointSentences,
+  courseIds,
+  findSentence,
+  lessonOfSentence,
+  resolveWord,
+} from "@/data/course";
 import type { CourseLesson, CourseUnit, Sentence } from "@/data/course/types";
 import {
   buildCheckpointQueue,
   buildLessonQueue,
+  buildReviewQueue,
   checkBank,
   checkGap,
   checkPick,
@@ -29,18 +40,23 @@ import {
   checkTyped,
   exerciseMedia,
   isQuestion,
+  isScored,
+  isTask,
   requeueWrong,
   type BankExercise,
   type Exercise,
   type GapExercise,
   type PickExercise,
   type QuestionExercise,
+  type TaskExercise,
   type TypedResult,
   type TypeExercise,
 } from "@/lib/course-engine";
 import {
   finishLesson,
+  getDueSentenceIds,
   getSentenceStrength,
+  markActiveDay,
   passCheckpoint,
   recordSentenceAnswer,
   reconcileCourse,
@@ -75,6 +91,10 @@ export function LessonPlayer({
         notes: unit.notes,
         resolveWord,
         strengthOf: getSentenceStrength,
+        dialogues: unit.dialogues,
+        readings: unit.readings,
+        speakTasks: unit.speakTasks,
+        findSentence,
       }),
     [lesson, unit, lang],
   );
@@ -137,6 +157,7 @@ export function CheckpointPlayer({
       requeue={false}
       onExit={onExit}
       onFinished={(right, total) => {
+        markActiveDay();
         if (checkpointPassed(right, total)) passCheckpoint(unit.id);
       }}
       summary={(right, total) => {
@@ -174,6 +195,56 @@ export function CheckpointPlayer({
   );
 }
 
+// Plays a review session ("Üben"): the sentences due today, weakest first,
+// each with an exercise matched to how well the learner knows it. Like a
+// lesson, a missed sentence comes back at the end.
+export function ReviewPlayer({
+  t,
+  lang,
+  onExit,
+}: {
+  t: Strings;
+  lang: MotherTongue;
+  onExit: () => void;
+}) {
+  const sentences = useMemo(() => allSentences(), []);
+  // The due list is read once, when the session starts: answering moves
+  // each sentence's due day, which must not reshuffle the session.
+  const build = useCallback(
+    () =>
+      buildReviewQueue(
+        getDueSentenceIds().flatMap((id) => findSentence(id) ?? []),
+        {
+          lang,
+          strengthOf: getSentenceStrength,
+          othersOf: (sentence) =>
+            (lessonOfSentence(sentence.id)?.sentences ?? []).filter((s) => s.id !== sentence.id),
+        },
+      ),
+    [lang],
+  );
+
+  return (
+    <ExercisePlayer
+      t={t}
+      lang={lang}
+      build={build}
+      sentences={sentences}
+      requeue
+      onExit={onExit}
+      onFinished={() => markActiveDay()}
+      summary={(right, total) => (
+        <LessonFrame t={t} eyebrow={t.review} title="Übung geschafft!" subtitle={t.reviewDone}>
+          <ScoreCard text={t.lessonScore(right, total)} />
+          <Button variant="adventure" size="lesson" className="mt-6 w-full" onClick={onExit}>
+            {t.backToPath}
+          </Button>
+        </LessonFrame>
+      )}
+    />
+  );
+}
+
 function ScoreCard({ text, muted = false }: { text: string; muted?: boolean }) {
   return (
     <div
@@ -192,8 +263,9 @@ function ScoreCard({ text, muted = false }: { text: string; muted?: boolean }) {
 // Runs a queue of exercises. `sentences` is everything a screen may need to
 // look up by id (a tip's examples, the options of a listening question).
 // With `requeue`, a missed question comes back at the end; without it every
-// question is asked once. `onFinished` and `summary` get the number of
-// questions answered right first time and the number asked.
+// question is asked once. Tasks (a dialogue, a listening or reading
+// question) are always asked once. `onFinished` and `summary` get the number
+// of questions and tasks answered right first time and the number asked.
 function ExercisePlayer({
   t,
   lang,
@@ -219,6 +291,7 @@ function ExercisePlayer({
   const [missed, setMissed] = useState<Set<string>>(new Set());
   const [questionCount, setQuestionCount] = useState(0);
   const sentencesById = useMemo(() => new Map(sentences.map((s) => [s.id, s])), [sentences]);
+  const speakingOff = useSpeakingOff();
 
   // Built after mount: it reads saved strengths from localStorage and
   // shuffles, neither of which the server render can match.
@@ -227,7 +300,7 @@ function ExercisePlayer({
     reconcileCourse(courseIds());
     const built = build();
     setQueue(built);
-    setQuestionCount(built.filter(isQuestion).length);
+    setQuestionCount(built.filter(isScored).length);
     setIndex(0);
     setMissed(new Set());
   }, [build]);
@@ -257,8 +330,15 @@ function ExercisePlayer({
   }, [finished]);
 
   const next = () => setIndex((i) => i + 1);
+  const recordSentence = (sentence: Sentence, correct: boolean) =>
+    recordSentenceAnswer(sentence.id, correct, undefined, sentence.grammar);
+  // A task plays its own sounds as it goes; here it only counts.
+  const taskDone = (task: TaskExercise, correct: boolean) => {
+    if (correct) recordCorrectAnswer();
+    else setMissed((prev) => new Set(prev).add(task.key));
+  };
   const answered = (question: QuestionExercise, correct: boolean) => {
-    recordSentenceAnswer(question.sentence.id, correct);
+    recordSentence(question.sentence, correct);
     if (correct) {
       recordCorrectAnswer();
       playCorrectSound();
@@ -289,6 +369,13 @@ function ExercisePlayer({
         );
       case "gap":
         return <GapScreen key={question.key} {...common} exercise={question} />;
+      case "speak":
+        // "Can't speak right now" swaps in the listening exercise.
+        return speakingOff ? (
+          <BankScreen key={`${question.key}:listen`} {...common} exercise={question.fallback} />
+        ) : (
+          <SpeakScreen key={question.key} {...common} sentence={question.sentence} />
+        );
       case "type":
       case "listenType":
         return <TypeScreen key={question.key} {...common} exercise={question} />;
@@ -344,6 +431,51 @@ function ExercisePlayer({
             t={t}
             lang={lang}
             word={exercise.word}
+            onContinue={next}
+          />
+        )}
+
+        {exercise?.kind === "speakQ" && (
+          <SpeakQScreen
+            key={exercise.key}
+            t={t}
+            lang={lang}
+            exercise={exercise}
+            onContinue={next}
+          />
+        )}
+
+        {exercise?.kind === "dialogue" && (
+          <DialoguePlayer
+            key={exercise.key}
+            t={t}
+            lang={lang}
+            exercise={exercise}
+            sentencesById={sentencesById}
+            onPick={recordSentence}
+            onDone={(correct) => taskDone(exercise, correct)}
+            onContinue={next}
+          />
+        )}
+
+        {exercise?.kind === "hearQ" && (
+          <HearTask
+            key={exercise.key}
+            t={t}
+            lang={lang}
+            exercise={exercise}
+            onDone={(correct) => taskDone(exercise, correct)}
+            onContinue={next}
+          />
+        )}
+
+        {exercise?.kind === "readQ" && (
+          <ReadTask
+            key={exercise.key}
+            t={t}
+            lang={lang}
+            exercise={exercise}
+            onDone={(correct) => taskDone(exercise, correct)}
             onContinue={next}
           />
         )}

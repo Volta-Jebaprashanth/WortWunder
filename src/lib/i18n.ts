@@ -121,6 +121,36 @@ export interface Strings {
   checkpointFailed: string;
   checkpointScore: (right: number, total: number) => string;
   backToUnit: string;
+  dialogue: string;
+  chooseReply: string;
+  listenDialogue: string;
+  playDialogue: string;
+  readingChallenge: string;
+  readThenAnswer: string;
+  speakingChallenge: string;
+  readAloud: string;
+  tapToSpeak: string;
+  listening: string;
+  heardNothing: string;
+  micBlocked: string;
+  micNote: string;
+  cantSpeak: string;
+  stopRecording: string;
+  yourRecording: string;
+  modelRecording: string;
+  soundClose: string;
+  yesClose: string;
+  notYet: string;
+  heard: (text: string) => string;
+  modelAnswer: string;
+  review: string;
+  reviewIntro: (count: number) => string;
+  nothingDue: string;
+  startReview: string;
+  reviewDone: string;
+  practiseGrammar: string;
+  dayStreak: (days: number) => string;
+  streak: string;
 }
 
 export const TRANSLATIONS: Record<MotherTongue, Strings> = {
@@ -235,6 +265,37 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     checkpointFailed: "Not quite yet. Practise the lessons and try again.",
     checkpointScore: (right, total) => `${right} of ${total} right`,
     backToUnit: "Back to the unit",
+    dialogue: "Dialogue",
+    chooseReply: "Choose the right reply.",
+    listenDialogue: "Listen to the conversation, then answer.",
+    playDialogue: "Play the conversation",
+    readingChallenge: "Reading",
+    readThenAnswer: "Read the text, then answer.",
+    speakingChallenge: "Speaking",
+    readAloud: "Read the sentence aloud.",
+    tapToSpeak: "Tap the microphone and speak.",
+    listening: "Listening…",
+    heardNothing: "I did not catch that. Tap and try again.",
+    micBlocked: "The microphone is not available.",
+    micNote: "Your browser sends your voice to its maker to recognise the words.",
+    cantSpeak: "Can't speak right now",
+    stopRecording: "Tap to stop recording.",
+    yourRecording: "You",
+    modelRecording: "Model",
+    soundClose: "Did you sound close?",
+    yesClose: "Yes",
+    notYet: "Not yet",
+    heard: (text) => `I heard: ${text}`,
+    modelAnswer: "A possible answer",
+    review: "Practice",
+    reviewIntro: (count) =>
+      count === 1 ? "1 sentence is due for review." : `${count} sentences are due for review.`,
+    nothingDue: "Nothing to review today. Come back tomorrow!",
+    startReview: "Start practising",
+    reviewDone: "Well done! These sentences will come back later.",
+    practiseGrammar: "Practise:",
+    dayStreak: (days) => (days === 1 ? "1 day in a row" : `${days} days in a row`),
+    streak: "day streak",
   },
   tamil: {
     openProfileMenu: "சுயவிவரப் பட்டியலைத் திற",
@@ -348,6 +409,36 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     checkpointFailed: "இன்னும் இல்லை. பாடங்களைப் பயிற்சி செய்து மீண்டும் முயலுங்கள்.",
     checkpointScore: (right, total) => `${total}-இல் ${right} சரி`,
     backToUnit: "அலகுக்குத் திரும்பு",
+    dialogue: "உரையாடல்",
+    chooseReply: "சரியான பதிலைத் தேர்ந்தெடுங்கள்.",
+    listenDialogue: "உரையாடலைக் கேளுங்கள், பிறகு பதிலளியுங்கள்.",
+    playDialogue: "உரையாடலைக் கேள்",
+    readingChallenge: "வாசிப்பு",
+    readThenAnswer: "உரையைப் படியுங்கள், பிறகு பதிலளியுங்கள்.",
+    speakingChallenge: "பேச்சு",
+    readAloud: "வாக்கியத்தைச் சத்தமாகப் படியுங்கள்.",
+    tapToSpeak: "ஒலிவாங்கியைத் தட்டிப் பேசுங்கள்.",
+    listening: "கேட்கிறேன்…",
+    heardNothing: "சரியாகக் கேட்கவில்லை. தட்டி மீண்டும் முயலுங்கள்.",
+    micBlocked: "ஒலிவாங்கி கிடைக்கவில்லை.",
+    micNote: "சொற்களை அடையாளம் காண உங்கள் உலாவி உங்கள் குரலை அதன் தயாரிப்பாளருக்கு அனுப்புகிறது.",
+    cantSpeak: "இப்போது பேச முடியாது",
+    stopRecording: "பதிவை நிறுத்தத் தட்டவும்.",
+    yourRecording: "நீங்கள்",
+    modelRecording: "மாதிரி",
+    soundClose: "உங்கள் உச்சரிப்பு நெருக்கமாக இருந்ததா?",
+    yesClose: "ஆம்",
+    notYet: "இன்னும் இல்லை",
+    heard: (text) => `நான் கேட்டது: ${text}`,
+    modelAnswer: "ஒரு சாத்தியமான பதில்",
+    review: "பயிற்சி",
+    reviewIntro: (count) => `${count} வாக்கியங்கள் மீள்பார்வைக்குத் தயாராக உள்ளன.`,
+    nothingDue: "இன்று மீள்பார்வைக்கு எதுவும் இல்லை. நாளை மீண்டும் வாருங்கள்!",
+    startReview: "பயிற்சியைத் தொடங்கு",
+    reviewDone: "அருமை! இந்த வாக்கியங்கள் பிறகு மீண்டும் வரும்.",
+    practiseGrammar: "பயிற்சி செய்யுங்கள்:",
+    dayStreak: (days) => `தொடர்ந்து ${days} நாள்`,
+    streak: "தொடர் நாட்கள்",
   },
   sinhala: {
     openProfileMenu: "පැතිකඩ මෙනුව විවෘත කරන්න",
@@ -460,5 +551,35 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     checkpointFailed: "තවම නැහැ. පාඩම් පුහුණු වී නැවත උත්සාහ කරන්න.",
     checkpointScore: (right, total) => `${total}න් ${right}ක් නිවැරදියි`,
     backToUnit: "ඒකකයට ආපසු",
+    dialogue: "සංවාදය",
+    chooseReply: "නිවැරදි පිළිතුර තෝරන්න.",
+    listenDialogue: "සංවාදය අහන්න, පසුව පිළිතුරු දෙන්න.",
+    playDialogue: "සංවාදය අහන්න",
+    readingChallenge: "කියවීම",
+    readThenAnswer: "පාඨය කියවන්න, පසුව පිළිතුරු දෙන්න.",
+    speakingChallenge: "කතා කිරීම",
+    readAloud: "වාක්‍යය හයියෙන් කියවන්න.",
+    tapToSpeak: "මයික්‍රෆෝනය ඔබා කතා කරන්න.",
+    listening: "අහගෙන ඉන්නවා…",
+    heardNothing: "හරියට ඇහුණේ නැහැ. ඔබා නැවත උත්සාහ කරන්න.",
+    micBlocked: "මයික්‍රෆෝනය භාවිත කළ නොහැක.",
+    micNote: "වචන හඳුනා ගැනීමට ඔබේ බ්‍රවුසරය ඔබේ හඬ එහි නිෂ්පාදකයාට යවයි.",
+    cantSpeak: "දැන් කතා කරන්න බැහැ",
+    stopRecording: "පටිගත කිරීම නවත්වන්න ඔබන්න.",
+    yourRecording: "ඔබ",
+    modelRecording: "ආදර්ශය",
+    soundClose: "ඔබේ උච්චාරණය සමීප වුණාද?",
+    yesClose: "ඔව්",
+    notYet: "තවම නැහැ",
+    heard: (text) => `මට ඇහුණේ: ${text}`,
+    modelAnswer: "විය හැකි පිළිතුරක්",
+    review: "පුහුණුව",
+    reviewIntro: (count) => `වාක්‍ය ${count}ක් නැවත බැලීමට තිබේ.`,
+    nothingDue: "අද නැවත බැලීමට කිසිවක් නැහැ. හෙට නැවත එන්න!",
+    startReview: "පුහුණුව අරඹන්න",
+    reviewDone: "නියමයි! මෙම වාක්‍ය පසුව නැවත එනු ඇත.",
+    practiseGrammar: "පුහුණු වන්න:",
+    dayStreak: (days) => `දින ${days}ක් එක දිගට`,
+    streak: "අඛණ්ඩ දින",
   },
 };

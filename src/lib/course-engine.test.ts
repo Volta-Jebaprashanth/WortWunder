@@ -1,10 +1,26 @@
 import { describe, expect, it } from "vitest";
-import { checkpointSentences, COURSE_UNITS, resolveWord } from "@/data/course";
-import type { CourseLesson, GrammarNote, Sentence } from "@/data/course/types";
+import { checkpointSentences, COURSE_UNITS, findSentence, resolveWord } from "@/data/course";
+import type {
+  CourseLesson,
+  Dialogue,
+  GrammarNote,
+  ReadingText,
+  Sentence,
+  SpeakTask,
+} from "@/data/course/types";
 import type { VocabWord } from "@/data/vocabulary";
 import {
   buildCheckpointQueue,
+  buildDialogue,
   buildLessonQueue,
+  buildReviewQueue,
+  checkComprehension,
+  checkDialoguePick,
+  checkSpoken,
+  isScored,
+  isTask,
+  REVIEW_SIZE,
+  spokenScore,
   buildTiles,
   checkBank,
   checkGap,
@@ -269,7 +285,7 @@ describe("the grammar and typing passes", () => {
         "bankToDe",
         "listenBank",
         "type",
-        "listenType",
+        "speak",
       ]);
       expect(
         production
@@ -398,6 +414,193 @@ describe("buildCheckpointQueue", () => {
   });
 });
 
+describe("dialogues and tasks", () => {
+  const DIALOGUE: Dialogue = {
+    id: "u09.d01",
+    title: { english: "D", tamil: "D", sinhala: "D" },
+    lines: [
+      { speaker: "a", sentenceId: "u09.l01.s03" },
+      { speaker: "b", sentenceId: "u09.l01.s01" },
+      { speaker: "a", sentenceId: "u09.l01.s06" },
+      { speaker: "b", sentenceId: "u09.l01.s02" },
+    ],
+    question: {
+      format: "choice",
+      prompt: { english: "Q", tamil: "Q", sinhala: "Q" },
+      options: [
+        { english: "A", tamil: "A", sinhala: "A" },
+        { english: "B", tamil: "B", sinhala: "B" },
+      ],
+      correct: 1,
+    },
+  };
+  const READING: ReadingText = {
+    id: "u09.r01",
+    layout: "sign",
+    german: "Hallo!",
+    question: {
+      format: "richtigFalsch",
+      statement: { english: "S", tamil: "S", sinhala: "S" },
+      correct: false,
+    },
+  };
+  const TASK: SpeakTask = {
+    id: "u09.q01",
+    cue: { english: "C", tamil: "C", sinhala: "C" },
+    question: "u09.l01.s03",
+    models: ["u09.l01.s01", "u09.l01.s99"],
+  };
+  const byId = (id: string) => GRAMMAR_SENTENCES.find((s) => s.id === id);
+
+  it("lets the learner pick each of speaker b's lines from three sentences", () => {
+    for (let seed = 1; seed <= 20; seed++) {
+      const exercise = buildDialogue(DIALOGUE, byId, GRAMMAR_SENTENCES, seeded(seed));
+      expect(exercise.turns.map((turn) => turn.sentence.id)).toEqual(
+        DIALOGUE.lines.map((line) => line.sentenceId),
+      );
+      for (const turn of exercise.turns) {
+        if (turn.speaker === "a") {
+          expect(turn.optionIds).toBeUndefined();
+          continue;
+        }
+        expect(turn.optionIds).toHaveLength(3);
+        expect(turn.optionIds).toContain(turn.sentence.id);
+        expect(new Set(turn.optionIds!.map((id) => byId(id)!.german)).size).toBe(3);
+        expect(checkDialoguePick(turn, turn.sentence.id)).toBe(true);
+        expect(
+          checkDialoguePick(
+            turn,
+            turn.optionIds!.find((id) => id !== turn.sentence.id)!,
+          ),
+        ).toBe(false);
+      }
+    }
+  });
+
+  it("leaves out a line whose sentence cannot be found", () => {
+    const broken = { ...DIALOGUE, lines: [...DIALOGUE.lines, { speaker: "a", sentenceId: "x" }] };
+    expect(buildDialogue(broken as Dialogue, byId, [], seeded(1)).turns).toHaveLength(4);
+  });
+
+  it("puts dialogue, listening, reading and speaking steps into the queue", () => {
+    const lesson: CourseLesson = {
+      ...GRAMMAR_LESSON,
+      steps: [
+        ...GRAMMAR_LESSON.steps,
+        { kind: "dialogue", id: "u09.d01" },
+        { kind: "listen", id: "u09.d01" },
+        { kind: "read", id: "u09.r01" },
+        { kind: "speakQ", id: "u09.q01" },
+        { kind: "read", id: "u09.r99" },
+      ],
+    };
+    const queue = buildLessonQueue(
+      lesson,
+      context({ dialogues: [DIALOGUE], readings: [READING], speakTasks: [TASK] }),
+    );
+    // The tasks sit where the author put them: after the recognition pass.
+    expect(queue.slice(6, 10).map((e) => e.kind)).toEqual(["dialogue", "hearQ", "readQ", "speakQ"]);
+    expect(queue.filter(isTask)).toHaveLength(3);
+    expect(queue.filter(isScored)).toHaveLength(6 + 2 + 6 + 3);
+    expect(queue.filter(isQuestion)).toHaveLength(6 + 2 + 6);
+    const speakQ = queue[9]!;
+    if (speakQ.kind !== "speakQ") throw new Error("expected a speaking task");
+    expect(speakQ.question?.id).toBe("u09.l01.s03");
+    expect(speakQ.models.map((m) => m.id)).toEqual(["u09.l01.s01"]);
+    expect(exerciseMedia(queue[7]!).sentenceIds).toEqual(DIALOGUE.lines.map((l) => l.sentenceId));
+    expect(exerciseMedia(queue[8]!).sentenceIds).toEqual([]);
+  });
+
+  it("skips a listening step whose dialogue has no question", () => {
+    const { question: _, ...silent } = DIALOGUE;
+    const lesson: CourseLesson = { ...GRAMMAR_LESSON, steps: [{ kind: "listen", id: "u09.d01" }] };
+    expect(buildLessonQueue(lesson, context({ dialogues: [silent] }))).toEqual([]);
+  });
+
+  it("checks a comprehension answer in either format", () => {
+    expect(checkComprehension(DIALOGUE.question!, 1)).toBe(true);
+    expect(checkComprehension(DIALOGUE.question!, 0)).toBe(false);
+    expect(checkComprehension(READING.question, false)).toBe(true);
+    expect(checkComprehension(READING.question, true)).toBe(false);
+  });
+});
+
+describe("speaking", () => {
+  it("scores the share of the target's words that were heard", () => {
+    expect(spokenScore("Ich heiße Anna.", "ich heiße anna")).toBe(1);
+    expect(spokenScore("Ich heiße Anna.", "ich heisse Jeba")).toBeCloseTo(2 / 3);
+    expect(spokenScore("Ich heiße Anna.", "guten tag")).toBe(0);
+    expect(spokenScore("", "hallo")).toBe(0);
+  });
+
+  it("passes when most words of any target are in any guess", () => {
+    expect(checkSpoken(["Ich heiße Anna."], ["ich weiß ja", "ich heiße Hanna"])).toBe(true);
+    expect(checkSpoken(["Ich heiße Anna.", "Ich bin Tom."], ["ich bin Jeba"])).toBe(true);
+    expect(checkSpoken(["Wie geht es Ihnen, Frau Klein?"], ["wie geht es"])).toBe(false);
+    expect(checkSpoken(["Ich heiße Anna."], [])).toBe(false);
+  });
+
+  it("re-queues a spoken sentence with its listening fallback under the new key", () => {
+    const queue = buildLessonQueue(GRAMMAR_LESSON, context());
+    const speak = queue.find((e) => e.kind === "speak")!;
+    if (speak.kind !== "speak") throw new Error("expected a speaking exercise");
+    expect(speak.fallback.key).toBe(speak.key);
+    const again = requeueWrong(queue, speak).at(-1)!;
+    if (again.kind !== "speak") throw new Error("expected a speaking exercise");
+    expect(again.key).toBe(`${speak.key}+`);
+    expect(again.fallback.key).toBe(again.key);
+    expect(speak.fallback.key).toBe(speak.key);
+  });
+
+  it("types a spelled-out sentence instead of asking for it aloud", () => {
+    const spelled = GRAMMAR_SENTENCES.map((s) => ({ ...s, say: "Weh" }));
+    const lesson = { ...GRAMMAR_LESSON, sentences: spelled };
+    const queue = buildLessonQueue(lesson, context());
+    expect(queue.some((e) => e.kind === "speak")).toBe(false);
+  });
+});
+
+describe("buildReviewQueue", () => {
+  const strengths: Record<string, number> = {
+    "u09.l01.s01": 0,
+    "u09.l01.s02": 1,
+    "u09.l01.s03": 2,
+    "u09.l01.s04": 2,
+    "u09.l01.s05": 3,
+    "u09.l01.s06": 5,
+  };
+  const reviewContext = (rng: Rng) => ({
+    lang: "english" as const,
+    strengthOf: (id: string) => strengths[id] ?? 0,
+    othersOf: (s: Sentence) => GRAMMAR_SENTENCES.filter((other) => other.id !== s.id),
+    rng,
+  });
+
+  it("asks harder exercises of stronger sentences", () => {
+    const queue = buildReviewQueue(GRAMMAR_SENTENCES, reviewContext(seeded(1)));
+    expect(queue.map((e) => e.sentence.id)).toEqual(GRAMMAR_SENTENCES.map((s) => s.id));
+    expect(queue.map((e) => e.kind)).toEqual([
+      "listenPick",
+      "bankFromDe",
+      "gap",
+      "order",
+      "bankToDe",
+      "listenType",
+    ]);
+  });
+
+  it("takes no more than a session's worth", () => {
+    const many = Array.from({ length: 40 }, (_, i) => ({
+      ...sentence(1, `Satz Nummer ${i} hier.`, `Sentence number ${i} here.`),
+      id: `u09.l01.s${i + 10}`,
+    }));
+    const queue = buildReviewQueue(many, { ...reviewContext(seeded(2)), othersOf: () => many });
+    expect(queue).toHaveLength(REVIEW_SIZE);
+    expect(queue[0]!.sentence.id).toBe("u09.l01.s10");
+    expect(new Set(queue.map((e) => e.key)).size).toBe(REVIEW_SIZE);
+  });
+});
+
 describe("checking answers", () => {
   const queue = buildLessonQueue(LESSON, context());
   const bank = queue.find((e) => e.kind === "bankToDe") as BankExercise;
@@ -452,10 +655,31 @@ describe("the real course", () => {
     for (const unit of COURSE_UNITS) {
       for (const lesson of unit.lessons) {
         for (const lang of ["english", "tamil", "sinhala"] as const) {
-          const queue = buildLessonQueue(lesson, { lang, notes: unit.notes, resolveWord });
+          const queue = buildLessonQueue(lesson, {
+            lang,
+            notes: unit.notes,
+            resolveWord,
+            dialogues: unit.dialogues,
+            readings: unit.readings,
+            speakTasks: unit.speakTasks,
+            findSentence,
+          });
+          for (const exercise of queue) {
+            if (exercise.kind === "dialogue") {
+              expect(exercise.turns, exercise.key).toHaveLength(exercise.dialogue.lines.length);
+              for (const turn of exercise.turns)
+                expect(turn.optionIds?.length ?? 3, exercise.key).toBe(3);
+            } else if (exercise.kind === "hearQ") {
+              expect(exercise.lines, exercise.key).toHaveLength(exercise.dialogue.lines.length);
+            } else if (exercise.kind === "speakQ") {
+              expect(exercise.models.length, exercise.key).toBe(exercise.task.models.length);
+            }
+          }
           const questions = queue.filter(isQuestion);
-          const gaps = lesson.sentences.filter((s) => s.gap).length;
-          expect(questions).toHaveLength(lesson.sentences.length * 2 + gaps);
+          // Sentences written only for a dialogue are not drilled.
+          const drilled = lesson.steps.flatMap((s) => (s.kind === "sentence" ? [s.id] : []));
+          const gaps = lesson.sentences.filter((s) => s.gap && drilled.includes(s.id)).length;
+          expect(questions).toHaveLength(drilled.length * 2 + gaps);
           expect(queue.length - questions.length).toBe(
             lesson.steps.filter((s) => s.kind !== "sentence").length,
           );
@@ -467,6 +691,9 @@ describe("the real course", () => {
               expect(new Set(exercise.options).size, exercise.key).toBe(exercise.options.length);
             } else if (exercise.kind === "order") {
               expect(exercise.tiles.length, exercise.key).toBe(exercise.answer.length);
+            } else if (exercise.kind === "speak") {
+              expect(exercise.fallback.kind).toBe("listenBank");
+              expect(exercise.sentence.say, exercise.key).toBeUndefined();
             } else if (!("tiles" in exercise)) {
               expect(checkTyped(exercise.sentence, exercise.sentence.german).verdict).toBe("exact");
             } else {

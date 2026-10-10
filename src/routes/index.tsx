@@ -3,8 +3,10 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import {
   Check,
   ChevronRight,
+  Dumbbell,
   ExternalLink,
   Flag,
+  Flame,
   Gem,
   Lock,
   Share,
@@ -59,6 +61,7 @@ import {
   type CourseProgress,
 } from "@/lib/course-path";
 import { useCourseProgress } from "@/lib/use-course-progress";
+import { getDueSentenceIds, getStreak } from "@/lib/course-store";
 
 interface InstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -202,6 +205,7 @@ function Index() {
     void navigate({ to: "/kurs/$unitId/checkpoint", params: { unitId } });
   };
   const openUnit = (unitId: string) => void navigate({ to: "/kurs/$unitId", params: { unitId } });
+  const openReview = () => void navigate({ to: "/ueben" });
 
   return (
     <div className="app-sky relative min-h-dvh overflow-hidden text-foreground [padding:env(safe-area-inset-top)_env(safe-area-inset-right)_env(safe-area-inset-bottom)_env(safe-area-inset-left)]">
@@ -254,6 +258,7 @@ function Index() {
               onStartLesson={startCourseLesson}
               onStartCheckpoint={startCheckpoint}
               onOpenUnit={openUnit}
+              onOpenReview={openReview}
               name={profile?.name}
               showInstall={!installed}
               onAddToHomeScreen={addToHomeScreen}
@@ -481,6 +486,7 @@ function Home({
   onStartLesson,
   onStartCheckpoint,
   onOpenUnit,
+  onOpenReview,
   name,
   showInstall,
   onAddToHomeScreen,
@@ -491,6 +497,7 @@ function Home({
   onStartLesson: (unitId: string, lessonId: string) => void;
   onStartCheckpoint: (unitId: string) => void;
   onOpenUnit: (unitId: string) => void;
+  onOpenReview: () => void;
   name?: string | undefined;
   showInstall: boolean;
   onAddToHomeScreen: () => void;
@@ -501,6 +508,15 @@ function Home({
   // Read after mount, like `statuses` below: course progress lives in
   // localStorage, which the server render can't see.
   const progress = useCourseProgress();
+  // The day streak and the number of sentences due for review ("Üben"),
+  // read once the saved course progress has been.
+  const [streak, setStreak] = useState(0);
+  const [dueCount, setDueCount] = useState(0);
+  useEffect(() => {
+    if (!progress.checked) return;
+    setStreak(getStreak());
+    setDueCount(getDueSentenceIds().length);
+  }, [progress]);
   const path = useMemo<PathNode[]>(
     () => [
       {
@@ -641,6 +657,11 @@ function Home({
               </div>
             </div>
           </div>
+          {streak > 0 && (
+            <p className="mt-4 flex items-center gap-2 border-t border-border pt-3 font-display font-extrabold">
+              <Flame className="size-5 fill-sun text-berry" /> {t.dayStreak(streak)}
+            </p>
+          )}
         </section>
         <Button
           variant="adventure"
@@ -655,6 +676,19 @@ function Home({
           }}
         >
           {t.startLesson} <Zap />
+        </Button>
+        <Button
+          variant="outline"
+          size="lesson"
+          className="w-full rounded-2xl border-2 border-border bg-card font-display font-extrabold"
+          onClick={onOpenReview}
+        >
+          <Dumbbell /> Üben · {t.review}
+          {dueCount > 0 && (
+            <span className="grid min-w-6 place-items-center rounded-full bg-primary px-1.5 text-sm leading-6 text-primary-foreground">
+              {dueCount}
+            </span>
+          )}
         </Button>
       </aside>
     </div>

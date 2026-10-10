@@ -20,11 +20,12 @@ export interface Sentence {
   words?: string[]; // vocabulary used, as "<lessonId>/<wordId>"
 }
 
-export interface ComprehensionQuestion {
-  prompt: Translations;
-  options: Translations[];
-  correct: number; // index into options
-}
+// One question about a dialogue or a text, in the two formats the exam
+// uses: pick one of a few answers, or judge a statement richtig or falsch.
+// Asked in the learner's mother tongue.
+export type ComprehensionQuestion =
+  | { format: "choice"; prompt: Translations; options: Translations[]; correct: number }
+  | { format: "richtigFalsch"; statement: Translations; correct: boolean };
 
 export interface DialogueLine {
   speaker: "a" | "b";
@@ -46,12 +47,35 @@ export interface GrammarNote {
   examples: string[]; // sentence ids
 }
 
+// A short text to read, then one question: a sign on a door, a text
+// message or a handwritten note. `german` may have several lines.
+export interface ReadingText {
+  id: string; // "u01.r01"
+  layout: "sign" | "message" | "note";
+  german: string;
+  question: ComprehensionQuestion;
+}
+
+// A speaking task: the learner hears a question (or just reads the cue) and
+// answers aloud. `models` are answers that fit; the first is shown as the
+// model answer.
+export interface SpeakTask {
+  id: string; // "u01.q01"
+  cue: Translations; // what to do, e.g. "Say your name."
+  question?: string; // sentence id, played first
+  models: string[]; // sentence ids
+}
+
 // One authored step of a lesson, in teaching order. The engine turns each
 // sentence into one or more exercises (see src/lib/course-engine.ts).
 export type LessonStep =
   | { kind: "tip"; noteId: string }
   | { kind: "word"; ref: string } // "<lessonId>/<wordId>"
-  | { kind: "sentence"; id: string };
+  | { kind: "sentence"; id: string }
+  | { kind: "dialogue"; id: string } // played line by line; the learner picks speaker b's replies
+  | { kind: "listen"; id: string } // a dialogue heard without text, then its question
+  | { kind: "read"; id: string } // a ReadingText and its question
+  | { kind: "speakQ"; id: string }; // a SpeakTask
 
 export interface CourseLesson {
   id: string; // "u01.l02"
@@ -71,6 +95,8 @@ export interface CourseUnit {
   notes: GrammarNote[];
   guidebook: string[]; // grammar note ids, in reading order
   dialogues: Dialogue[];
+  readings: ReadingText[];
+  speakTasks: SpeakTask[];
   lessons: CourseLesson[];
   checkpoint: string[]; // sentence and task ids drawn on for the unit test
 }

@@ -1,0 +1,32 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>seed</title>
+<script>
+  // Temporary: seeds test progress for a manual check. Deleted afterwards.
+  const day = (offset) => {
+    const d = new Date();
+    d.setDate(d.getDate() + offset);
+    return d.toLocaleDateString("en-CA");
+  };
+  localStorage.setItem(
+    "wortwunder:profile",
+    JSON.stringify({ name: "Test", age: "30", motherTongue: "english" }),
+  );
+  localStorage.setItem(
+    "wortwunder:course",
+    JSON.stringify({
+      version: 1,
+      lessons: { "u01.l01": { done: true, best: 90 } },
+      units: { u01: { checkpoint: true } },
+      sentences: {
+        "u01.l01.s01": { strength: 1, due: day(-1) },
+        "u01.l02.s03": { strength: 2, due: day(-1) },
+        "u01.l06.s02": { strength: 4, due: day(0) },
+      },
+      streak: { day: day(-1), run: 3 },
+      misses: { "du-sie": 2, "sein-heissen": 1 },
+    }),
+  );
+  document.title = "seeded";
+</script>
+<p>seeded</p>

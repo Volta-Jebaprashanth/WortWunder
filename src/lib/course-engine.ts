@@ -1,6 +1,14 @@
 import type { MotherTongue } from "@/lib/i18n";
 import type { VocabWord } from "@/data/vocabulary";
-import type { CourseLesson, GrammarNote, Sentence } from "@/data/course/types";
+import type {
+  ComprehensionQuestion,
+  CourseLesson,
+  Dialogue,
+  GrammarNote,
+  ReadingText,
+  Sentence,
+  SpeakTask,
+} from "@/data/course/types";
 
 // Turns a course lesson into the queue of screens the lesson player shows,
 // and checks answers. Pure functions only: no storage, no audio, and
@@ -18,7 +26,7 @@ export type Rng = () => number;
 
 export type BankKind = "bankFromDe" | "bankToDe" | "listenBank" | "order";
 export type TypeKind = "type" | "listenType";
-export type QuestionKind = BankKind | TypeKind | "listenPick" | "gap";
+export type QuestionKind = BankKind | TypeKind | "listenPick" | "gap" | "speak";
 
 export interface TipExercise {
   kind: "tip";
@@ -62,8 +70,57 @@ export interface TypeExercise {
   key: string;
   sentence: Sentence;
 }
-export type QuestionExercise = BankExercise | PickExercise | GapExercise | TypeExercise;
-export type Exercise = TipExercise | NewWordExercise | QuestionExercise;
+// Read the sentence aloud. `fallback` is the listening exercise shown in its
+// place once the learner has said they can't speak right now.
+export interface SpeakExercise {
+  kind: "speak";
+  key: string;
+  sentence: Sentence;
+  fallback: BankExercise;
+}
+export type QuestionExercise =
+  BankExercise | PickExercise | GapExercise | TypeExercise | SpeakExercise;
+
+// A dialogue played line by line. Where a turn has `optionIds` (speaker b's
+// lines), the learner picks the reply from those sentences before it plays.
+export interface DialogueTurn {
+  speaker: "a" | "b";
+  sentence: Sentence;
+  optionIds?: string[];
+}
+export interface DialogueExercise {
+  kind: "dialogue";
+  key: string;
+  dialogue: Dialogue;
+  turns: DialogueTurn[];
+}
+// A dialogue heard without its text, then one question about it.
+export interface HearExercise {
+  kind: "hearQ";
+  key: string;
+  dialogue: Dialogue;
+  lines: Sentence[];
+  question: ComprehensionQuestion;
+}
+// A short text to read, then one question about it.
+export interface ReadExercise {
+  kind: "readQ";
+  key: string;
+  text: ReadingText;
+}
+// Tasks are scored like questions but belong to no single sentence, and are
+// asked once: a missed one does not come back at the end.
+export type TaskExercise = DialogueExercise | HearExercise | ReadExercise;
+// Answer a question aloud. Practice only: it is not scored.
+export interface SpeakQExercise {
+  kind: "speakQ";
+  key: string;
+  task: SpeakTask;
+  question?: Sentence;
+  models: Sentence[];
+}
+export type Exercise =
+  TipExercise | NewWordExercise | SpeakQExercise | QuestionExercise | TaskExercise;
 
 // Sentences at or above this strength (see course-store.ts) skip the
 // recognition pass.
@@ -79,6 +136,11 @@ const ALMOST_MIN_LENGTH = 5;
 // needed to pass.
 export const CHECKPOINT_SIZE = 12;
 export const CHECKPOINT_PASS = 0.8;
+// A review session takes at most this many due sentences.
+export const REVIEW_SIZE = 15;
+// The share of a sentence's words that must be heard for spoken practice to
+// pass. Deliberately lenient: speech recognition of beginners is unreliable.
+export const SPOKEN_PASS = 0.6;
 
 export function shuffled<T>(items: readonly T[], rng: Rng = Math.random): T[] {
   const copy = items.slice();
@@ -158,7 +220,16 @@ function scrambled(answer: readonly string[], rng: Rng): string[] {
 }
 
 export function isQuestion(exercise: Exercise): exercise is QuestionExercise {
-  return exercise.kind !== "tip" && exercise.kind !== "newWord";
+  return "sentence" in exercise;
+}
+
+export function isTask(exercise: Exercise): exercise is TaskExercise {
+  return exercise.kind === "dialogue" || exercise.kind === "hearQ" || exercise.kind === "readQ";
+}
+
+// Whether the screen counts towards the score of a lesson.
+export function isScored(exercise: Exercise): exercise is QuestionExercise | TaskExercise {
+  return isQuestion(exercise) || isTask(exercise);
 }
 
 export interface QueueContext {
@@ -167,6 +238,13 @@ export interface QueueContext {
   resolveWord: (ref: string) => VocabWord | undefined;
   strengthOf?: (sentenceId: string) => number;
   rng?: Rng;
+  // The unit's authored tasks, for the lesson's dialogue, listen, read and
+  // speakQ steps, and a lookup for the sentences their lines refer to (which
+  // may belong to another lesson of the unit).
+  dialogues?: readonly Dialogue[];
+  readings?: readonly ReadingText[];
+  speakTasks?: readonly SpeakTask[];
+  findSentence?: (sentenceId: string) => Sentence | undefined;
 }
 
 function bankExercise(
@@ -245,11 +323,60 @@ function typeExercise(kind: TypeKind, sentence: Sentence): TypeExercise {
   return { kind, key: `${kind}:${sentence.id}`, sentence };
 }
 
+// A sentence with a `say` text (spelled-out letters) is typed instead:
+// speech recognition would not hear it the way it is written.
+function speakExercise(
+  sentence: Sentence,
+  others: readonly Sentence[],
+  lang: MotherTongue,
+  rng: Rng,
+): SpeakExercise | TypeExercise {
+  if (sentence.say) return typeExercise("type", sentence);
+  return {
+    kind: "speak",
+    key: `speak:${sentence.id}`,
+    sentence,
+    fallback: {
+      ...bankExercise("listenBank", sentence, others, lang, rng),
+      key: `speak:${sentence.id}`,
+    },
+  };
+}
+
+// The learner plays speaker b: each of b's lines is picked from three German
+// sentences, the right one and two others that read differently.
+export function buildDialogue(
+  dialogue: Dialogue,
+  findSentence: (id: string) => Sentence | undefined,
+  pool: readonly Sentence[],
+  rng: Rng = Math.random,
+): DialogueExercise {
+  const lines = dialogue.lines.flatMap((line) => {
+    const sentence = findSentence(line.sentenceId);
+    return sentence ? [{ speaker: line.speaker, sentence }] : [];
+  });
+  const candidates = [...lines.map((line) => line.sentence), ...pool];
+  const turns = lines.map((line): DialogueTurn => {
+    if (line.speaker !== "b") return line;
+    const texts = new Set([line.sentence.german]);
+    const wrong: string[] = [];
+    for (const other of shuffled(candidates, rng)) {
+      if (wrong.length >= PICK_OPTIONS - 1) break;
+      if (texts.has(other.german)) continue;
+      texts.add(other.german);
+      wrong.push(other.id);
+    }
+    return { ...line, optionIds: shuffled([line.sentence.id, ...wrong], rng) };
+  });
+  return { kind: "dialogue", key: `dialogue:${dialogue.id}`, dialogue, turns };
+}
+
 export function buildLessonQueue(lesson: CourseLesson, ctx: QueueContext): Exercise[] {
   const rng = ctx.rng ?? Math.random;
   const strengthOf = ctx.strengthOf ?? (() => 0);
   const byId = new Map(lesson.sentences.map((s) => [s.id, s]));
   const othersOf = (sentence: Sentence) => lesson.sentences.filter((s) => s.id !== sentence.id);
+  const findSentence = (id: string) => byId.get(id) ?? ctx.findSentence?.(id);
   const queue: Exercise[] = [];
   const ordered: Sentence[] = [];
 
@@ -260,6 +387,33 @@ export function buildLessonQueue(lesson: CourseLesson, ctx: QueueContext): Exerc
     } else if (step.kind === "word") {
       const word = ctx.resolveWord(step.ref);
       if (word) queue.push({ kind: "newWord", key: `newWord:${step.ref}`, word });
+    } else if (step.kind === "dialogue") {
+      const dialogue = ctx.dialogues?.find((d) => d.id === step.id);
+      if (dialogue) queue.push(buildDialogue(dialogue, findSentence, lesson.sentences, rng));
+    } else if (step.kind === "listen") {
+      const dialogue = ctx.dialogues?.find((d) => d.id === step.id);
+      if (!dialogue?.question) continue;
+      queue.push({
+        kind: "hearQ",
+        key: `hearQ:${dialogue.id}`,
+        dialogue,
+        lines: dialogue.lines.flatMap((line) => findSentence(line.sentenceId) ?? []),
+        question: dialogue.question,
+      });
+    } else if (step.kind === "read") {
+      const text = ctx.readings?.find((r) => r.id === step.id);
+      if (text) queue.push({ kind: "readQ", key: `readQ:${text.id}`, text });
+    } else if (step.kind === "speakQ") {
+      const task = ctx.speakTasks?.find((q) => q.id === step.id);
+      if (!task) continue;
+      const question = task.question ? findSentence(task.question) : undefined;
+      queue.push({
+        kind: "speakQ",
+        key: `speakQ:${task.id}`,
+        task,
+        ...(question && { question }),
+        models: task.models.flatMap((id) => findSentence(id) ?? []),
+      });
     } else {
       const sentence = byId.get(step.id);
       if (!sentence) continue;
@@ -281,16 +435,21 @@ export function buildLessonQueue(lesson: CourseLesson, ctx: QueueContext): Exerc
   const last = queue[queue.length - 1];
   if (production.length > 1 && last && isQuestion(last) && production[0] === last.sentence)
     production.push(production.shift()!);
-  // The first third is put in order, the last third typed, and the ones in
-  // between built from a word bank.
+  // The first third is put in order, the last third produced freely (typed
+  // or spoken), and the ones in between built from a word bank.
   const third = Math.floor(production.length / 3);
   let banks = 0;
-  let typed = 0;
+  let free = 0;
   production.forEach((sentence, i) => {
     if (i < third) queue.push(orderExercise(sentence, othersOf(sentence), ctx.lang, rng));
-    else if (i >= production.length - third)
-      queue.push(typeExercise(typed++ % 2 === 0 ? "type" : "listenType", sentence));
-    else
+    else if (i >= production.length - third) {
+      const slot = free++ % 3;
+      queue.push(
+        slot === 1
+          ? speakExercise(sentence, othersOf(sentence), ctx.lang, rng)
+          : typeExercise(slot === 0 ? "type" : "listenType", sentence),
+      );
+    } else
       queue.push(
         bankExercise(
           banks++ % 2 === 0 ? "bankToDe" : "listenBank",
@@ -338,10 +497,70 @@ export function checkpointPassed(right: number, total: number): boolean {
   return total > 0 && right / total >= CHECKPOINT_PASS;
 }
 
+// A review session ("Üben"): up to REVIEW_SIZE due sentences, given weakest
+// first, each with an exercise that is harder the better the learner knows
+// the sentence: recognise it, then its grammar, then build it, then type it.
+export function buildReviewQueue(
+  due: readonly Sentence[],
+  ctx: {
+    lang: MotherTongue;
+    strengthOf: (sentenceId: string) => number;
+    // The sentences taught alongside this one, for decoys.
+    othersOf: (sentence: Sentence) => readonly Sentence[];
+    rng?: Rng;
+  },
+): QuestionExercise[] {
+  const rng = ctx.rng ?? Math.random;
+  return due.slice(0, REVIEW_SIZE).map((sentence, i) => {
+    const others = ctx.othersOf(sentence);
+    const strength = ctx.strengthOf(sentence.id);
+    const even = i % 2 === 0;
+    if (strength <= 1)
+      return even
+        ? pickExercise(sentence, others, ctx.lang, rng)
+        : bankExercise("bankFromDe", sentence, others, ctx.lang, rng);
+    if (strength === 2)
+      return sentence.gap
+        ? gapExercise(sentence, sentence.gap, rng)
+        : orderExercise(sentence, others, ctx.lang, rng);
+    if (strength === 3)
+      return bankExercise(even ? "bankToDe" : "listenBank", sentence, others, ctx.lang, rng);
+    return typeExercise(even ? "type" : "listenType", sentence);
+  });
+}
+
 // A wrongly answered question comes back at the end of the lesson, as often
 // as it takes. The copy gets its own key so React remounts the screen.
 export function requeueWrong(queue: readonly Exercise[], exercise: QuestionExercise): Exercise[] {
-  return [...queue, { ...exercise, key: `${exercise.key}+` }];
+  const again = { ...exercise, key: `${exercise.key}+` };
+  if (again.kind === "speak") again.fallback = { ...again.fallback, key: again.key };
+  return [...queue, again];
+}
+
+export function checkDialoguePick(turn: DialogueTurn, pickedId: string): boolean {
+  return pickedId === turn.sentence.id;
+}
+
+export function checkComprehension(
+  question: ComprehensionQuestion,
+  answer: number | boolean,
+): boolean {
+  return answer === question.correct;
+}
+
+// The share of the target's words found in what was heard, 0 to 1. Word
+// order and extra words don't matter.
+export function spokenScore(target: string, heard: string): number {
+  const words = tokenize(target).map(comparable);
+  if (words.length === 0) return 0;
+  const said = new Set(tokenize(heard).map(comparable));
+  return words.filter((word) => said.has(word)).length / words.length;
+}
+
+// Speech recognition offers several guesses at what was said; the learner
+// passes if any of them holds most of the words of any target.
+export function checkSpoken(targets: readonly string[], heard: readonly string[]): boolean {
+  return targets.some((target) => heard.some((h) => spokenScore(target, h) >= SPOKEN_PASS));
 }
 
 export function checkBank(exercise: BankExercise, picked: readonly string[]): boolean {
@@ -446,6 +665,28 @@ export function exerciseMedia(exercise: Exercise): ExerciseMedia {
       return { sentenceIds: exercise.note.examples, words: [], images: [] };
     case "newWord":
       return { sentenceIds: [], words: [exercise.word.full], images: [exercise.word.image] };
+    case "dialogue":
+      return {
+        sentenceIds: exercise.turns.flatMap((turn) => [
+          turn.sentence.id,
+          ...(turn.optionIds ?? []),
+        ]),
+        words: [],
+        images: [],
+      };
+    case "hearQ":
+      return { sentenceIds: exercise.lines.map((line) => line.id), words: [], images: [] };
+    case "readQ":
+      return { sentenceIds: [], words: [], images: [] };
+    case "speakQ":
+      return {
+        sentenceIds: [
+          ...(exercise.question ? [exercise.question.id] : []),
+          ...exercise.models.map((model) => model.id),
+        ],
+        words: [],
+        images: [],
+      };
     default:
       return { sentenceIds: [exercise.sentence.id], words: [], images: [] };
   }

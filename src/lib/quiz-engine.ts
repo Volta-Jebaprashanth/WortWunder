@@ -52,6 +52,10 @@ export function tierOfType(type: TestType): Tier {
   return TIER_BY_TYPE[type];
 }
 
+export function isTestType(type: string): type is TestType {
+  return type in TIER_BY_TYPE;
+}
+
 export type SingleWordKind = Exclude<TestType, "match">;
 export interface SingleWordItem {
   kind: SingleWordKind;

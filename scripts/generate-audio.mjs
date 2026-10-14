@@ -846,6 +846,26 @@ const WORDS = [
   { word: "niemand", slug: "niemand", dir: "1.30 grammar words/audio" },
   { word: "alles", slug: "alles", dir: "1.30 grammar words/audio" },
   { word: "jeder", slug: "jeder", dir: "1.30 grammar words/audio" },
+  // Grammar lessons (src/data/grammar/): sentences, and the words a grammar
+  // screen speaks that no Wortschatz lesson has (capitalised sentence-start
+  // pronouns offered as gap options, sort tiles). Slugs of sentences start
+  // with "sentence-".
+  { word: "Anna", slug: "anna", dir: "G1 getting started/audio" },
+  { word: "lernt", slug: "lernt", dir: "G1 getting started/audio" },
+  { word: "Ich", slug: "ich-capital", dir: "G1 getting started/audio" },
+  { word: "Du", slug: "du-capital", dir: "G1 getting started/audio" },
+  { word: "Er", slug: "er-capital", dir: "G1 getting started/audio" },
+  { word: "Es", slug: "es-capital", dir: "G1 getting started/audio" },
+  { word: "Anna lernt.", slug: "sentence-anna-lernt", dir: "G1 getting started/audio" },
+  { word: "Sie lernt.", slug: "sentence-sie-lernt", dir: "G1 getting started/audio" },
+  { word: "Tom lernt.", slug: "sentence-tom-lernt", dir: "G1 getting started/audio" },
+  { word: "Er lernt.", slug: "sentence-er-lernt", dir: "G1 getting started/audio" },
+  { word: "Der Mann lernt.", slug: "sentence-der-mann-lernt", dir: "G1 getting started/audio" },
+  { word: "Die Frau lernt.", slug: "sentence-die-frau-lernt", dir: "G1 getting started/audio" },
+  { word: "Das Kind lernt.", slug: "sentence-das-kind-lernt", dir: "G1 getting started/audio" },
+  { word: "Es lernt.", slug: "sentence-es-lernt", dir: "G1 getting started/audio" },
+  { word: "Ich lerne.", slug: "sentence-ich-lerne", dir: "G1 getting started/audio" },
+  { word: "Du lernst.", slug: "sentence-du-lernst", dir: "G1 getting started/audio" },
 ];
 
 // Full lesson-screen titles (e.g. "Was ist das?"), spoken when a kid taps the
@@ -864,6 +884,11 @@ const TITLES = [
   { word: "Welches Bild hörst du?", slug: "title-welches-bild-hoerst-du" },
   { word: "Finde die Paare", slug: "title-finde-die-paare" },
   { word: "Neues Wort", slug: "title-neues-wort" },
+  { word: "Neue Regel", slug: "title-neue-regel" },
+  { word: "Was passt?", slug: "title-was-passt" },
+  { word: "Was fehlt?", slug: "title-was-fehlt" },
+  { word: "Sortiere die Wörter", slug: "title-sortiere-die-woerter" },
+  { word: "Schreib, was fehlt", slug: "title-schreib-was-fehlt" },
 ];
 
 // The German alphabet, for the word-builder's letter tiles. `name` spells out

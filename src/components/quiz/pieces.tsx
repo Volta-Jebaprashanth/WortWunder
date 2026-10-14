@@ -716,7 +716,7 @@ const ARTICLE_COLORS: Record<string, string> = {
 
 // "der Vogel" with its article in that article's colour; anything without a
 // leading der/die/das renders as-is.
-function ArticleWord({ text }: { text: string }) {
+export function ArticleWord({ text }: { text: string }) {
   const match = /^(der|die|das)\s+(.+)$/i.exec(text);
   if (!match) return <>{text}</>;
   const [, article, rest] = match;
@@ -862,6 +862,8 @@ export function ResultCard({
   hint,
   picked,
   spelling,
+  wrongTitle,
+  detail,
   actionLabel,
   onAction,
 }: {
@@ -885,6 +887,11 @@ export function ResultCard({
         answerLabel: string;
       }
     | undefined;
+  // The grammar quiz shows the right sentence on a wrong answer and moves on
+  // instead of asking again: `wrongTitle` replaces "try again" in the header,
+  // and `detail` (the sentence, its meaning, why) sits under it.
+  wrongTitle?: string | undefined;
+  detail?: React.ReactNode;
   actionLabel: string;
   onAction: () => void;
 }) {
@@ -916,12 +923,19 @@ export function ResultCard({
                 correct ? "text-success" : "text-destructive",
               )}
             >
-              {correct ? "Richtig!" : "Fast! Versuch's nochmal."}
+              {correct ? "Richtig!" : (wrongTitle ?? "Fast! Versuch's nochmal.")}
             </p>
-            {correct && <p className="text-sm font-bold text-ink-soft">{correctText}</p>}
+            {correct && correctText && (
+              <p className="text-sm font-bold text-ink-soft">{correctText}</p>
+            )}
             {!correct && hint && <p className="text-sm font-bold text-ink-soft">💡 {hint}</p>}
           </div>
         </div>
+        {detail && (
+          <div className="mt-4 flex flex-col items-center gap-1 rounded-3xl bg-card p-4 text-center">
+            {detail}
+          </div>
+        )}
         {!correct && picked && (
           <div className="mt-4 flex flex-col items-center gap-2 rounded-3xl bg-card p-4 text-center">
             <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-ink-soft">

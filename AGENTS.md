@@ -184,8 +184,35 @@ Vite 8 + Nitro.
   `src/routes/index.tsx` are generated from it. Nouns keep their
   der/die/das in `full` (shown and spoken); spelling screens drop it via
   `spellingOf`.
-- **Path layout**: 1 Wortschatz (the vocabulary lessons), 2 ÖSD
+- **Path layout**: 1 Grammatik (the grammar lessons, see below), 2
+  Wortschatz (the vocabulary lessons), 3 ÖSD
   (no lessons of its own: `OESD_LESSONS` in `index.tsx` lists
   Wortschatz lessons again, optionally renamed, e.g. 1.2 Familie as "Die
-  Familienmitglieder"; they open the same tests and share progress), 3 Testing (the hand-written "Tiere" /
-  der Vogel walkthrough screens in `index.tsx`).
+  Familienmitglieder"; they open the same tests and share progress), 4 Testing (the hand-written "Tiere" /
+  der Vogel walkthrough screens in `index.tsx`). Section numbers are display
+  order only: vocabulary ids stay `1.1` to `1.30`.
+- **Grammar lessons**: planned in `ROADMAP.md` (G1 to G13), one test drawn
+  out in `GRAMMAR-EXAMPLE.md`. Data lives in `src/data/grammar/` (types in
+  `types.ts`, one file per lesson, collected into `GRAMMAR_LESSONS` in
+  `index.ts`); ids carry a `G` prefix (lesson `G1`, test `G1.2`) and the test
+  id is the progress key. A lesson mixes two kinds of test:
+  - **Word tests** (`kind: "words"`) reference existing Wortschatz words by
+    `{ lessonId, wordId }` and are played by `VocabQuiz`, so they need no new
+    assets. One word test can't hold two words with the same id.
+  - **Grammar tests** (`kind: "grammar"`) are hand-written: rule cards plus
+    sentences. `src/lib/grammar-engine.ts` turns them into rows and quiz
+    items (types and tiers in `GRAMMAR_TIERS`), played by
+    `src/components/quiz/GrammarQuiz.tsx` with pieces from
+    `grammar-pieces.tsx`. A sentence gets gap questions only if it has a
+    `focus` (plus `focusPart` when the gap is letters inside a word, and
+    `distractors` for `gapPick`). Rule card + its check question are one
+    row; `pairs` / `sort` are one `"board"` row. Grammar rows share
+    `progress-store.ts` with vocabulary through `ensureRowsEntered`.
+  - Every German string a grammar screen speaks (sentences, sort tiles,
+    options) needs a `WORDS` entry in `scripts/generate-audio.mjs` with
+    `dir: "<G-lesson folder>/audio"` unless a Wortschatz word already has
+    that exact text; anything missing falls back to `speechSynthesis`.
+    Path icons follow the vocabulary layout (`icons/lesson.jpg`,
+    `icons/test-<n>.jpg`, n counting tests from 1).
+  - Tamil and Sinhala explanations need a native speaker's review before a
+    lesson ships.

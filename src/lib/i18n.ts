@@ -90,6 +90,19 @@ export interface Strings {
   backToPath: string;
   expandSection: string;
   collapseSection: string;
+  ruleCard: string;
+  quickCheck: string;
+  fillGap: string;
+  pickGapFiller: string;
+  listenThenChooseSentence: string;
+  matchEachPair: string;
+  sortChallenge: string;
+  sortHint: string;
+  typeChallenge: string;
+  typeMissing: string;
+  typeHere: string;
+  typeLetter: (letter: string) => string;
+  correctAnswer: string;
 }
 
 export const TRANSLATIONS: Record<MotherTongue, Strings> = {
@@ -172,6 +185,19 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     backToPath: "Back to my path",
     expandSection: "Expand",
     collapseSection: "Collapse",
+    ruleCard: "New rule",
+    quickCheck: "Quick check",
+    fillGap: "Fill the gap",
+    pickGapFiller: "Pick what fills the gap.",
+    listenThenChooseSentence: "Listen, then choose what you hear.",
+    matchEachPair: "Match each pair.",
+    sortChallenge: "Sort it",
+    sortHint: "Tap a word, then tap its group.",
+    typeChallenge: "Type it",
+    typeMissing: "Type what is missing.",
+    typeHere: "Type here",
+    typeLetter: (letter) => `Type ${letter}`,
+    correctAnswer: "Correct answer",
   },
   tamil: {
     openProfileMenu: "சுயவிவரப் பட்டியலைத் திற",
@@ -253,6 +279,19 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     backToPath: "என் பாதைக்குத் திரும்பு",
     expandSection: "விரிவாக்கு",
     collapseSection: "சுருக்கு",
+    ruleCard: "புதிய விதி",
+    quickCheck: "விரைவுச் சோதனை",
+    fillGap: "இடைவெளியை நிரப்பு",
+    pickGapFiller: "இடைவெளியை நிரப்புவதைத் தேர்ந்தெடு.",
+    listenThenChooseSentence: "கேளுங்கள், பிறகு நீங்கள் கேட்டதைத் தேர்ந்தெடுங்கள்.",
+    matchEachPair: "ஒவ்வொரு ஜோடியையும் இணைக்கவும்.",
+    sortChallenge: "வகைப்படுத்து",
+    sortHint: "ஒரு சொல்லைத் தட்டி, பிறகு அதன் குழுவைத் தட்டவும்.",
+    typeChallenge: "தட்டச்சு செய்",
+    typeMissing: "விடுபட்டதைத் தட்டச்சு செய்.",
+    typeHere: "இங்கே தட்டச்சு செய்",
+    typeLetter: (letter) => `"${letter}" தட்டச்சு செய்`,
+    correctAnswer: "சரியான பதில்",
   },
   sinhala: {
     openProfileMenu: "පැතිකඩ මෙනුව විවෘත කරන්න",
@@ -333,5 +372,18 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     backToPath: "මගේ මාවතට ආපසු",
     expandSection: "විස්තීරණය කරන්න",
     collapseSection: "හකුළන්න",
+    ruleCard: "නව නීතිය",
+    quickCheck: "ඉක්මන් පරීක්ෂාව",
+    fillGap: "හිස්තැන පුරවන්න",
+    pickGapFiller: "හිස්තැන පුරවන දේ තෝරන්න.",
+    listenThenChooseSentence: "අහන්න, පසුව ඔබ ඇසූ දේ තෝරන්න.",
+    matchEachPair: "එක් එක් යුගලය ගළපන්න.",
+    sortChallenge: "වර්ග කරන්න",
+    sortHint: "වචනයක් ඔබා, පසුව එහි කණ්ඩායම ඔබන්න.",
+    typeChallenge: "ටයිප් කරන්න",
+    typeMissing: "අඩු වී ඇති දේ ටයිප් කරන්න.",
+    typeHere: "මෙතැන ටයිප් කරන්න",
+    typeLetter: (letter) => `"${letter}" ටයිප් කරන්න`,
+    correctAnswer: "නිවැරදි පිළිතුර",
   },
 };

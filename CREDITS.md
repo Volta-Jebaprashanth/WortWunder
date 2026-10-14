@@ -1343,3 +1343,17 @@ are all cropped from these.
 | nobody.jpg      | niemand     | https://www.pexels.com/photo/empty-classroom-with-desks-and-chalkboard-36650154/          |
 | everything.jpg  | alles       | https://www.pexels.com/photo/colorful-turkish-breakfast-spread-on-wooden-table-29061713/  |
 | everyone.jpg    | jeder       | https://www.pexels.com/photo/crowd-raising-hands-at-outdoor-event-34612591/               |
+
+## Lesson G1 — Los geht's
+
+Grammar lesson G1 has no photos of its own. Its path icons in
+`public/G1 getting started/icons/` are 160x160 crops of photos credited in
+the sections above:
+
+| File       | Test                  | Source                                                    |
+| ---------- | --------------------- | --------------------------------------------------------- |
+| lesson.jpg | Los geht's            | crop of `1.17 verbs/images/to-learn.jpg` (Pexels 8613117) |
+| test-1.jpg | Wörter                | copy of `1.1 greetings/icons/lesson.jpg`                  |
+| test-2.jpg | ä, ö, ü, ß            | crop of `1.8 personal information/images/girl.jpg`        |
+| test-3.jpg | ei, ie, sch, w, z     | crop of `1.12 work and school/images/school.jpg`          |
+| test-4.jpg | Nomen, Verb, Pronomen | crop of `1.8 personal information/images/woman.jpg`       |

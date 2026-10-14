@@ -34,6 +34,7 @@ import {
   WordCard,
 } from "@/components/quiz/pieces";
 import { VocabQuiz } from "@/components/quiz/VocabQuiz";
+import { GrammarQuiz } from "@/components/quiz/GrammarQuiz";
 import { TierSteps } from "@/components/quiz/TierSteps";
 import { getTestStatus, type TestStatus } from "@/lib/progress-store";
 import {
@@ -56,6 +57,14 @@ import {
   type VocabLesson,
   type VocabTest,
 } from "@/data/lessons";
+import {
+  findGrammarTest,
+  GRAMMAR_LESSONS,
+  grammarLessonPicture,
+  grammarTestPicture,
+  resolveWords,
+} from "@/data/grammar";
+import type { GrammarLesson, GrammarTest } from "@/data/grammar/types";
 import { GREETINGS_WORDS } from "@/data/greetings";
 import { FAMILY_LESSON_ID } from "@/data/family";
 import { WEATHER_LESSON_ID } from "@/data/weather";
@@ -97,6 +106,7 @@ export const Route = createFileRoute("/")({
 type Screen =
   | "home"
   | "quiz"
+  | "grammar"
   | "training"
   | "trainingCheck"
   | "picture"
@@ -115,6 +125,7 @@ type Screen =
 function Index() {
   const [screen, setScreen] = useState<Screen>("home");
   const [activeTest, setActiveTest] = useState<VocabTest | null>(null);
+  const [activeGrammar, setActiveGrammar] = useState<GrammarTest | null>(null);
   const [answer, setAnswer] = useState<string | null>(null);
   const [letters, setLetters] = useState<number[]>([]);
   const [heard, setHeard] = useState(false);
@@ -358,7 +369,23 @@ function Index() {
         /* fullscreen unsupported (e.g. iOS Safari) — layout still fills the viewport */
       }
     }
-    const test = findVocabTest(nodeId) ?? TESTING_TESTS.find((t) => t.testId === nodeId);
+    // A grammar lesson's word test is an ordinary vocabulary test over words
+    // borrowed from Wortschatz lessons; its grammar tests have their own quiz.
+    const grammarTest = findGrammarTest(nodeId);
+    if (grammarTest?.kind === "grammar") {
+      setActiveGrammar(grammarTest);
+      go("grammar");
+      return;
+    }
+    const test: VocabTest | undefined =
+      grammarTest?.kind === "words"
+        ? {
+            testId: grammarTest.testId,
+            part: 1,
+            words: resolveWords(grammarTest),
+            ...(grammarTest.testTypes && { testTypes: grammarTest.testTypes }),
+          }
+        : (findVocabTest(nodeId) ?? TESTING_TESTS.find((t) => t.testId === nodeId));
     if (test) {
       setActiveTest(test);
       go("quiz");
@@ -413,7 +440,17 @@ function Index() {
         />
       )}
 
-      {screen !== "quiz" && (
+      {screen === "grammar" && activeGrammar && (
+        <GrammarQuiz
+          key={activeGrammar.testId}
+          test={activeGrammar}
+          t={t}
+          lang={lang}
+          onExit={() => go("home")}
+        />
+      )}
+
+      {screen !== "quiz" && screen !== "grammar" && (
         <main className="relative z-10 mx-auto max-w-5xl px-4 pb-10 sm:px-6">
           {screen === "home" && (
             <Home
@@ -928,6 +965,26 @@ function lessonPathNode(
   };
 }
 
+// A grammar lesson as a path node. Its tests are named for what they teach
+// ("Wörter", "ä, ö, ü, ß"), not numbered like the vocabulary tests.
+function grammarLessonPathNode(lesson: GrammarLesson, lang: MotherTongue): PathNode {
+  return {
+    id: lesson.id,
+    title: lesson.title,
+    icon: <PathPicture src={grammarLessonPicture(lesson)} fallback={lesson.icon} />,
+    state: "active",
+    meaning: lesson.meaning[lang],
+    children: lesson.tests.map((test) => ({
+      id: test.testId,
+      title: test.title,
+      icon: <PathPicture src={grammarTestPicture(lesson, test)} fallback={lesson.icon} />,
+      state: "active",
+      meaning: test.meaning[lang],
+      testId: test.testId,
+    })),
+  };
+}
+
 // Wortschatz lessons repeated under the ÖSD section, optionally renamed.
 const OESD_LESSONS: {
   lessonId: string;
@@ -964,6 +1021,7 @@ const SPELLING_TEST: VocabTest = {
 const TESTING_TESTS: VocabTest[] = [SPELLING_TEST];
 
 const PATH_MEANINGS = {
+  grammatik: { english: "Grammar", tamil: "இலக்கணம்", sinhala: "ව්‍යාකරණ" },
   wortschatz: { english: "Vocabulary", tamil: "சொற்களஞ்சியம்", sinhala: "වචන මාලාව" },
   oesd: { english: "ÖSD exam", tamil: "ÖSD தேர்வு", sinhala: "ÖSD විභාගය" },
   testing: { english: "Testing", tamil: "சோதனை", sinhala: "පරීක්ෂණ" },
@@ -995,6 +1053,14 @@ function Home({
   const goalReached = todayMinutes >= goalMinutes;
   const path = useMemo<PathNode[]>(
     () => [
+      {
+        id: "grammatik",
+        title: "Grammatik",
+        icon: "📝",
+        state: "active",
+        meaning: PATH_MEANINGS.grammatik[lang],
+        children: GRAMMAR_LESSONS.map((lesson) => grammarLessonPathNode(lesson, lang)),
+      },
       {
         id: "wortschatz",
         title: "Wortschatz",

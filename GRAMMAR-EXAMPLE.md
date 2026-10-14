@@ -1,4 +1,4 @@
-# Grammar test example: 4.2.2 "ich bin, du bist"
+# Grammar test example: G2.3 "ich bin, du bist"
 
 One grammar test, shown from the first screen to the last, so the format in
 [ROADMAP.md](ROADMAP.md) can be judged before anything is built.
@@ -23,10 +23,10 @@ the same screens with the grey text in their language.
 
 | | |
 | --- | --- |
-| Path position | 4 Grammatik, 4.2 Erste Sätze, test 2 of 5 |
+| Path position | 1 Grammatik, G2 Erste Sätze, test 3 of 7 (G2.1 is the word test, G2.2 is `heißen`) |
 | The one rule | With `ich` the verb is `bin`. With `du` the verb is `bist`. |
-| Already known | `ich`, `du`, names, *Hallo* (from 4.2.1 and 1.1 Hallo) |
-| New words | `müde`, `nett`, `hier`, `krank`, `neu` |
+| Already known | `ich`, `du`, *Hallo* (from G1 Los geht's); names (from G2.2); `müde`, `nett`, `hier`, `krank`, `neu` (from G2.1 Wörter 1) |
+| New words | None. Grammar tests never introduce words; G2.1 taught them |
 
 The eight sentences everything is built from:
 
@@ -45,13 +45,13 @@ What the learner goes through:
 
 | Tier | Screens | Count |
 | --- | --- | --- |
-| Training | 5 new-word cards, 1 rule card, 1 check question | 7 |
+| Training | 1 rule card, 1 check question | 2 |
 | Basic | pick the gap (8), pick the meaning (8) | 16 |
 | Easy | listen and pick (8), match pairs (1 board) | 9 |
 | Medium | word order (8), find the mistake (8), change the sentence (4) | 20 |
 | Hard | build from meaning (8), type the gap (8), dictation (8), pick the reply (2) | 26 |
 
-About 78 screens if nothing is missed. A missed question comes back later in
+About 73 screens if nothing is missed. A missed question comes back later in
 the same tier, under the same pending-attempts rule the vocabulary tests use.
 The learner can leave at any point and resume where they stopped.
 
@@ -59,7 +59,7 @@ Every screen shares one frame:
 
 ```
 ┌──────────────────────────────────┐
-│ ✕   ▓▓▓▓▓▓▓░░░░░░░░░░░░░   12/78 │  close, progress
+│ ✕   ▓▓▓▓▓▓▓░░░░░░░░░░░░░   12/73 │  close, progress
 │     ● ● ○ ○ ○                    │  tier steps: training ... hard
 │                                  │
 │  (the question)                  │
@@ -73,25 +73,14 @@ marks something that plays audio when tapped.
 
 ## 2. Training
 
-### New-word cards
+### Before this test
 
-One card per new word, the same card vocabulary tests already use
-(`TrainingCard`). Five cards, then the rule.
-
-```
-┌──────────────────────────────────┐
-│  New word                        │
-│                                  │
-│        ┌──────────────┐          │
-│        │   (photo)    │          │
-│        └──────────────┘          │
-│                                  │
-│          🔊  müde                │
-│            tired                 │
-│                                  │
-│  [         CONTINUE          ]   │
-└──────────────────────────────────┘
-```
+There are no new-word cards here. `müde`, `nett`, `hier`, `krank` and `neu`
+were taught in G2.1 Wörter 1, an ordinary vocabulary test played by
+`VocabQuiz` with its photos, audio and all eleven vocabulary question types.
+The words come from the Wortschatz lessons 1.19 Gefühle, 1.21 Eigenschaften
+and 1.28 Position & Ort, so they needed no new pictures or audio. The training
+tier of this test starts straight at the rule.
 
 ### `rule`: the rule card
 
@@ -161,7 +150,7 @@ For Tamil and Sinhala learners the last line reads differently: it says that
 ```
 
 `ist` and `sind` have not been taught yet. They are there as decoys only,
-and the learner will recognise them when 4.2.3 and 4.2.4 arrive.
+and the learner will recognise them when G2.4 and G2.6 arrive.
 
 After a correct answer:
 
@@ -462,15 +451,15 @@ review before they ship.
 
 ```ts
 // src/data/grammar/first-sentences.ts
-export const TEST_4_2_2: GrammarTest = {
-  testId: "4.2.2",
+export const TEST_G2_3: GrammarTest = {
+  kind: "grammar",
+  testId: "G2.3",
   title: "ich bin, du bist",
   meaning: {
     english: "I am, you are",
     tamil: "நான், நீ",
     sinhala: "මම, ඔයා",
   },
-  newWordIds: ["muede", "nett", "hier", "krank", "neu"],
   testTypes: [
     "rule",
     "ruleCheck",
@@ -587,7 +576,7 @@ string.
 ## 9. The one type this test does not use
 
 `sort` has nothing to sort when the rule is two verb forms. It first
-appears in 4.5.1, where the learner drags nouns onto their article:
+appears in G5.2, where the learner drags nouns onto their article:
 
 ```
 ┌──────────────────────────────────┐

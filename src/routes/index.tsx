@@ -901,7 +901,7 @@ function collectTestIds(nodes: PathNode[]): string[] {
 }
 
 // A vocab lesson as a path node, expanding to its numbered tests. ÖSD lists
-// some Grundlagen lessons again under its own title: those copies get an
+// some Wortschatz lessons again under its own title: those copies get an
 // id prefix (node ids must be unique in the tree) but open the same tests,
 // so progress is shared between both places.
 function lessonPathNode(
@@ -928,7 +928,7 @@ function lessonPathNode(
   };
 }
 
-// Grundlagen lessons repeated under the ÖSD section, optionally renamed.
+// Wortschatz lessons repeated under the ÖSD section, optionally renamed.
 const OESD_LESSONS: {
   lessonId: string;
   title?: string;
@@ -964,7 +964,7 @@ const SPELLING_TEST: VocabTest = {
 const TESTING_TESTS: VocabTest[] = [SPELLING_TEST];
 
 const PATH_MEANINGS = {
-  grundlagen: { english: "Basics", tamil: "அடிப்படைகள்", sinhala: "මූලික කරුණු" },
+  wortschatz: { english: "Vocabulary", tamil: "சொற்களஞ்சியம்", sinhala: "වචන මාලාව" },
   oesd: { english: "ÖSD exam", tamil: "ÖSD தேர்வு", sinhala: "ÖSD විභාගය" },
   testing: { english: "Testing", tamil: "சோதனை", sinhala: "පරීක්ෂණ" },
   tiere: { english: "Animals", tamil: "விலங்குகள்", sinhala: "සතුන්" },
@@ -996,11 +996,11 @@ function Home({
   const path = useMemo<PathNode[]>(
     () => [
       {
-        id: "grundlagen",
-        title: "Grundlagen",
+        id: "wortschatz",
+        title: "Wortschatz",
         icon: "🔤",
         state: "active",
-        meaning: PATH_MEANINGS.grundlagen[lang],
+        meaning: PATH_MEANINGS.wortschatz[lang],
         children: VOCAB_LESSONS.map((lesson) => lessonPathNode(lesson, lang)),
       },
       {
@@ -1133,14 +1133,6 @@ function Home({
             </div>
           </div>
         </section>
-        <Button
-          variant="adventure"
-          size="lesson"
-          className="w-full"
-          onClick={() => onStart("tiere")}
-        >
-          {t.startLesson} <Zap />
-        </Button>
       </aside>
     </div>
   );

@@ -20,7 +20,6 @@ export interface Strings {
   addToHomeScreen: string;
   readyForAdventure: string;
   todaysGoal: string;
-  startLesson: string;
   lessonComplete: (xp: number) => string;
   wordsStartHere: (count: number) => string;
   wordsLocked: (count: number) => string;
@@ -103,7 +102,6 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     addToHomeScreen: "Add to Home Screen",
     readyForAdventure: "Ready for a little German adventure?",
     todaysGoal: "TODAY'S GOAL",
-    startLesson: "Start lesson",
     lessonComplete: (xp) => `Complete · ${xp} XP`,
     wordsStartHere: (count) => `${count} words · Start here`,
     wordsLocked: (count) => `${count} words · Locked`,
@@ -184,7 +182,6 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     addToHomeScreen: "முகப்புத் திரையில் சேர்",
     readyForAdventure: "ஜெர்மன் மொழி சாகசத்திற்குத் தயாரா?",
     todaysGoal: "இன்றைய இலக்கு",
-    startLesson: "பாடத்தைத் தொடங்கு",
     lessonComplete: (xp) => `முடிந்தது · ${xp} XP`,
     wordsStartHere: (count) => `${count} சொற்கள் · இங்கிருந்து தொடங்கு`,
     wordsLocked: (count) => `${count} சொற்கள் · பூட்டப்பட்டது`,
@@ -266,7 +263,6 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     addToHomeScreen: "මුල් තිරයට එකතු කරන්න",
     readyForAdventure: "ජර්මානු කුඩා වික්‍රමයකට සූදානම්ද?",
     todaysGoal: "අද දිනයේ ඉලක්කය",
-    startLesson: "පාඩම අරඹන්න",
     lessonComplete: (xp) => `සම්පූර්ණයි · ${xp} XP`,
     wordsStartHere: (count) => `වචන ${count} · මෙතනින් පටන් ගන්න`,
     wordsLocked: (count) => `වචන ${count} · අගුලු දමා ඇත`,

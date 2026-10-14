@@ -102,7 +102,7 @@ export interface Strings {
   typeMissing: string;
   typeHere: string;
   typeLetter: (letter: string) => string;
-  correctAnswer: string;
+  deleteLetter: string;
 }
 
 export const TRANSLATIONS: Record<MotherTongue, Strings> = {
@@ -197,7 +197,7 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     typeMissing: "Type what is missing.",
     typeHere: "Type here",
     typeLetter: (letter) => `Type ${letter}`,
-    correctAnswer: "Correct answer",
+    deleteLetter: "Delete a letter",
   },
   tamil: {
     openProfileMenu: "சுயவிவரப் பட்டியலைத் திற",
@@ -291,7 +291,7 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     typeMissing: "விடுபட்டதைத் தட்டச்சு செய்.",
     typeHere: "இங்கே தட்டச்சு செய்",
     typeLetter: (letter) => `"${letter}" தட்டச்சு செய்`,
-    correctAnswer: "சரியான பதில்",
+    deleteLetter: "ஒரு எழுத்தை நீக்கு",
   },
   sinhala: {
     openProfileMenu: "පැතිකඩ මෙනුව විවෘත කරන්න",
@@ -384,6 +384,6 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     typeMissing: "අඩු වී ඇති දේ ටයිප් කරන්න.",
     typeHere: "මෙතැන ටයිප් කරන්න",
     typeLetter: (letter) => `"${letter}" ටයිප් කරන්න`,
-    correctAnswer: "නිවැරදි පිළිතුර",
+    deleteLetter: "අකුරක් මකන්න",
   },
 };

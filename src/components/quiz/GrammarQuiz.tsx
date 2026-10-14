@@ -34,10 +34,10 @@ import type { GrammarTest, Localized } from "@/data/grammar/types";
 
 // The quiz screen for a grammar test (G1.2, G1.3, ... — see
 // src/data/grammar/), the counterpart of VocabQuiz. Same tier-gated rounds
-// and progress rules; the queue comes from grammar-engine.ts. One
-// difference in feel: a wrong answer shows the right sentence and why, then
-// moves on (the missed row comes back later), instead of asking again in
-// place — a grammar choice can't be worked out by trying the other options.
+// and progress rules; the queue comes from grammar-engine.ts. As in
+// VocabQuiz, a wrong answer is asked again in place until it's right (with
+// the sentence's "why" line as a hint, never the answer itself); only the
+// first miss on a question costs a penalty.
 function localized(value: string | Localized, lang: MotherTongue): string {
   return typeof value === "string" ? value : value[lang];
 }
@@ -68,6 +68,7 @@ export function GrammarQuiz({
   const [typed, setTyped] = useState("");
   const [checked, setChecked] = useState(false);
   const [lastCorrect, setLastCorrect] = useState(false);
+  const [attempts, setAttempts] = useState(0);
   // A rule item is two screens: the rule card, then its check question.
   const [introDone, setIntroDone] = useState(false);
   const [placement, setPlacement] = useState<(string | null)[]>([]);
@@ -92,6 +93,7 @@ export function GrammarQuiz({
     setAnswer(null);
     setTyped("");
     setChecked(false);
+    setAttempts(0);
     setIntroDone(false);
     setSelectedTile(null);
     setPlacement(sortItems.map(() => null));
@@ -142,13 +144,25 @@ export function GrammarQuiz({
   const checkAnswer = (isCorrect: boolean) => {
     setChecked(true);
     setLastCorrect(isCorrect);
-    record(isCorrect);
+    // Only the first wrong attempt on a queue appearance costs a penalty —
+    // further in-place retries (see `retry` below) don't stack.
+    if (isCorrect || attempts === 0) record(isCorrect);
     if (isCorrect) {
       recordCorrectAnswer();
       playCorrectSound();
     } else {
       playWrongSound();
+      setAttempts((a) => a + 1);
     }
+  };
+  // Back to the same question. A sort board keeps the tiles that were in the
+  // right group and sends the wrong ones back to the tray.
+  const retry = () => {
+    setChecked(false);
+    setAnswer(null);
+    setTyped("");
+    setSelectedTile(null);
+    setPlacement((old) => old.map((group, i) => (group === sortItems[i]?.group ? group : null)));
   };
 
   const sentence = item && "sentence" in item ? item.sentence : undefined;
@@ -156,8 +170,7 @@ export function GrammarQuiz({
     ? (sentence.why?.[lang] ?? (sentence.rule ? rules[sentence.rule]?.text[lang] : undefined))
     : undefined;
   const sortDone = placement.length > 0 && placement.every((group) => group !== null);
-  const misplaced = sortItems.filter((sortItem, i) => placement[i] !== sortItem.group);
-  const groupLabel = (id: string) => test.sort?.groups.find((g) => g.id === id)?.label ?? id;
+  const sortCorrect = sortItems.every((sortItem, i) => placement[i] === sortItem.group);
 
   return (
     <main className="relative z-10 mx-auto max-w-5xl px-4 pb-10 sm:px-6">
@@ -351,11 +364,7 @@ export function GrammarQuiz({
             />
           </div>
           {!checked && (
-            <Continue
-              t={t}
-              disabled={!sortDone}
-              onClick={() => checkAnswer(misplaced.length === 0)}
-            />
+            <Continue t={t} disabled={!sortDone} onClick={() => checkAnswer(sortCorrect)} />
           )}
         </LessonFrame>
       )}
@@ -381,6 +390,7 @@ export function GrammarQuiz({
           <GapInput
             t={t}
             value={typed}
+            keys={item.options}
             onChange={setTyped}
             disabled={checked}
             onSubmit={() => {
@@ -401,40 +411,14 @@ export function GrammarQuiz({
         <ResultCard
           correct={lastCorrect}
           correctText=""
-          wrongTitle="Nicht ganz!"
+          hint={item.kind === "rule" ? item.rule.text[lang] : why}
           detail={
-            sentence ? (
-              <SentenceFeedback
-                t={t}
-                sentence={sentence}
-                lang={lang}
-                why={lastCorrect ? undefined : why}
-              />
-            ) : item.kind === "rule" ? (
-              lastCorrect ? undefined : (
-                <>
-                  <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-ink-soft">
-                    {t.correctAnswer}
-                  </p>
-                  <p className="font-display text-2xl font-extrabold">{item.rule.check.answer}</p>
-                  <p className="mt-2 text-sm font-bold">💡 {item.rule.text[lang]}</p>
-                </>
-              )
-            ) : item.kind === "sort" && !lastCorrect ? (
-              <>
-                <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-ink-soft">
-                  {t.correctAnswer}
-                </p>
-                {misplaced.map((m) => (
-                  <p key={m.text} className="font-display text-lg font-extrabold">
-                    {m.text} → {groupLabel(m.group)}
-                  </p>
-                ))}
-              </>
+            lastCorrect && sentence ? (
+              <SentenceFeedback t={t} sentence={sentence} lang={lang} />
             ) : undefined
           }
-          actionLabel={lastCorrect ? "Weiter" : t.gotIt}
-          onAction={goNext}
+          actionLabel={lastCorrect ? "Weiter" : t.tryAgain}
+          onAction={lastCorrect ? goNext : retry}
         />
       )}
     </main>

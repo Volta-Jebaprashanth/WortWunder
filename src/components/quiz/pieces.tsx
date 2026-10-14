@@ -862,7 +862,6 @@ export function ResultCard({
   hint,
   picked,
   spelling,
-  wrongTitle,
   detail,
   actionLabel,
   onAction,
@@ -887,10 +886,8 @@ export function ResultCard({
         answerLabel: string;
       }
     | undefined;
-  // The grammar quiz shows the right sentence on a wrong answer and moves on
-  // instead of asking again: `wrongTitle` replaces "try again" in the header,
-  // and `detail` (the sentence, its meaning, why) sits under it.
-  wrongTitle?: string | undefined;
+  // Extra content under the header, e.g. the grammar quiz's answered
+  // sentence with its meaning.
   detail?: React.ReactNode;
   actionLabel: string;
   onAction: () => void;
@@ -923,7 +920,7 @@ export function ResultCard({
                 correct ? "text-success" : "text-destructive",
               )}
             >
-              {correct ? "Richtig!" : (wrongTitle ?? "Fast! Versuch's nochmal.")}
+              {correct ? "Richtig!" : "Fast! Versuch's nochmal."}
             </p>
             {correct && correctText && (
               <p className="text-sm font-bold text-ink-soft">{correctText}</p>

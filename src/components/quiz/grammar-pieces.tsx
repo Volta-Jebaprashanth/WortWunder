@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Volume2 } from "lucide-react";
+import { Delete, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { playWord } from "@/lib/word-audio";
@@ -353,19 +353,20 @@ export function SortBuckets({
   );
 }
 
-// Typing the gap, with ä ö ü ß keys above the phone keyboard so nobody needs
-// a German layout. A key inserts at the cursor.
-const GERMAN_KEYS = ["ä", "ö", "ü", "ß"];
-
+// Typing the gap. `keys` are letter tiles (the answer's letters mixed with
+// decoys, see gapKeys) so nobody needs a German keyboard; a tile inserts at
+// the cursor, the last tile deletes. The phone keyboard works too.
 export function GapInput({
   t,
   value,
+  keys,
   onChange,
   onSubmit,
   disabled,
 }: {
   t: Strings;
   value: string;
+  keys: string[];
   onChange: (value: string) => void;
   onSubmit: () => void;
   disabled: boolean;
@@ -380,6 +381,15 @@ export function GapInput({
       input?.focus();
       input?.setSelectionRange(start + letter.length, start + letter.length);
     });
+  };
+  // Deletes the selection, or the letter before the cursor.
+  const erase = () => {
+    const input = inputRef.current;
+    const end = input?.selectionEnd ?? value.length;
+    const start = Math.min(input?.selectionStart ?? end, end);
+    const from = start === end ? Math.max(0, start - 1) : start;
+    onChange(value.slice(0, from) + value.slice(end));
+    requestAnimationFrame(() => input?.setSelectionRange(from, from));
   };
   return (
     <div className="mx-auto flex max-w-sm flex-col items-center gap-3">
@@ -400,8 +410,8 @@ export function GapInput({
         className="h-14 w-full rounded-2xl border-2 border-border bg-glass px-4 text-center font-display text-2xl font-extrabold outline-none focus:border-primary"
         style={{ fontSize: 24 }}
       />
-      <div className="flex gap-2">
-        {GERMAN_KEYS.map((letter) => (
+      <div className="flex flex-wrap justify-center gap-2">
+        {keys.map((letter) => (
           <Button
             key={letter}
             variant="tile"
@@ -413,6 +423,16 @@ export function GapInput({
             {letter}
           </Button>
         ))}
+        <Button
+          variant="tile"
+          size="tile"
+          disabled={disabled || !value}
+          onClick={erase}
+          aria-label={t.deleteLetter}
+          className="bg-sun shadow-[0_4px_0_oklch(0.72_0.14_91)]"
+        >
+          <Delete />
+        </Button>
       </div>
     </div>
   );

@@ -100,8 +100,9 @@ export type GrammarItem =
       kind: SentenceKind;
       tier: Tier;
       sentence: GrammarSentence;
-      // gapPick: the fillers to choose from. sentenceMeaning / listenPick:
-      // ids of the sentences offered, this one included.
+      // gapPick: the fillers to choose from. gapType: the letter keys.
+      // sentenceMeaning / listenPick: ids of the sentences offered, this one
+      // included.
       options: string[];
     }
   | { kind: "pairs" | "sort"; tier: Tier };
@@ -113,6 +114,32 @@ function otherSentenceIds(test: GrammarTest, sentence: GrammarSentence, count: n
   const sameRule = shuffle(others.filter((s) => s.rule && s.rule === sentence.rule));
   const rest = shuffle(others.filter((s) => !s.rule || s.rule !== sentence.rule));
   return [...sameRule, ...rest].slice(0, count).map((s) => s.id);
+}
+
+// The letter keys offered for typing the gap: every letter of the answer,
+// plus decoys taken first from the sentence's wrong fillers (so "a" sits
+// next to "ä", "e" next to "ie") and then from common letters, shuffled.
+// Answers are checked without case, so keys are lower case.
+const GAP_KEY_COUNT = 8;
+const COMMON_LETTERS = ["e", "n", "a", "r", "t", "s", "i", "l", "h", "u", "o", "m"];
+
+function lettersOf(text: string): string[] {
+  return [...text.toLowerCase()].filter((ch) => /\p{L}/u.test(ch));
+}
+
+export function gapKeys(sentence: GrammarSentence): string[] {
+  const keys = new Set(lettersOf(gapAnswer(sentence)));
+  const decoys = [
+    ...shuffle((sentence.distractors ?? []).flatMap(lettersOf)),
+    ...shuffle(COMMON_LETTERS),
+  ];
+  // At least two decoys even when the answer alone fills the keyboard.
+  const target = Math.max(GAP_KEY_COUNT, keys.size + 2);
+  for (const letter of decoys) {
+    if (keys.size >= target) break;
+    keys.add(letter);
+  }
+  return shuffle([...keys]);
 }
 
 // `rows` are pending rows from progress-store.ts, whose `wordId` is the
@@ -145,7 +172,7 @@ export function buildGrammarRound(
       type === "gapPick"
         ? shuffle([gapAnswer(sentence), ...(sentence.distractors ?? []).slice(0, 3)])
         : type === "gapType"
-          ? []
+          ? gapKeys(sentence)
           : shuffle([sentence.id, ...otherSentenceIds(test, sentence, 3)]);
     items.push({ kind: type, tier, sentence, options });
   }

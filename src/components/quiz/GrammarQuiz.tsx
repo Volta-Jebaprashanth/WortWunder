@@ -16,14 +16,20 @@ import {
   SentenceCard,
   SentenceFeedback,
   SortBuckets,
+  SpotSentence,
+  WordBuilder,
 } from "@/components/quiz/grammar-pieces";
 import {
+  answerSentence,
   BOARD_ID,
   buildGrammarRound,
+  endMark,
   gapAnswer,
   grammarItemAudio,
   rowsForTest,
   sameAnswer,
+  spotTokens,
+  wordsOf,
   type GrammarItem,
 } from "@/lib/grammar-engine";
 import { shuffle } from "@/lib/quiz-engine";
@@ -66,6 +72,8 @@ export function GrammarQuiz({
   const [round, setRound] = useState(0);
   const [answer, setAnswer] = useState<string | null>(null);
   const [typed, setTyped] = useState("");
+  // Word-tile questions: indices into the item's tiles, in sentence order.
+  const [placed, setPlaced] = useState<number[]>([]);
   const [checked, setChecked] = useState(false);
   const [lastCorrect, setLastCorrect] = useState(false);
   const [attempts, setAttempts] = useState(0);
@@ -92,6 +100,7 @@ export function GrammarQuiz({
   useEffect(() => {
     setAnswer(null);
     setTyped("");
+    setPlaced([]);
     setChecked(false);
     setAttempts(0);
     setIntroDone(false);
@@ -108,9 +117,11 @@ export function GrammarQuiz({
     setAudioWindow({ words: grammarItemAudio(item, test), letters: [] }, upcoming);
   }, [queue, index, item, test]);
 
-  // A listening question plays its sentence once on arrival.
+  // A listening question plays its sentence once on arrival, a reply
+  // question the line being answered.
   useEffect(() => {
-    if (item?.kind === "listenPick") playWord(item.sentence.german);
+    if (item?.kind === "listenPick" || item?.kind === "listenBuild") playWord(item.sentence.german);
+    if (item?.kind === "reply" && item.sentence.replyTo) playWord(item.sentence.replyTo.german);
   }, [item]);
 
   const pairsWords = useMemo(
@@ -161,11 +172,33 @@ export function GrammarQuiz({
     setChecked(false);
     setAnswer(null);
     setTyped("");
+    setPlaced([]);
     setSelectedTile(null);
     setPlacement((old) => old.map((group, i) => (group === sortItems[i]?.group ? group : null)));
   };
 
   const sentence = item && "sentence" in item ? item.sentence : undefined;
+  // What the learner should end up with: the sentence itself, or for
+  // transform the sentence it turns into.
+  const target = item && "sentence" in item ? answerSentence(item, test) : undefined;
+  const built = item && "options" in item ? placed.map((i) => item.options[i]).join(" ") : "";
+  const builtRight = target !== undefined && built === wordsOf(target).join(" ");
+  const builder = (
+    <WordBuilder
+      t={t}
+      tiles={item && "options" in item ? item.options : []}
+      placed={placed}
+      end={target ? endMark(target) : ""}
+      disabled={checked}
+      tone={checked ? (lastCorrect ? "right" : "wrong") : "neutral"}
+      onPlace={(i) => setPlaced((old) => [...old, i])}
+      onRemove={(position) => setPlaced((old) => old.filter((_, p) => p !== position))}
+      onReset={() => setPlaced([])}
+    />
+  );
+  const checkBuilt = !checked && (
+    <Continue t={t} disabled={placed.length === 0} onClick={() => checkAnswer(builtRight)} />
+  );
   const why = sentence
     ? (sentence.why?.[lang] ?? (sentence.rule ? rules[sentence.rule]?.text[lang] : undefined))
     : undefined;
@@ -407,14 +440,143 @@ export function GrammarQuiz({
         </LessonFrame>
       )}
 
+      {item?.kind === "order" && (
+        <LessonFrame
+          t={t}
+          eyebrow={t.orderChallenge}
+          tier={item.tier}
+          title="Ordne die Wörter"
+          subtitle={t.putWordsInOrder}
+        >
+          <p className="mt-5 text-center font-display text-2xl font-extrabold text-ink-soft">
+            {item.sentence.meaning[lang]}
+          </p>
+          {builder}
+          {checkBuilt}
+        </LessonFrame>
+      )}
+
+      {item?.kind === "meaningBuild" && (
+        <LessonFrame
+          t={t}
+          eyebrow={t.translationChallenge}
+          tier={item.tier}
+          title="Wie sagt man das auf Deutsch?"
+          subtitle={t.buildSentence}
+        >
+          <p className="mt-5 text-center font-display text-2xl font-extrabold">
+            {item.sentence.meaning[lang]}
+          </p>
+          {builder}
+          {checkBuilt}
+        </LessonFrame>
+      )}
+
+      {item?.kind === "listenBuild" && (
+        <LessonFrame
+          t={t}
+          eyebrow={t.listeningChallenge}
+          tier={item.tier}
+          title="Baue den Satz"
+          subtitle={t.listenThenBuild}
+        >
+          <ListenButton t={t} text={item.sentence.german} />
+          {builder}
+          {checkBuilt}
+        </LessonFrame>
+      )}
+
+      {item?.kind === "transform" && item.sentence.transformTo && (
+        <LessonFrame
+          t={t}
+          eyebrow={t.transformChallenge}
+          tier={item.tier}
+          title="Ändere den Satz"
+          subtitle={item.sentence.transformTo.prompt[lang]}
+        >
+          <SentenceCard
+            t={t}
+            sentence={item.sentence}
+            lang={lang}
+            highlight={item.sentence.focus}
+          />
+          {builder}
+          {checkBuilt}
+        </LessonFrame>
+      )}
+
+      {item?.kind === "spot" && (
+        <LessonFrame
+          t={t}
+          eyebrow={t.spotChallenge}
+          tier={item.tier}
+          title="Finde den Fehler"
+          subtitle={t.tapWrongWord}
+        >
+          <SpotSentence
+            t={t}
+            tokens={spotTokens(item.sentence, item.options[0])}
+            selected={answer}
+            revealed={checked}
+            correct={item.options[0] ? String(item.sentence.focus) : "none"}
+            onSelect={setAnswer}
+          />
+          <p className="text-center font-bold text-ink-soft">{item.sentence.meaning[lang]}</p>
+          {!checked && (
+            <Continue
+              t={t}
+              disabled={!answer}
+              onClick={() =>
+                checkAnswer(answer === (item.options[0] ? String(item.sentence.focus) : "none"))
+              }
+            />
+          )}
+        </LessonFrame>
+      )}
+
+      {item?.kind === "reply" && item.sentence.replyTo && (
+        <LessonFrame
+          t={t}
+          eyebrow={t.replyChallenge}
+          tier={item.tier}
+          title="Was sagst du?"
+          subtitle={t.pickReply}
+        >
+          <SentenceCard
+            t={t}
+            sentence={{
+              id: `${item.sentence.id}-prompt`,
+              german: item.sentence.replyTo.german,
+              meaning: item.sentence.replyTo.meaning,
+            }}
+            lang={lang}
+          />
+          <AnswerGrid
+            options={item.options}
+            selected={answer}
+            correct={item.sentence.german}
+            revealed={checked}
+            onSelect={setAnswer}
+            speak={item.options.every(hasWordAudio)}
+          />
+          {!checked && (
+            <Continue
+              t={t}
+              disabled={!answer}
+              onClick={() => checkAnswer(answer === item.sentence.german)}
+            />
+          )}
+        </LessonFrame>
+      )}
+
       {item && item.kind !== "pairs" && checked && (
         <ResultCard
           correct={lastCorrect}
           correctText=""
           hint={item.kind === "rule" ? item.rule.text[lang] : why}
           detail={
-            lastCorrect && sentence ? (
-              <SentenceFeedback t={t} sentence={sentence} lang={lang} />
+            lastCorrect && target ? (
+              <SentenceFeedback t={t} sentence={target} lang={lang} />
             ) : undefined
           }
           actionLabel={lastCorrect ? "Weiter" : t.tryAgain}

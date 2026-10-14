@@ -8,15 +8,29 @@ import type { GrammarSentence, GrammarTest, RuleCard } from "@/data/grammar/type
 // not every sentence gets every type: only sentences with a gap get
 // gapPick / gapType. The rule card and its check question are one row, the
 // way a vocabulary training row is the intro card plus its first question.
+// "listenBuild" shares its name with a vocabulary type (quiz-engine.ts); both
+// are hard-tier, so progress-store.ts's tier lookup gives the same answer.
 export type GrammarType =
-  "rule" | "gapPick" | "sentenceMeaning" | "listenPick" | "pairs" | "sort" | "gapType";
+  | "rule"
+  | "gapPick"
+  | "sentenceMeaning"
+  | "listenPick"
+  | "pairs"
+  | "sort"
+  | "order"
+  | "spot"
+  | "transform"
+  | "meaningBuild"
+  | "gapType"
+  | "listenBuild"
+  | "reply";
 
 export const GRAMMAR_TIERS: Record<Tier, GrammarType[]> = {
   training: ["rule"],
   basic: ["gapPick", "sentenceMeaning"],
   easy: ["listenPick", "pairs", "sort"],
-  medium: [],
-  hard: ["gapType"],
+  medium: ["order", "spot", "transform"],
+  hard: ["meaningBuild", "gapType", "listenBuild", "reply"],
 };
 
 const TIER_BY_GRAMMAR_TYPE = Object.fromEntries(
@@ -60,6 +74,26 @@ export function rowsForTest(test: GrammarTest): GrammarRow[] {
       case "listenPick":
         for (const s of test.sentences) rows.push({ testType, id: s.id });
         break;
+      case "order":
+      case "meaningBuild":
+      case "listenBuild":
+        for (const s of test.sentences)
+          if (tokensOf(s).length > 1) rows.push({ testType, id: s.id });
+        break;
+      case "spot":
+        // Swapping in a wrong word only works when the gap is a whole word.
+        for (const s of test.sentences)
+          if (hasGap(s) && !s.focusPart && s.distractors?.length) rows.push({ testType, id: s.id });
+        break;
+      case "transform": {
+        const ids = new Set(test.sentences.map((s) => s.id));
+        for (const s of test.sentences)
+          if (s.transformTo && ids.has(s.transformTo.id)) rows.push({ testType, id: s.id });
+        break;
+      }
+      case "reply":
+        for (const s of test.sentences) if (s.replyTo) rows.push({ testType, id: s.id });
+        break;
       case "pairs":
         if (test.pairs?.length) rows.push({ testType, id: BOARD_ID });
         break;
@@ -92,7 +126,39 @@ export function sameAnswer(typed: string, answer: string): boolean {
   return typed.trim().toLowerCase() === answer.trim().toLowerCase();
 }
 
-export type SentenceKind = "gapPick" | "gapType" | "sentenceMeaning" | "listenPick";
+// The words of a sentence as word tiles: no punctuation ("Hallo," -> "Hallo").
+export function wordsOf(sentence: GrammarSentence): string[] {
+  return tokensOf(sentence).map(bareToken);
+}
+
+// The mark that ends the sentence ("." or "?"), shown after the tiles.
+export function endMark(sentence: GrammarSentence): string {
+  return /[.?!]$/.exec(sentence.german)?.[0] ?? "";
+}
+
+// Shuffled tiles, never in the answer's own order.
+function scrambled(tiles: string[], answer: string[]): string[] {
+  let out = shuffle(tiles);
+  for (let i = 0; i < 5 && out.join(" ") === answer.join(" "); i++) out = shuffle(tiles);
+  return out;
+}
+
+// Up to `count` wrong words for the tile pool, not already in it.
+function decoyWords(sentence: GrammarSentence, words: string[], count: number): string[] {
+  return shuffle((sentence.distractors ?? []).filter((d) => !words.includes(d))).slice(0, count);
+}
+
+export type SentenceKind =
+  | "gapPick"
+  | "gapType"
+  | "sentenceMeaning"
+  | "listenPick"
+  | "order"
+  | "spot"
+  | "transform"
+  | "meaningBuild"
+  | "listenBuild"
+  | "reply";
 
 export type GrammarItem =
   | { kind: "rule"; tier: Tier; rule: RuleCard; checkOptions: string[] }
@@ -102,7 +168,9 @@ export type GrammarItem =
       sentence: GrammarSentence;
       // gapPick: the fillers to choose from. gapType: the letter keys.
       // sentenceMeaning / listenPick: ids of the sentences offered, this one
-      // included.
+      // included. order / meaningBuild / listenBuild / transform: the word
+      // tiles. spot: the wrong word swapped in for the focus, or empty when
+      // the sentence is shown as it is. reply: the replies offered.
       options: string[];
     }
   | { kind: "pairs" | "sort"; tier: Tier };
@@ -168,15 +236,71 @@ export function buildGrammarRound(
     }
     const sentence = sentences[row.wordId];
     if (!sentence) continue;
-    const options =
-      type === "gapPick"
-        ? shuffle([gapAnswer(sentence), ...(sentence.distractors ?? []).slice(0, 3)])
-        : type === "gapType"
-          ? gapKeys(sentence)
-          : shuffle([sentence.id, ...otherSentenceIds(test, sentence, 3)]);
-    items.push({ kind: type, tier, sentence, options });
+    const options = sentenceOptions(type, sentence, test, sentences);
+    if (options) items.push({ kind: type, tier, sentence, options });
   }
   return shuffle(items);
+}
+
+// The question-specific options of a sentence item (see GrammarItem), or
+// undefined when the sentence can't make that question.
+function sentenceOptions(
+  type: SentenceKind,
+  sentence: GrammarSentence,
+  test: GrammarTest,
+  sentences: Record<string, GrammarSentence>,
+): string[] | undefined {
+  const words = wordsOf(sentence);
+  switch (type) {
+    case "gapPick":
+      return shuffle([gapAnswer(sentence), ...(sentence.distractors ?? []).slice(0, 3)]);
+    case "gapType":
+      return gapKeys(sentence);
+    case "sentenceMeaning":
+    case "listenPick":
+      return shuffle([sentence.id, ...otherSentenceIds(test, sentence, 3)]);
+    case "order":
+    case "listenBuild":
+      return scrambled(words, words);
+    case "meaningBuild":
+      return scrambled([...words, ...decoyWords(sentence, words, 2)], words);
+    case "transform": {
+      const target = sentence.transformTo && sentences[sentence.transformTo.id];
+      if (!target) return undefined;
+      // The words that have to change stay in the pool, so they're changed on
+      // purpose rather than by elimination.
+      const targetWords = wordsOf(target);
+      const decoys = [...new Set(words.filter((w) => !targetWords.includes(w)))];
+      return scrambled([...targetWords, ...decoys], targetWords);
+    }
+    case "spot": {
+      // Two times in three a wrong word is swapped in; otherwise the sentence
+      // is right and the answer is "no mistake".
+      const wrong = shuffle(sentence.distractors ?? [])[0];
+      return wrong && Math.random() < 2 / 3 ? [wrong] : [];
+    }
+    case "reply":
+      return sentence.replyTo ? shuffle([sentence.german, ...sentence.replyTo.decoys]) : undefined;
+  }
+}
+
+// The sentence a spot question shows: the focus word swapped for `wrong`.
+export function spotTokens(sentence: GrammarSentence, wrong: string | undefined): string[] {
+  const tokens = tokensOf(sentence);
+  if (!wrong || sentence.focus === undefined) return tokens;
+  return tokens.map((token, i) =>
+    i === sentence.focus ? wrong + token.slice(bareToken(token).length) : token,
+  );
+}
+
+// The sentence a question's answer is: the transform target for transform,
+// the sentence itself otherwise.
+export function answerSentence(
+  item: Extract<GrammarItem, { sentence: GrammarSentence }>,
+  test: GrammarTest,
+): GrammarSentence {
+  if (item.kind !== "transform" || !item.sentence.transformTo) return item.sentence;
+  return test.sentences.find((s) => s.id === item.sentence.transformTo!.id) ?? item.sentence;
 }
 
 // The German clips an item plays, for setAudioWindow.
@@ -194,6 +318,14 @@ export function grammarItemAudio(item: GrammarItem, test: GrammarTest): string[]
       return (test.sort?.items ?? []).map((i) => i.text);
     case "listenPick":
       return item.options.map((id) => byId[id]?.german ?? "").filter(Boolean);
+    case "transform":
+      return [item.sentence.german, answerSentence(item, test).german, ...item.options];
+    case "reply":
+      return [item.sentence.replyTo?.german ?? "", ...item.options].filter(Boolean);
+    case "order":
+    case "meaningBuild":
+    case "listenBuild":
+      return [item.sentence.german, ...item.options];
     default:
       return [item.sentence.german];
   }

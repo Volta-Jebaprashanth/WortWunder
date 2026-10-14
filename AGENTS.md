@@ -205,8 +205,14 @@ Vite 8 + Nitro.
     `src/components/quiz/GrammarQuiz.tsx` with pieces from
     `grammar-pieces.tsx`. A sentence gets gap questions only if it has a
     `focus` (plus `focusPart` when the gap is letters inside a word, and
-    `distractors` for `gapPick`). Rule card + its check question are one
-    row; `pairs` / `sort` are one `"board"` row. Grammar rows share
+    `distractors` for `gapPick`, and for `spot`, which swaps one in when the
+    gap is a whole word). Every sentence of two or more words gets the
+    word-tile types (`order`, `meaningBuild`, `listenBuild`); `transform`
+    needs `transformTo` (another sentence of the same test) and `reply`
+    needs `replyTo` (the line being answered plus wrong replies — record
+    audio for the right sentences only, never for a wrong-form decoy). Rule
+    card + its check question are one row; `pairs` / `sort` are one
+    `"board"` row. Grammar rows share
     `progress-store.ts` with vocabulary through `ensureRowsEntered`.
   - Every German string a grammar screen speaks (sentences, sort tiles,
     options) needs a `WORDS` entry in `scripts/generate-audio.mjs` with

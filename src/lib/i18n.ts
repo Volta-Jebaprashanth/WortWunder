@@ -103,6 +103,16 @@ export interface Strings {
   typeHere: string;
   typeLetter: (letter: string) => string;
   deleteLetter: string;
+  orderChallenge: string;
+  putWordsInOrder: string;
+  buildSentence: string;
+  listenThenBuild: string;
+  transformChallenge: string;
+  spotChallenge: string;
+  tapWrongWord: string;
+  noMistake: string;
+  replyChallenge: string;
+  pickReply: string;
 }
 
 export const TRANSLATIONS: Record<MotherTongue, Strings> = {
@@ -198,6 +208,16 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     typeHere: "Type here",
     typeLetter: (letter) => `Type ${letter}`,
     deleteLetter: "Delete a letter",
+    orderChallenge: "Word order",
+    putWordsInOrder: "Put the words in order.",
+    buildSentence: "Build this sentence in German.",
+    listenThenBuild: "Listen, then build the sentence.",
+    transformChallenge: "Change the sentence",
+    spotChallenge: "Find the mistake",
+    tapWrongWord: 'Tap the wrong word, or "No mistake".',
+    noMistake: "No mistake",
+    replyChallenge: "Reply",
+    pickReply: "Pick the reply that fits.",
   },
   tamil: {
     openProfileMenu: "சுயவிவரப் பட்டியலைத் திற",
@@ -292,6 +312,16 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     typeHere: "இங்கே தட்டச்சு செய்",
     typeLetter: (letter) => `"${letter}" தட்டச்சு செய்`,
     deleteLetter: "ஒரு எழுத்தை நீக்கு",
+    orderChallenge: "சொல் வரிசை",
+    putWordsInOrder: "சொற்களைச் சரியான வரிசையில் வை.",
+    buildSentence: "இந்த வாக்கியத்தை ஜெர்மன் மொழியில் அமை.",
+    listenThenBuild: "கேளுங்கள், பிறகு வாக்கியத்தை அமையுங்கள்.",
+    transformChallenge: "வாக்கியத்தை மாற்று",
+    spotChallenge: "தவறைக் கண்டுபிடி",
+    tapWrongWord: 'தவறான சொல்லைத் தட்டவும், அல்லது "தவறு இல்லை".',
+    noMistake: "தவறு இல்லை",
+    replyChallenge: "பதில்",
+    pickReply: "பொருத்தமான பதிலைத் தேர்ந்தெடு.",
   },
   sinhala: {
     openProfileMenu: "පැතිකඩ මෙනුව විවෘත කරන්න",
@@ -385,5 +415,15 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     typeHere: "මෙතැන ටයිප් කරන්න",
     typeLetter: (letter) => `"${letter}" ටයිප් කරන්න`,
     deleteLetter: "අකුරක් මකන්න",
+    orderChallenge: "වචන පිළිවෙළ",
+    putWordsInOrder: "වචන නිවැරදි පිළිවෙළට තබන්න.",
+    buildSentence: "මෙම වාක්‍යය ජර්මන් භාෂාවෙන් හදන්න.",
+    listenThenBuild: "අහන්න, පසුව වාක්‍යය හදන්න.",
+    transformChallenge: "වාක්‍යය වෙනස් කරන්න",
+    spotChallenge: "වැරැද්ද සොයන්න",
+    tapWrongWord: 'වැරදි වචනය ඔබන්න, නැතහොත් "වැරැද්දක් නැත".',
+    noMistake: "වැරැද්දක් නැත",
+    replyChallenge: "පිළිතුර",
+    pickReply: "ගැළපෙන පිළිතුර තෝරන්න.",
   },
 };

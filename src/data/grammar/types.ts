@@ -31,6 +31,13 @@ export interface GrammarSentence {
   distractors?: string[];
   // One line shown after a wrong answer. Falls back to the rule's text.
   why?: Localized;
+  // For `transform`: the sentence of this test to turn this one into, and
+  // the instruction ('Say it about "du"').
+  transformTo?: { id: string; prompt: Localized };
+  // For `reply`: the line this sentence answers, and wrong replies to offer
+  // beside it — one that is good German but the wrong thing to say, one
+  // with the wrong form.
+  replyTo?: { german: string; meaning: Localized; decoys: string[] };
 }
 
 export interface RuleCard {

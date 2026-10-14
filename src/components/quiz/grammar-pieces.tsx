@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
-import { Delete, Volume2 } from "lucide-react";
+import { Delete, RotateCcw, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { playWord } from "@/lib/word-audio";
+import { hasWordAudio, playWord } from "@/lib/word-audio";
 import { bareToken } from "@/lib/grammar-engine";
 import type { Tier } from "@/lib/quiz-engine";
 import type { MotherTongue, Strings } from "@/lib/i18n";
@@ -349,6 +349,142 @@ export function SortBuckets({
       <div className="mt-4 flex min-h-12 flex-wrap justify-center gap-2">
         {items.map((_, i) => (placement[i] ? null : tile(i)))}
       </div>
+    </div>
+  );
+}
+
+// Build a sentence from word tiles: tap a tile to place it next, tap a placed
+// tile to send it back. `placed` holds tile indices in sentence order; `end`
+// is the sentence's closing mark, shown after the last slot. Tiles with a
+// recorded clip are spoken on tap.
+export function WordBuilder({
+  t,
+  tiles,
+  placed,
+  end,
+  disabled,
+  tone = "neutral",
+  onPlace,
+  onRemove,
+  onReset,
+}: {
+  t: Strings;
+  tiles: string[];
+  placed: number[];
+  end: string;
+  disabled: boolean;
+  tone?: "neutral" | "right" | "wrong";
+  onPlace: (index: number) => void;
+  onRemove: (position: number) => void;
+  onReset: () => void;
+}) {
+  const say = (word: string) => {
+    if (hasWordAudio(word)) playWord(word);
+  };
+  const tileClass =
+    "rounded-xl bg-card px-3 py-2 font-display text-lg font-extrabold shadow-[0_3px_0_rgba(0,0,0,0.12)] ring-2 ring-border transition";
+  return (
+    <div className="my-5">
+      <div
+        className={cn(
+          "flex min-h-16 flex-wrap items-center justify-center gap-2 border-b-4 border-dashed px-2 pb-3",
+          tone === "neutral" && "border-ring/50",
+          tone === "right" && "border-success",
+          tone === "wrong" && "border-destructive",
+        )}
+      >
+        {placed.map((tileIndex, position) => (
+          <button
+            key={`${tileIndex}-${position}`}
+            type="button"
+            disabled={disabled}
+            onClick={() => onRemove(position)}
+            className={tileClass}
+          >
+            {tiles[tileIndex]}
+          </button>
+        ))}
+        {placed.length > 0 && <span className="font-display text-2xl font-extrabold">{end}</span>}
+      </div>
+      <div className="mt-4 flex flex-wrap justify-center gap-2">
+        {tiles.map((tile, i) => (
+          <button
+            key={`${tile}-${i}`}
+            type="button"
+            disabled={disabled || placed.includes(i)}
+            onClick={() => {
+              say(tile);
+              onPlace(i);
+            }}
+            className={cn(tileClass, placed.includes(i) && "opacity-30")}
+          >
+            {tile}
+          </button>
+        ))}
+        <Button
+          variant="tile"
+          size="tile"
+          disabled={disabled || placed.length === 0}
+          onClick={onReset}
+          aria-label={t.resetLetters}
+          className="bg-sun shadow-[0_4px_0_oklch(0.72_0.14_91)]"
+        >
+          <RotateCcw />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// Find the mistake: the sentence's words as buttons, plus "No mistake".
+// `selected` is a word's index as a string, or "none".
+export function SpotSentence({
+  t,
+  tokens,
+  selected,
+  revealed,
+  correct,
+  onSelect,
+}: {
+  t: Strings;
+  tokens: string[];
+  selected: string | null;
+  revealed: boolean;
+  correct: string;
+  onSelect: (choice: string) => void;
+}) {
+  const tone = (choice: string) =>
+    cn(
+      !revealed && selected === choice && "ring-primary bg-primary/10",
+      revealed && selected === choice && choice === correct && "ring-success bg-success-soft",
+      revealed && selected === choice && choice !== correct && "ring-destructive bg-danger-soft",
+    );
+  return (
+    <div className="my-5 space-y-4">
+      <div className="flex flex-wrap justify-center gap-2">
+        {tokens.map((token, i) => (
+          <button
+            key={i}
+            type="button"
+            disabled={revealed}
+            onClick={() => onSelect(String(i))}
+            className={cn(
+              "rounded-xl bg-card px-3 py-2 font-display text-xl font-extrabold ring-2 ring-border transition",
+              tone(String(i)),
+            )}
+          >
+            {token}
+          </button>
+        ))}
+      </div>
+      <Button
+        variant="answer"
+        disabled={revealed}
+        onClick={() => onSelect("none")}
+        className={cn("w-full", tone("none"))}
+      >
+        {t.noMistake}
+      </Button>
     </div>
   );
 }

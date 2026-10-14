@@ -1357,3 +1357,20 @@ the sections above:
 | test-2.jpg | ä, ö, ü, ß            | crop of `1.8 personal information/images/girl.jpg`        |
 | test-3.jpg | ei, ie, sch, w, z     | crop of `1.12 work and school/images/school.jpg`          |
 | test-4.jpg | Nomen, Verb, Pronomen | crop of `1.8 personal information/images/woman.jpg`       |
+
+## Lesson G2 — Erste Sätze
+
+Grammar lesson G2 has no photos of its own. Its path icons in
+`public/G2 first sentences/icons/` are 160x160 crops of photos credited in
+the sections above:
+
+| File       | Test                  | Source                                                   |
+| ---------- | --------------------- | -------------------------------------------------------- |
+| lesson.jpg | Erste Sätze           | crop of `1.8 personal information/images/first-name.jpg` |
+| test-1.jpg | Wörter 1              | crop of `1.7 jobs/images/teacher.jpg`                    |
+| test-2.jpg | Ich heiße …           | crop of `1.8 personal information/images/name.jpg`       |
+| test-3.jpg | ich bin, du bist      | crop of `1.19 feelings/images/tired.jpg`                 |
+| test-4.jpg | er, sie, es ist       | crop of `1.7 jobs/images/female-doctor.jpg`              |
+| test-5.jpg | Wörter 2              | crop of `1.30 grammar words/images/we.jpg`               |
+| test-6.jpg | wir, ihr, sie, Sie    | crop of `1.30 grammar words/images/you-formal.jpg`       |
+| test-7.jpg | kommen aus, wohnen in | crop of `1.8 personal information/images/country.jpg`    |

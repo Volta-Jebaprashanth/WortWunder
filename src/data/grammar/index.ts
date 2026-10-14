@@ -2,10 +2,11 @@ import type { VocabWord } from "@/data/vocabulary";
 import { findVocabLesson } from "@/data/lessons";
 import type { GrammarLesson, GrammarLessonTest, WordsTest } from "@/data/grammar/types";
 import { GETTING_STARTED_LESSON } from "@/data/grammar/getting-started";
+import { FIRST_SENTENCES_LESSON } from "@/data/grammar/first-sentences";
 
 // Section 1 Grammatik on the path, in order. Test ids ("G1.2") are the keys
 // progress is stored under, like the vocabulary test ids.
-export const GRAMMAR_LESSONS: GrammarLesson[] = [GETTING_STARTED_LESSON];
+export const GRAMMAR_LESSONS: GrammarLesson[] = [GETTING_STARTED_LESSON, FIRST_SENTENCES_LESSON];
 
 export function findGrammarTest(testId: string): GrammarLessonTest | undefined {
   for (const lesson of GRAMMAR_LESSONS) {

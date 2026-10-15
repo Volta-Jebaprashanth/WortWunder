@@ -1374,3 +1374,26 @@ the sections above:
 | test-5.jpg | Wörter 2              | crop of `1.30 grammar words/images/we.jpg`               |
 | test-6.jpg | wir, ihr, sie, Sie    | crop of `1.30 grammar words/images/you-formal.jpg`       |
 | test-7.jpg | kommen aus, wohnen in | crop of `1.8 personal information/images/country.jpg`    |
+
+## Lesson G3 — Verben im Präsens
+
+The word photos under `public/G3 present verbs/images/` are 640x640 squares
+under the [Pexels License](https://www.pexels.com/license/):
+
+| File         | Word        | Source                                                                       |
+| ------------ | ----------- | ---------------------------------------------------------------------------- |
+| german.jpg   | Deutsch     | https://www.pexels.com/photo/german-flag-waving-against-cloudy-sky-33479984/ |
+| football.jpg | der Fußball | copy of `1.6 hobbies/images/playing-football.jpg` (see above)                |
+
+Its path icons in `public/G3 present verbs/icons/` are 160x160 crops of
+photos credited in the sections above:
+
+| File       | Test                  | Source                                            |
+| ---------- | --------------------- | ------------------------------------------------- |
+| lesson.jpg | Verben im Präsens     | crop of `1.6 hobbies/images/playing-football.jpg` |
+| test-1.jpg | Wörter                | crop of `1.17 verbs/images/to-drink.jpg`          |
+| test-2.jpg | ich lerne, du lernst  | crop of `1.17 verbs/images/to-do.jpg`             |
+| test-3.jpg | er, sie, es -t        | crop of `1.6 hobbies/images/to-sing.jpg`          |
+| test-4.jpg | wir -en, ihr -t       | crop of `1.17 verbs/images/to-cook.jpg`           |
+| test-5.jpg | haben                 | crop of `1.17 verbs/images/to-have.jpg`           |
+| test-6.jpg | Das Verb ist Nummer 2 | crop of `1.10 time/images/clock.jpg`              |

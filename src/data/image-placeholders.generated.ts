@@ -1108,6 +1108,8 @@ export const IMAGE_PLACEHOLDERS: Record<string, string> = {
   "/1.9 shopping/images/trousers.jpg": "2sYJFwSPh3iDd3iceFd4x3iGCmvYsIYN",
   "/1.9 shopping/images/white.jpg": "4SgOHwQ0aIhniIhwimh4d3iHeD/46IUP",
   "/1.9 shopping/images/yellow.jpg": "Jz0GDwD5mWJ4KpuVvGHbOVuN9hnICKMD",
+  "/G3 present verbs/images/football.jpg": "2+gFHwIHl4hBlXkumTh4l2yOJTfzf4gE",
+  "/G3 present verbs/images/german.jpg": "LEkSNwp4eHd7iIePd2iIZ3eFeAhJhpMA",
   "/images/animals/hund.png": "XEmCBQAktwiUaImlZ6PAKAh9BF12mYK7WQ==",
   "/images/animals/katze.png": "UxiCBQAjhF+KdZZYp5KdAJkZB8iGeISbZw==",
   "/images/animals/pferd.png": "TkmCBQAkNvGohm0aBAWPaPFnRVd5h4BbmA==",

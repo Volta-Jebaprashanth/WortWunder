@@ -170,6 +170,12 @@ export function preloadLetters(letters: string[]) {
   enqueue(srcsOf({ words: [], letters }), true);
 }
 
+// Whether `word` has a recorded clip (rather than the speechSynthesis
+// fallback), e.g. to only speak answer options that sound right.
+export function hasWordAudio(word: string): boolean {
+  return word in WORD_AUDIO;
+}
+
 export function isWordReady(word: string): boolean {
   const src = WORD_AUDIO[word];
   return !src || clips.has(src);

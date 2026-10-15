@@ -34,6 +34,7 @@ import {
   WordCard,
 } from "@/components/quiz/pieces";
 import { VocabQuiz } from "@/components/quiz/VocabQuiz";
+import { GrammarQuiz } from "@/components/quiz/GrammarQuiz";
 import { TierSteps } from "@/components/quiz/TierSteps";
 import { getTestStatus, type TestStatus } from "@/lib/progress-store";
 import {
@@ -56,6 +57,15 @@ import {
   type VocabLesson,
   type VocabTest,
 } from "@/data/lessons";
+import {
+  findGrammarTest,
+  GRAMMAR_LESSONS,
+  grammarLessonPicture,
+  grammarTestPicture,
+  resolveWords,
+} from "@/data/grammar";
+import type { GrammarLesson, GrammarTest } from "@/data/grammar/types";
+import { GREETINGS_WORDS } from "@/data/greetings";
 import { FAMILY_LESSON_ID } from "@/data/family";
 import { WEATHER_LESSON_ID } from "@/data/weather";
 import { HOBBIES_LESSON_ID } from "@/data/hobbies";
@@ -96,6 +106,7 @@ export const Route = createFileRoute("/")({
 type Screen =
   | "home"
   | "quiz"
+  | "grammar"
   | "training"
   | "trainingCheck"
   | "picture"
@@ -114,6 +125,7 @@ type Screen =
 function Index() {
   const [screen, setScreen] = useState<Screen>("home");
   const [activeTest, setActiveTest] = useState<VocabTest | null>(null);
+  const [activeGrammar, setActiveGrammar] = useState<GrammarTest | null>(null);
   const [answer, setAnswer] = useState<string | null>(null);
   const [letters, setLetters] = useState<number[]>([]);
   const [heard, setHeard] = useState(false);
@@ -357,7 +369,23 @@ function Index() {
         /* fullscreen unsupported (e.g. iOS Safari) — layout still fills the viewport */
       }
     }
-    const test = findVocabTest(nodeId);
+    // A grammar lesson's word test is an ordinary vocabulary test over words
+    // borrowed from Wortschatz lessons; its grammar tests have their own quiz.
+    const grammarTest = findGrammarTest(nodeId);
+    if (grammarTest?.kind === "grammar") {
+      setActiveGrammar(grammarTest);
+      go("grammar");
+      return;
+    }
+    const test: VocabTest | undefined =
+      grammarTest?.kind === "words"
+        ? {
+            testId: grammarTest.testId,
+            part: 1,
+            words: resolveWords(grammarTest),
+            ...(grammarTest.testTypes && { testTypes: grammarTest.testTypes }),
+          }
+        : (findVocabTest(nodeId) ?? TESTING_TESTS.find((t) => t.testId === nodeId));
     if (test) {
       setActiveTest(test);
       go("quiz");
@@ -405,13 +433,24 @@ function Index() {
           key={activeTest.testId}
           testId={activeTest.testId}
           words={activeTest.words}
+          testTypes={activeTest.testTypes}
           t={t}
           lang={lang}
           onExit={() => go("home")}
         />
       )}
 
-      {screen !== "quiz" && (
+      {screen === "grammar" && activeGrammar && (
+        <GrammarQuiz
+          key={activeGrammar.testId}
+          test={activeGrammar}
+          t={t}
+          lang={lang}
+          onExit={() => go("home")}
+        />
+      )}
+
+      {screen !== "quiz" && screen !== "grammar" && (
         <main className="relative z-10 mx-auto max-w-5xl px-4 pb-10 sm:px-6">
           {screen === "home" && (
             <Home
@@ -573,7 +612,7 @@ function Index() {
               t={t}
               eyebrow={t.wordBuilder}
               title="Baue das Wort"
-              subtitle={t.tapLettersToSpell("Vogel")}
+              subtitle={t.tapLettersToSpell}
             >
               <Picture src={vogel.image} alt={vogel.full} caption={vogel[lang]} />
               <LetterBuilder
@@ -899,7 +938,7 @@ function collectTestIds(nodes: PathNode[]): string[] {
 }
 
 // A vocab lesson as a path node, expanding to its numbered tests. ÖSD lists
-// some Grundlagen lessons again under its own title: those copies get an
+// some Wortschatz lessons again under its own title: those copies get an
 // id prefix (node ids must be unique in the tree) but open the same tests,
 // so progress is shared between both places.
 function lessonPathNode(
@@ -926,7 +965,27 @@ function lessonPathNode(
   };
 }
 
-// Grundlagen lessons repeated under the ÖSD section, optionally renamed.
+// A grammar lesson as a path node. Its tests are named for what they teach
+// ("Wörter", "ä, ö, ü, ß"), not numbered like the vocabulary tests.
+function grammarLessonPathNode(lesson: GrammarLesson, lang: MotherTongue): PathNode {
+  return {
+    id: lesson.id,
+    title: lesson.title,
+    icon: <PathPicture src={grammarLessonPicture(lesson)} fallback={lesson.icon} />,
+    state: "active",
+    meaning: lesson.meaning[lang],
+    children: lesson.tests.map((test) => ({
+      id: test.testId,
+      title: test.title,
+      icon: <PathPicture src={grammarTestPicture(lesson, test)} fallback={lesson.icon} />,
+      state: "active",
+      meaning: test.meaning[lang],
+      testId: test.testId,
+    })),
+  };
+}
+
+// Wortschatz lessons repeated under the ÖSD section, optionally renamed.
 const OESD_LESSONS: {
   lessonId: string;
   title?: string;
@@ -950,11 +1009,28 @@ const OESD_LESSONS: {
   },
 ];
 
+// Testing-section tests that aren't part of any lesson. This one runs a
+// single word through just the question types that aren't a pick-a-word
+// multiple choice, for trying out their wrong-answer feedback quickly.
+const SPELLING_TEST: VocabTest = {
+  testId: "testing.spelling",
+  part: 1,
+  words: GREETINGS_WORDS.slice(0, 1),
+  testTypes: ["missing", "build", "listenBuild"],
+};
+const TESTING_TESTS: VocabTest[] = [SPELLING_TEST];
+
 const PATH_MEANINGS = {
-  grundlagen: { english: "Basics", tamil: "அடிப்படைகள்", sinhala: "මූලික කරුණු" },
+  grammatik: { english: "Grammar", tamil: "இலக்கணம்", sinhala: "ව්‍යාකරණ" },
+  wortschatz: { english: "Vocabulary", tamil: "சொற்களஞ்சியம்", sinhala: "වචන මාලාව" },
   oesd: { english: "ÖSD exam", tamil: "ÖSD தேர்வு", sinhala: "ÖSD විභාගය" },
   testing: { english: "Testing", tamil: "சோதனை", sinhala: "පරීක්ෂණ" },
   tiere: { english: "Animals", tamil: "விலங்குகள்", sinhala: "සතුන්" },
+  spelling: {
+    english: "Spelling check",
+    tamil: "எழுத்துக்கூட்டல் சோதனை",
+    sinhala: "අක්ෂර වින්‍යාස පරීක්ෂණය",
+  },
 } satisfies Record<string, Record<MotherTongue, string>>;
 
 function Home({
@@ -978,11 +1054,19 @@ function Home({
   const path = useMemo<PathNode[]>(
     () => [
       {
-        id: "grundlagen",
-        title: "Grundlagen",
+        id: "grammatik",
+        title: "Grammatik",
+        icon: "📝",
+        state: "active",
+        meaning: PATH_MEANINGS.grammatik[lang],
+        children: GRAMMAR_LESSONS.map((lesson) => grammarLessonPathNode(lesson, lang)),
+      },
+      {
+        id: "wortschatz",
+        title: "Wortschatz",
         icon: "🔤",
         state: "active",
-        meaning: PATH_MEANINGS.grundlagen[lang],
+        meaning: PATH_MEANINGS.wortschatz[lang],
         children: VOCAB_LESSONS.map((lesson) => lessonPathNode(lesson, lang)),
       },
       {
@@ -1012,6 +1096,14 @@ function Home({
             icon: "🐕",
             state: "active",
             meaning: PATH_MEANINGS.tiere[lang],
+          },
+          {
+            id: SPELLING_TEST.testId,
+            title: "Buchstabieren",
+            icon: "✏️",
+            state: "active",
+            meaning: PATH_MEANINGS.spelling[lang],
+            testId: SPELLING_TEST.testId,
           },
         ],
       },
@@ -1107,14 +1199,6 @@ function Home({
             </div>
           </div>
         </section>
-        <Button
-          variant="adventure"
-          size="lesson"
-          className="w-full"
-          onClick={() => onStart("tiere")}
-        >
-          {t.startLesson} <Zap />
-        </Button>
       </aside>
     </div>
   );

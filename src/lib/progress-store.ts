@@ -1,4 +1,5 @@
-import { TIER_ORDER, tierOfType, type TestType, type Tier } from "@/lib/quiz-engine";
+import { isTestType, TIER_ORDER, tierOfType, type TestType, type Tier } from "@/lib/quiz-engine";
+import { tierOfGrammarType } from "@/lib/grammar-engine";
 
 // Local-only mastery tracking. Each test (e.g. "1.1" for greetings) gets one
 // row per (testType, word) combination — 100 rows for a 10-word/10-type test
@@ -33,6 +34,12 @@ import { TIER_ORDER, tierOfType, type TestType, type Tier } from "@/lib/quiz-eng
 // missing its question); the basic tier then starts each row at 2 (and caps
 // at 5) so a kid sees every word a couple more times in its simplest form
 // before anything harder shows up.
+//
+// Grammar tests (grammar-engine.ts) use the same store and rules. Their row
+// types ("rule", "gapPick", ...) and ids (a rule card, a sentence, "board")
+// differ, and not every id gets every type, so they enter through
+// ensureRowsEntered with an explicit row list; a row's type names its tier
+// in quiz-engine.ts or grammar-engine.ts.
 const PROGRESS_KEY = "wortwunder:progress";
 const SCHEMA_VERSION = 2;
 const FAIL_PENALTY = 2;
@@ -44,12 +51,16 @@ const PENDING_LIMITS: Record<Tier, { start: number; max: number }> = {
   hard: { start: 1, max: 4 },
 };
 
-function startPending(testType: TestType): number {
-  return PENDING_LIMITS[tierOfType(testType)].start;
+function tierOfRow(testType: string): Tier | undefined {
+  return isTestType(testType) ? tierOfType(testType) : tierOfGrammarType(testType);
 }
 
-function maxPending(testType: TestType): number {
-  return PENDING_LIMITS[tierOfType(testType)].max;
+function startPending(testType: string): number {
+  return PENDING_LIMITS[tierOfRow(testType) ?? "hard"].start;
+}
+
+function maxPending(testType: string): number {
+  return PENDING_LIMITS[tierOfRow(testType) ?? "hard"].max;
 }
 
 interface TestState {
@@ -62,13 +73,13 @@ interface ProgressStore {
   tests: Record<string, TestState>;
 }
 
-export interface PendingRow {
-  testType: TestType;
+export interface PendingRow<T extends string = TestType> {
+  testType: T;
   wordId: string;
   pending: number;
 }
 
-function rowKey(testType: TestType, wordId: string): string {
+function rowKey(testType: string, wordId: string): string {
   return `${testType}:${wordId}`;
 }
 
@@ -97,30 +108,37 @@ function writeStore(store: ProgressStore) {
 }
 
 export function ensureTestEntered(testId: string, wordIds: string[], testTypes: TestType[]) {
+  ensureRowsEntered(
+    testId,
+    wordIds.flatMap((id) => testTypes.map((testType) => ({ testType, id }))),
+  );
+}
+
+export function ensureRowsEntered(testId: string, wanted: { testType: string; id: string }[]) {
   const store = readStore();
   const existing = store.tests[testId];
   const hasRows = Boolean(existing && Object.keys(existing.rows).length > 0);
   const resetAll = !hasRows || existing!.completed;
+  const seenIds = new Set(
+    resetAll ? [] : Object.keys(existing!.rows).map((key) => key.split(":")[1]),
+  );
 
-  // Rebuilt from the current word/type lists every time, so a row whose key
-  // no longer matches a real word+testType combo simply isn't carried over
+  // Rebuilt from the current row list every time, so a row whose key no
+  // longer matches a real word+testType combo simply isn't carried over
   // (dropped), while every combo that IS current gets a row — reusing its
   // existing pendingAttempts when resuming, or starting fresh (see
-  // startPending) when it's new or this is a full reset. All 4 tiers' rows
+  // startPending) when it's new or this is a full reset. All tiers' rows
   // are populated up front even though presentation is tier-gated — see getActiveTierRows.
   // One exception to "new rows start fresh": a training row added to a
   // word the kid is already partway through (progress saved before the
   // training tier existed) starts cleared — they've already met that word,
   // so it shouldn't drag them back to the intro screens.
   const rows: Record<string, number> = {};
-  for (const wordId of wordIds) {
-    const wordSeen =
-      !resetAll && testTypes.some((type) => existing!.rows[rowKey(type, wordId)] !== undefined);
-    for (const testType of testTypes) {
-      const key = rowKey(testType, wordId);
-      const start = tierOfType(testType) === "training" && wordSeen ? 0 : startPending(testType);
-      rows[key] = resetAll ? startPending(testType) : (existing!.rows[key] ?? start);
-    }
+  for (const { testType, id } of wanted) {
+    const key = rowKey(testType, id);
+    const start =
+      tierOfRow(testType) === "training" && seenIds.has(id) ? 0 : startPending(testType);
+    rows[key] = resetAll ? startPending(testType) : (existing!.rows[key] ?? start);
   }
   store.tests[testId] = {
     completed: (existing?.completed ?? false) || Object.values(rows).every((p) => p === 0),
@@ -129,10 +147,10 @@ export function ensureTestEntered(testId: string, wordIds: string[], testTypes: 
   writeStore(store);
 }
 
-export function getPendingRows(testId: string): PendingRow[] {
+export function getPendingRows<T extends string = TestType>(testId: string): PendingRow<T>[] {
   const rows = readStore().tests[testId]?.rows ?? {};
   return Object.entries(rows).map(([key, pending]) => {
-    const [testType, wordId] = key.split(":") as [TestType, string];
+    const [testType, wordId] = key.split(":") as [T, string];
     return { testType, wordId, pending };
   });
 }
@@ -142,10 +160,10 @@ export function getPendingRows(testId: string): PendingRow[] {
 // cleared.
 // Later tiers' rows already exist (see ensureTestEntered) but are withheld
 // until every row ahead of them in tier order hits 0.
-export function getActiveTierRows(testId: string): PendingRow[] {
-  const rows = getPendingRows(testId);
+export function getActiveTierRows<T extends string = TestType>(testId: string): PendingRow<T>[] {
+  const rows = getPendingRows<T>(testId);
   for (const tier of TIER_ORDER) {
-    const tierRows = rows.filter((row) => tierOfType(row.testType) === tier && row.pending > 0);
+    const tierRows = rows.filter((row) => tierOfRow(row.testType) === tier && row.pending > 0);
     if (tierRows.length > 0) return tierRows;
   }
   return [];
@@ -155,19 +173,27 @@ export function isTestCompleted(testId: string): boolean {
   return readStore().tests[testId]?.completed ?? false;
 }
 
-export function recordFail(testId: string, testType: TestType, wordId: string) {
+// `penalty` is how many extra passes a miss costs. Big screens (a rule card,
+// a whole pairs or sort board) pass 1, so one miss brings them back once
+// rather than two or three times.
+export function recordFail(
+  testId: string,
+  testType: string,
+  wordId: string,
+  penalty = FAIL_PENALTY,
+) {
   updateRow(testId, testType, wordId, (pending) =>
-    Math.min(pending + FAIL_PENALTY, maxPending(testType)),
+    Math.min(pending + penalty, maxPending(testType)),
   );
 }
 
-export function recordPass(testId: string, testType: TestType, wordId: string) {
+export function recordPass(testId: string, testType: string, wordId: string) {
   updateRow(testId, testType, wordId, (pending) => Math.max(pending - 1, 0));
 }
 
 function updateRow(
   testId: string,
-  testType: TestType,
+  testType: string,
   wordId: string,
   next: (pending: number) => number,
 ) {
@@ -191,6 +217,7 @@ export function getTestStatus(testId: string): TestStatus {
   const test = readStore().tests[testId];
   if (!test || Object.keys(test.rows).length === 0) return { kind: "notStarted" };
   if (test.completed) return { kind: "completed" };
-  const tier = getActiveTierRows(testId)[0]?.testType;
-  return tier ? { kind: "inProgress", tier: tierOfType(tier) } : { kind: "completed" };
+  const type = getActiveTierRows<string>(testId)[0]?.testType;
+  const tier = type ? tierOfRow(type) : undefined;
+  return tier ? { kind: "inProgress", tier } : { kind: "completed" };
 }

@@ -217,7 +217,6 @@ export function AnswerGrid({
               selected === option &&
               option !== correct &&
               "border-destructive bg-danger-soft",
-            revealed && option === correct && "border-success",
           )}
         >
           {option}
@@ -263,7 +262,6 @@ export function OptionGrid({
               selected === option &&
               option !== correct &&
               "border-destructive bg-danger-soft",
-            revealed && option === correct && "border-success",
           )}
         >
           {option}
@@ -335,7 +333,6 @@ export function LetterOptions({
               selected === option &&
               option !== correct &&
               "border-destructive bg-danger-soft",
-            revealed && option === correct && "border-success",
           )}
         >
           {option}
@@ -377,7 +374,6 @@ export function PictureOptions({
               selected === option.id &&
               option.id !== correct &&
               "ring-destructive bg-danger-soft",
-            revealed && option.id === correct && "ring-success",
           )}
         >
           <span className="grid aspect-square w-full place-items-center">
@@ -626,16 +622,11 @@ export function MatchPairs<W extends MatchWord>({
     } else {
       playWrongSound();
       setWrong({ left: selectedLeft, right: id });
-      setFailedOnce((prev) => {
-        const next = new Set(prev);
-        for (const missedId of [selectedLeft, id]) {
-          if (!next.has(missedId)) {
-            onAttempt?.(missedId, false);
-            next.add(missedId);
-          }
-        }
-        return next;
-      });
+      // Reported here, not inside the state updater: React may run an
+      // updater twice (StrictMode), which would count the miss twice.
+      const missed = [selectedLeft, id].filter((missedId) => !failedOnce.has(missedId));
+      for (const missedId of missed) onAttempt?.(missedId, false);
+      if (missed.length > 0) setFailedOnce((prev) => new Set([...prev, ...missed]));
       setSelectedLeft(null);
     }
   };
@@ -720,7 +711,7 @@ const ARTICLE_COLORS: Record<string, string> = {
 
 // "der Vogel" with its article in that article's colour; anything without a
 // leading der/die/das renders as-is.
-function ArticleWord({ text }: { text: string }) {
+export function ArticleWord({ text }: { text: string }) {
   const match = /^(der|die|das)\s+(.+)$/i.exec(text);
   if (!match) return <>{text}</>;
   const [, article, rest] = match;
@@ -820,16 +811,79 @@ export function TrainingCard({
   );
 }
 
+function SpellingRow({
+  letters,
+  segments,
+  tone,
+}: {
+  letters: string;
+  segments: number[];
+  tone: (index: number) => "right" | "wrong";
+}) {
+  let offset = 0;
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5">
+      {segments.map((len, gi) => {
+        const start = offset;
+        offset += len;
+        return (
+          <div key={gi} className="flex flex-wrap justify-center gap-1.5">
+            {letters
+              .slice(start, start + len)
+              .split("")
+              .map((ch, i) => (
+                <span
+                  key={i}
+                  className={cn(
+                    "grid size-10 place-items-center rounded-xl border-2 font-display text-xl font-extrabold",
+                    tone(start + i) === "right"
+                      ? "border-success bg-success-soft text-success"
+                      : "border-destructive bg-danger-soft text-destructive",
+                  )}
+                >
+                  {ch}
+                </span>
+              ))}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function ResultCard({
   correct,
   correctText,
   hint,
+  picked,
+  spelling,
+  detail,
   actionLabel,
   onAction,
 }: {
   correct: boolean;
   correctText: string;
   hint?: string | undefined;
+  // The wrong option the learner chose, shown on the wrong card (picture,
+  // German word with its audio, meaning) so they see what it actually is
+  // before trying again. The right answer is never given away.
+  picked?: { word: VocabWord; meaning: string; label: string; hearLabel: string } | undefined;
+  // A wrong spelling attempt, shown on the wrong card as two rows of letter
+  // tiles: what the learner wrote (wrong letters in red) and the right
+  // spelling, which they couldn't otherwise work out. `segments` groups the
+  // tiles into the phrase's words.
+  spelling?:
+    | {
+        typed: string;
+        answer: string;
+        segments: number[];
+        typedLabel: string;
+        answerLabel: string;
+      }
+    | undefined;
+  // Extra content under the header, e.g. the grammar quiz's answered
+  // sentence with its meaning.
+  detail?: React.ReactNode;
   actionLabel: string;
   onAction: () => void;
 }) {
@@ -863,10 +917,63 @@ export function ResultCard({
             >
               {correct ? "Richtig!" : "Fast! Versuch's nochmal."}
             </p>
-            {correct && <p className="text-sm font-bold text-ink-soft">{correctText}</p>}
+            {correct && correctText && (
+              <p className="text-sm font-bold text-ink-soft">{correctText}</p>
+            )}
             {!correct && hint && <p className="text-sm font-bold text-ink-soft">💡 {hint}</p>}
           </div>
         </div>
+        {detail && (
+          <div className="mt-4 flex flex-col items-center gap-1 rounded-3xl bg-card p-4 text-center">
+            {detail}
+          </div>
+        )}
+        {!correct && picked && (
+          <div className="mt-4 flex flex-col items-center gap-2 rounded-3xl bg-card p-4 text-center">
+            <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-ink-soft">
+              {picked.label}
+            </p>
+            <LoadingImage
+              src={picked.word.image}
+              alt={picked.word.full}
+              className="size-52 shrink-0 rounded-[28px] sm:size-60"
+              imgClassName="object-cover"
+              spinner={false}
+            />
+            <button
+              type="button"
+              onClick={() => playWord(picked.word.full)}
+              aria-label={picked.hearLabel}
+              className="inline-flex items-center gap-2 font-display text-3xl font-extrabold"
+            >
+              <ArticleWord text={picked.word.full} />
+              <Volume2 className="size-7 shrink-0 text-ink-soft" />
+            </button>
+            <p className="font-display text-2xl font-extrabold text-ink-soft sm:text-3xl">
+              {picked.meaning}
+            </p>
+          </div>
+        )}
+        {!correct && spelling && (
+          <div className="mt-4 flex flex-col items-center gap-2 rounded-3xl bg-card p-4 text-center">
+            <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-ink-soft">
+              {spelling.typedLabel}
+            </p>
+            <SpellingRow
+              letters={spelling.typed}
+              segments={spelling.segments}
+              tone={(i) => (spelling.typed[i] === spelling.answer[i] ? "right" : "wrong")}
+            />
+            <p className="mt-2 text-xs font-extrabold uppercase tracking-[0.14em] text-ink-soft">
+              {spelling.answerLabel}
+            </p>
+            <SpellingRow
+              letters={spelling.answer}
+              segments={spelling.segments}
+              tone={() => "right"}
+            />
+          </div>
+        )}
         <Button variant="adventure" size="lesson" className="mt-4 w-full" onClick={onAction}>
           {actionLabel}
         </Button>

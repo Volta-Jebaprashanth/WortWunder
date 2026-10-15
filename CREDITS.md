@@ -1343,3 +1343,57 @@ are all cropped from these.
 | nobody.jpg      | niemand     | https://www.pexels.com/photo/empty-classroom-with-desks-and-chalkboard-36650154/          |
 | everything.jpg  | alles       | https://www.pexels.com/photo/colorful-turkish-breakfast-spread-on-wooden-table-29061713/  |
 | everyone.jpg    | jeder       | https://www.pexels.com/photo/crowd-raising-hands-at-outdoor-event-34612591/               |
+
+## Lesson G1 — Los geht's
+
+Grammar lesson G1 has no photos of its own. Its path icons in
+`public/G1 getting started/icons/` are 160x160 crops of photos credited in
+the sections above:
+
+| File       | Test                  | Source                                                    |
+| ---------- | --------------------- | --------------------------------------------------------- |
+| lesson.jpg | Los geht's            | crop of `1.17 verbs/images/to-learn.jpg` (Pexels 8613117) |
+| test-1.jpg | Wörter                | copy of `1.1 greetings/icons/lesson.jpg`                  |
+| test-2.jpg | ä, ö, ü, ß            | crop of `1.8 personal information/images/girl.jpg`        |
+| test-3.jpg | ei, ie, sch, w, z     | crop of `1.12 work and school/images/school.jpg`          |
+| test-4.jpg | Nomen, Verb, Pronomen | crop of `1.8 personal information/images/woman.jpg`       |
+
+## Lesson G2 — Erste Sätze
+
+Grammar lesson G2 has no photos of its own. Its path icons in
+`public/G2 first sentences/icons/` are 160x160 crops of photos credited in
+the sections above:
+
+| File       | Test                  | Source                                                   |
+| ---------- | --------------------- | -------------------------------------------------------- |
+| lesson.jpg | Erste Sätze           | crop of `1.8 personal information/images/first-name.jpg` |
+| test-1.jpg | Wörter 1              | crop of `1.7 jobs/images/teacher.jpg`                    |
+| test-2.jpg | Ich heiße …           | crop of `1.8 personal information/images/name.jpg`       |
+| test-3.jpg | ich bin, du bist      | crop of `1.19 feelings/images/tired.jpg`                 |
+| test-4.jpg | er, sie, es ist       | crop of `1.7 jobs/images/female-doctor.jpg`              |
+| test-5.jpg | Wörter 2              | crop of `1.30 grammar words/images/we.jpg`               |
+| test-6.jpg | wir, ihr, sie, Sie    | crop of `1.30 grammar words/images/you-formal.jpg`       |
+| test-7.jpg | kommen aus, wohnen in | crop of `1.8 personal information/images/country.jpg`    |
+
+## Lesson G3 — Verben im Präsens
+
+The word photos under `public/G3 present verbs/images/` are 640x640 squares
+under the [Pexels License](https://www.pexels.com/license/):
+
+| File         | Word        | Source                                                                       |
+| ------------ | ----------- | ---------------------------------------------------------------------------- |
+| german.jpg   | Deutsch     | https://www.pexels.com/photo/german-flag-waving-against-cloudy-sky-33479984/ |
+| football.jpg | der Fußball | copy of `1.6 hobbies/images/playing-football.jpg` (see above)                |
+
+Its path icons in `public/G3 present verbs/icons/` are 160x160 crops of
+photos credited in the sections above:
+
+| File       | Test                  | Source                                            |
+| ---------- | --------------------- | ------------------------------------------------- |
+| lesson.jpg | Verben im Präsens     | crop of `1.6 hobbies/images/playing-football.jpg` |
+| test-1.jpg | Wörter                | crop of `1.17 verbs/images/to-drink.jpg`          |
+| test-2.jpg | ich lerne, du lernst  | crop of `1.17 verbs/images/to-do.jpg`             |
+| test-3.jpg | er, sie, es -t        | crop of `1.6 hobbies/images/to-sing.jpg`          |
+| test-4.jpg | wir -en, ihr -t       | crop of `1.17 verbs/images/to-cook.jpg`           |
+| test-5.jpg | haben                 | crop of `1.17 verbs/images/to-have.jpg`           |
+| test-6.jpg | Das Verb ist Nummer 2 | crop of `1.10 time/images/clock.jpg`              |

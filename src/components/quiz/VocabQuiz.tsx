@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Loader2, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -38,6 +38,7 @@ import {
   tierOfType,
   wordSegments,
   type QuizItem,
+  type TestType,
 } from "@/lib/quiz-engine";
 import { ensureTestEntered, getActiveTierRows, recordFail, recordPass } from "@/lib/progress-store";
 import { recordCorrectAnswer } from "@/lib/stats-store";
@@ -64,12 +65,14 @@ function segmentRanges(segments: number[]) {
 export function VocabQuiz({
   testId,
   words,
+  testTypes = ALL_TEST_TYPES,
   t,
   lang,
   onExit,
 }: {
   testId: string;
   words: VocabWord[];
+  testTypes?: TestType[] | undefined;
   t: Strings;
   lang: MotherTongue;
   onExit: () => void;
@@ -78,6 +81,9 @@ export function VocabQuiz({
   const [queue, setQueue] = useState<QuizItem[]>([]);
   const [ready, setReady] = useState(false);
   const [index, setIndex] = useState(0);
+  // Counts rebuilt rounds, so a match board can be told apart from the same
+  // board coming up again at the same position in the next round.
+  const [round, setRound] = useState(0);
   const [answer, setAnswer] = useState<string | null>(null);
   const [letters, setLetters] = useState<number[]>([]);
   const [checked, setChecked] = useState(false);
@@ -87,6 +93,10 @@ export function VocabQuiz({
   // word-to-picture question. Resets per queue item, so a word whose
   // question was missed gets its intro again the next time it comes up.
   const [introDone, setIntroDone] = useState(false);
+  // For the finish screen: questions answered, and how many of those were
+  // missed at least once.
+  const [score, setScore] = useState({ questions: 0, mistakes: 0 });
+  const boardMissed = useRef(false);
   const item: QuizItem | undefined = queue[index];
   const spokenWord = item && item.kind !== "match" ? item.word.full : "";
   // Rounds are tier-gated, so the current item's tier is the test's tier.
@@ -104,18 +114,20 @@ export function VocabQuiz({
   useEffect(() => {
     preloadFeedbackSounds();
     const wordIds = words.map((w) => w.id);
-    ensureTestEntered(testId, wordIds, ALL_TEST_TYPES);
+    ensureTestEntered(testId, wordIds, testTypes);
     setQueue(buildRoundFromRows(getActiveTierRows(testId), words));
     setReady(true);
-  }, [testId, words]);
+  }, [testId, words, testTypes]);
 
+  // Keyed on the queue as well as the index: a one-question round followed by
+  // a new round stays at index 0, and must still start the next question clean.
   useEffect(() => {
     setAnswer(null);
     setLetters([]);
     setChecked(false);
     setAttempts(0);
     setIntroDone(false);
-  }, [index]);
+  }, [queue, index]);
 
   // Fetch only what this question and the next few need (audio and pictures),
   // current question first — see word-audio.ts / image-preload.ts. The queue
@@ -148,6 +160,27 @@ export function VocabQuiz({
     return { word, mcOptions, tiles, segments, answerLength, missing };
   }, [item, byId]);
 
+  // The option the learner picked on a multiple-choice question, for the
+  // wrong card. Each question type keys its options differently (word id,
+  // German word or meaning); spelling and missing-letter have no word to show.
+  const pickedWord = (() => {
+    if (!item || !derived || answer === null) return undefined;
+    switch (item.kind) {
+      case "wordPicture":
+      case "training":
+      case "listenPicture":
+        return derived.mcOptions.find((w) => w.id === answer);
+      case "meaning":
+        return derived.mcOptions.find((w) => w[lang] === answer);
+      case "picture":
+      case "translate":
+      case "listen":
+        return derived.mcOptions.find((w) => w.full === answer);
+      default:
+        return undefined;
+    }
+  })();
+
   // Once the current round runs out, the next round comes from whatever
   // tier is now active: more of the same tier if fails left rows pending in
   // it, otherwise the next tier down the line. Only once every tier is
@@ -161,6 +194,7 @@ export function VocabQuiz({
     const nextRows = getActiveTierRows(testId);
     setQueue(nextRows.length > 0 ? buildRoundFromRows(nextRows, words) : []);
     setIndex(0);
+    setRound((r) => r + 1);
   };
   const checkAnswer = (isCorrect: boolean) => {
     setChecked(true);
@@ -171,6 +205,8 @@ export function VocabQuiz({
       // further in-place retries (see `retry` below) don't stack.
       else if (attempts === 0) recordFail(testId, item.kind, derived.word.id);
     }
+    if (isCorrect) setScore((s) => ({ ...s, questions: s.questions + 1 }));
+    else if (attempts === 0) setScore((s) => ({ ...s, mistakes: s.mistakes + 1 }));
     if (isCorrect) {
       recordCorrectAnswer();
       playCorrectSound();
@@ -200,6 +236,11 @@ export function VocabQuiz({
       <main className="relative z-10 mx-auto max-w-5xl px-4 pb-10 sm:px-6">
         {ready && !item && (
           <LessonFrame t={t} eyebrow={t.roundUp} title="Geschafft!" subtitle={t.roundSuccess}>
+            {score.questions > 0 && (
+              <p className="my-5 rounded-[24px] bg-card p-4 text-center font-display text-xl font-extrabold ring-1 ring-border">
+                {t.resultSummary(score.questions, score.mistakes)}
+              </p>
+            )}
             <Button variant="adventure" size="lesson" className="w-full" onClick={onExit}>
               {t.backToPath}
             </Button>
@@ -341,7 +382,7 @@ export function VocabQuiz({
             eyebrow={t.wordBuilder}
             tier={tier}
             title="Baue das Wort"
-            subtitle={t.tapLettersToSpell(derived.word.full)}
+            subtitle={t.tapLettersToSpell}
           >
             <Picture
               src={derived.word.image}
@@ -571,16 +612,27 @@ export function VocabQuiz({
             subtitle={t.matchWordsToMeaning}
           >
             <MatchPairs
-              key={item.words.map((w) => w.id).join("-")}
+              key={`${round}:${index}`}
               t={t}
               lang={lang}
               words={item.words}
-              onComplete={goNext}
+              onComplete={() => {
+                const missed = boardMissed.current;
+                boardMissed.current = false;
+                setScore((s) => ({
+                  questions: s.questions + 1,
+                  mistakes: s.mistakes + (missed ? 1 : 0),
+                }));
+                goNext();
+              }}
               onAttempt={(wordId, isCorrect) => {
-                if (isCorrect) {
-                  recordPass(testId, "match", wordId);
-                  recordCorrectAnswer();
-                } else recordFail(testId, "match", wordId);
+                if (isCorrect) recordCorrectAnswer();
+                else boardMissed.current = true;
+                // Fillers (see MatchItem) don't count. A missed word comes
+                // back on one more board, not two.
+                if (!item.scoredIds.includes(wordId)) return;
+                if (isCorrect) recordPass(testId, "match", wordId);
+                else recordFail(testId, "match", wordId, 1);
               }}
               title="Super!"
               actionLabel="Weiter"
@@ -593,6 +645,25 @@ export function VocabQuiz({
             correct={lastCorrect}
             correctText={t.correctMeaning(derived.word.full, derived.word[lang])}
             hint={attempts >= 2 ? t.hintGeneric : undefined}
+            picked={
+              pickedWord && {
+                word: pickedWord,
+                meaning: pickedWord[lang],
+                label: t.youChose,
+                hearLabel: t.tapToHear(pickedWord.full),
+              }
+            }
+            spelling={
+              item.kind === "build" || item.kind === "listenBuild"
+                ? {
+                    typed: letters.map((i) => derived.tiles[i]).join(""),
+                    answer: answerLetters(spellingOf(derived.word)),
+                    segments: derived.segments,
+                    typedLabel: t.youWrote,
+                    answerLabel: t.correctSpelling,
+                  }
+                : undefined
+            }
             actionLabel={lastCorrect ? "Weiter" : t.tryAgain}
             onAction={lastCorrect ? goNext : retry}
           />

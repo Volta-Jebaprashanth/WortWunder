@@ -209,12 +209,19 @@ const LETTERS: GrammarTest = {
     { left: "die Tür", right: "ü" },
     { left: "die Straße", right: "ß" },
   ],
+  pairsPrompt: {
+    english: "Match each word to the letter it has.",
+    tamil: "ஒவ்வொரு சொல்லையும் அதிலுள்ள எழுத்துடன் இணைக்கவும்.",
+    sinhala: "සෑම වචනයක්ම එහි ඇති අකුරට ගළපන්න.",
+  },
 };
 
 const SOUNDS: GrammarTest = {
   kind: "grammar",
   testId: "G1.3",
-  title: "ei, ie, sch, w, z",
+  // The test covers ei, ie, eu, sch, ch, sp, st, w, v and z: too many to
+  // list in a path title.
+  title: "Neue Laute",
   meaning: {
     english: "Letters that sound different",
     tamil: "வேறுபட்டு ஒலிக்கும் எழுத்துகள்",
@@ -226,7 +233,7 @@ const SOUNDS: GrammarTest = {
       id: "ei-ie",
       title: { english: '"ei" and "ie"', tamil: '"ei" மற்றும் "ie"', sinhala: '"ei" සහ "ie"' },
       text: {
-        english: 'ei sounds like "eye". ie sounds like "ee". Say the second letter!',
+        english: 'ei sounds like English "eye". ie sounds like English "ee".',
         tamil: '"ei" என்பது "ஐ" போலவும், "ie" என்பது "ஈ" போலவும் ஒலிக்கும்.',
         sinhala: '"ei" "අයි" වගේත්, "ie" "ඊ" වගේත් ඇසෙනවා.',
       },
@@ -448,13 +455,21 @@ const SOUNDS: GrammarTest = {
       distractors: ["Ts", "C", "S"],
     },
   ],
+  // Each word holds exactly one of the sounds on the right, so no pair can
+  // be right for a reason the board doesn't accept ("die Zeit" has ei as
+  // well as z, "die Schule" has the ie of "die").
   pairs: [
     { left: "mein", right: "ei" },
     { left: "wie", right: "ie" },
     { left: "neu", right: "eu" },
-    { left: "die Schule", right: "sch" },
-    { left: "die Zeit", right: "z" },
+    { left: "schön", right: "sch" },
+    { left: "zehn", right: "z" },
   ],
+  pairsPrompt: {
+    english: "Match each word to the sound it has.",
+    tamil: "ஒவ்வொரு சொல்லையும் அதிலுள்ள ஒலியுடன் இணைக்கவும்.",
+    sinhala: "සෑම වචනයක්ම එහි ඇති ශබ්දයට ගළපන්න.",
+  },
 };
 
 const PRONOUN_WHY = {
@@ -537,14 +552,17 @@ const KINDS: GrammarTest = {
     {
       id: "pronomen",
       title: {
-        english: "Pronomen: a short word for a Nomen",
-        tamil: "Pronomen: Nomen-க்குப் பதிலான சிறு சொல்",
-        sinhala: "Pronomen: Nomen එකක් වෙනුවට කෙටි වචනයක්",
+        english: "Pronomen: a short word for a person or thing",
+        tamil: "Pronomen: ஒரு நபர் அல்லது பொருளுக்கான சிறு சொல்",
+        sinhala: "Pronomen: පුද්ගලයෙකුට හෝ දෙයකට කෙටි වචනයක්",
       },
       text: {
-        english: "A Pronomen stands in for a Nomen, so you don't say the name again.",
-        tamil: "பெயரை மீண்டும் சொல்லாமல் இருக்க, Pronomen ஒரு Nomen-க்குப் பதிலாக வரும்.",
-        sinhala: "නම නැවත නොකියා ඉන්න, Pronomen එකක් Nomen එකක් වෙනුවට එනවා.",
+        english:
+          "A Pronomen is a short word for a person or thing: ich, du, er, sie, es. er, sie and es stand in for a Nomen, so you don't say the name again.",
+        tamil:
+          "Pronomen என்பது ஒரு நபர் அல்லது பொருளுக்கான சிறு சொல்: ich, du, er, sie, es. பெயரை மீண்டும் சொல்லாமல் இருக்க, er, sie, es ஒரு Nomen-க்குப் பதிலாக வரும்.",
+        sinhala:
+          "Pronomen යනු පුද්ගලයෙකුට හෝ දෙයකට කෙටි වචනයක්: ich, du, er, sie, es. නම නැවත නොකියා ඉන්න, er, sie, es Nomen එකක් වෙනුවට එනවා.",
       },
       examples: [
         { id: "mann", highlight: 1 },
@@ -682,7 +700,7 @@ const KINDS: GrammarTest = {
       {
         id: "pronomen",
         label: "Pronomen",
-        meaning: { english: "stands in", tamil: "பதிலாக வரும்", sinhala: "වෙනුවට එයි" },
+        meaning: { english: "ich, du, er …", tamil: "ich, du, er …", sinhala: "ich, du, er …" },
       },
     ],
     items: [
@@ -703,6 +721,11 @@ const KINDS: GrammarTest = {
     { left: "die Frau", right: "sie" },
     { left: "das Kind", right: "es" },
   ],
+  pairsPrompt: {
+    english: "Match each Nomen to its Pronomen.",
+    tamil: "ஒவ்வொரு Nomen-ஐயும் அதன் Pronomen-உடன் இணைக்கவும்.",
+    sinhala: "සෑම Nomen එකක්ම එහි Pronomen එකට ගළපන්න.",
+  },
 };
 
 export const GETTING_STARTED_LESSON: GrammarLesson = {

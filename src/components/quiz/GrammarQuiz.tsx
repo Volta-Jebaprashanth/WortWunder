@@ -20,6 +20,7 @@ import {
   WordBuilder,
 } from "@/components/quiz/grammar-pieces";
 import {
+  acceptedOrders,
   answerSentence,
   BOARD_ID,
   buildGrammarRound,
@@ -28,21 +29,22 @@ import {
   grammarItemAudio,
   rowsForTest,
   sameAnswer,
+  sameWordsOtherOrder,
   spotTokens,
-  wordsOf,
+  tileWords,
   type GrammarItem,
 } from "@/lib/grammar-engine";
 import { shuffle } from "@/lib/quiz-engine";
 import { ensureRowsEntered, getActiveTierRows, recordFail, recordPass } from "@/lib/progress-store";
 import { recordCorrectAnswer } from "@/lib/stats-store";
 import type { MotherTongue, Strings } from "@/lib/i18n";
-import type { GrammarTest, Localized } from "@/data/grammar/types";
+import type { GrammarSentence, GrammarTest, Localized } from "@/data/grammar/types";
 
 // The quiz screen for a grammar test (G1.2, G1.3, ... — see
 // src/data/grammar/), the counterpart of VocabQuiz. Same tier-gated rounds
 // and progress rules; the queue comes from grammar-engine.ts. As in
 // VocabQuiz, a wrong answer is asked again in place until it's right (with
-// the sentence's "why" line as a hint, never the answer itself); only the
+// a hint that fits the kind of question, never the answer itself); only the
 // first miss on a question costs a penalty.
 function localized(value: string | Localized, lang: MotherTongue): string {
   return typeof value === "string" ? value : value[lang];
@@ -52,6 +54,10 @@ function rowIdOf(item: GrammarItem): string {
   if (item.kind === "rule") return item.rule.id;
   return "sentence" in item ? item.sentence.id : BOARD_ID;
 }
+
+// A miss on one of these whole screens brings it back once, not two or
+// three times (see recordFail).
+const BIG_SCREENS = new Set<GrammarItem["kind"]>(["rule", "pairs", "sort"]);
 
 export function GrammarQuiz({
   test,
@@ -82,6 +88,9 @@ export function GrammarQuiz({
   const [placement, setPlacement] = useState<(string | null)[]>([]);
   const [selectedTile, setSelectedTile] = useState<number | null>(null);
   const pairsMissed = useRef(false);
+  // For the finish screen: questions answered, and how many of those were
+  // missed at least once.
+  const [score, setScore] = useState({ questions: 0, mistakes: 0 });
   const item: GrammarItem | undefined = queue[index];
 
   useEffect(() => {
@@ -150,7 +159,8 @@ export function GrammarQuiz({
   const record = (isCorrect: boolean) => {
     if (!item) return;
     if (isCorrect) recordPass(test.testId, item.kind, rowIdOf(item));
-    else recordFail(test.testId, item.kind, rowIdOf(item));
+    else
+      recordFail(test.testId, item.kind, rowIdOf(item), BIG_SCREENS.has(item.kind) ? 1 : undefined);
   };
   const checkAnswer = (isCorrect: boolean) => {
     setChecked(true);
@@ -158,6 +168,8 @@ export function GrammarQuiz({
     // Only the first wrong attempt on a queue appearance costs a penalty —
     // further in-place retries (see `retry` below) don't stack.
     if (isCorrect || attempts === 0) record(isCorrect);
+    if (isCorrect) setScore((s) => ({ ...s, questions: s.questions + 1 }));
+    else if (attempts === 0) setScore((s) => ({ ...s, mistakes: s.mistakes + 1 }));
     if (isCorrect) {
       recordCorrectAnswer();
       playCorrectSound();
@@ -177,12 +189,14 @@ export function GrammarQuiz({
     setPlacement((old) => old.map((group, i) => (group === sortItems[i]?.group ? group : null)));
   };
 
-  const sentence = item && "sentence" in item ? item.sentence : undefined;
   // What the learner should end up with: the sentence itself, or for
   // transform the sentence it turns into.
   const target = item && "sentence" in item ? answerSentence(item, test) : undefined;
-  const built = item && "options" in item ? placed.map((i) => item.options[i]).join(" ") : "";
-  const builtRight = target !== undefined && built === wordsOf(target).join(" ");
+  const builtWords = item && "options" in item ? placed.map((i) => item.options[i] ?? "") : [];
+  // Where only the meaning is given, any right word order counts.
+  const anyOrder = item?.kind === "order" || item?.kind === "meaningBuild";
+  const builtRight =
+    target !== undefined && acceptedOrders(target, anyOrder).includes(builtWords.join(" "));
   const builder = (
     <WordBuilder
       t={t}
@@ -199,9 +213,49 @@ export function GrammarQuiz({
   const checkBuilt = !checked && (
     <Continue t={t} disabled={placed.length === 0} onClick={() => checkAnswer(builtRight)} />
   );
-  const why = sentence
-    ? (sentence.why?.[lang] ?? (sentence.rule ? rules[sentence.rule]?.text[lang] : undefined))
-    : undefined;
+  const whyOf = (s: GrammarSentence) =>
+    s.why?.[lang] ?? (s.rule ? rules[s.rule]?.text[lang] : undefined);
+  // The hint after a miss fits what was asked: the rule's "why" only where
+  // the mistake is the form of a word (a gap, a planted mistake, a wrong
+  // word on the tiles), something else for meaning, listening, replies and
+  // word order.
+  const hint = (() => {
+    if (!item) return undefined;
+    switch (item.kind) {
+      case "rule":
+        return item.rule.text[lang];
+      case "pairs":
+      case "sort":
+        return undefined;
+      case "sentenceMeaning":
+        return t.hintMeaning;
+      case "listenPick":
+        return t.hintListen;
+      case "reply":
+        return t.hintReply;
+      case "transform":
+        // Left as it was: the instruction says what to change.
+        if (builtWords.join(" ") === tileWords(item.sentence).join(" "))
+          return item.sentence.transformTo?.prompt[lang];
+        if (target && sameWordsOtherOrder(builtWords, target)) return t.hintWordOrder;
+        // The rule for the sentence to make, not the one it started as.
+        return target ? whyOf(target) : undefined;
+      case "order":
+      case "meaningBuild":
+      case "listenBuild":
+        if (target && sameWordsOtherOrder(builtWords, target)) return t.hintWordOrder;
+        return whyOf(item.sentence);
+      default:
+        return whyOf(item.sentence);
+    }
+  })();
+  // A typed gap is checked without case; a right answer typed with the
+  // wrong case still gets a word about the capital.
+  const gapWord = item?.kind === "gapType" ? gapAnswer(item.sentence) : "";
+  const capitalNote =
+    gapWord && lastCorrect && typed.trim() !== gapWord && gapWord !== gapWord.toLowerCase()
+      ? t.capitalNote(gapWord)
+      : undefined;
   const sortDone = placement.length > 0 && placement.every((group) => group !== null);
   const sortCorrect = sortItems.every((sortItem, i) => placement[i] === sortItem.group);
 
@@ -209,6 +263,23 @@ export function GrammarQuiz({
     <main className="relative z-10 mx-auto max-w-5xl px-4 pb-10 sm:px-6">
       {ready && !item && (
         <LessonFrame t={t} eyebrow={t.roundUp} title="Geschafft!" subtitle={t.roundSuccess}>
+          <div className="mx-auto my-5 max-w-md space-y-3 rounded-[24px] bg-card p-4 text-center ring-1 ring-border">
+            {score.questions > 0 && (
+              <p className="font-display text-xl font-extrabold">
+                {t.resultSummary(score.questions, score.mistakes)}
+              </p>
+            )}
+            <p className="font-bold text-ink-soft">
+              {t.youLearned}: {test.title} · {test.meaning[lang]}
+            </p>
+            {test.rules.length > 0 && (
+              <ul className="space-y-1 text-sm font-bold">
+                {test.rules.map((rule) => (
+                  <li key={rule.id}>✓ {rule.title[lang]}</li>
+                ))}
+              </ul>
+            )}
+          </div>
           <Button variant="adventure" size="lesson" className="w-full" onClick={onExit}>
             {t.backToPath}
           </Button>
@@ -352,7 +423,7 @@ export function GrammarQuiz({
           eyebrow={t.matchChallenge}
           tier={item.tier}
           title="Finde die Paare"
-          subtitle={t.matchEachPair}
+          subtitle={test.pairsPrompt?.[lang] ?? t.matchEachPair}
         >
           <MatchPairs
             key={`${round}:${index}`}
@@ -364,7 +435,15 @@ export function GrammarQuiz({
               else pairsMissed.current = true;
             }}
             onComplete={() => {
-              record(!pairsMissed.current);
+              // A miss costs one replay of the board: the fail, then the pass
+              // for finishing it, as for any question retried in place.
+              const missed = pairsMissed.current;
+              if (missed) record(false);
+              record(true);
+              setScore((s) => ({
+                questions: s.questions + 1,
+                mistakes: s.mistakes + (missed ? 1 : 0),
+              }));
               goNext();
             }}
             title="Super!"
@@ -573,10 +652,10 @@ export function GrammarQuiz({
         <ResultCard
           correct={lastCorrect}
           correctText=""
-          hint={item.kind === "rule" ? item.rule.text[lang] : why}
+          hint={hint}
           detail={
             lastCorrect && target ? (
-              <SentenceFeedback t={t} sentence={target} lang={lang} />
+              <SentenceFeedback t={t} sentence={target} lang={lang} why={capitalNote} />
             ) : undefined
           }
           actionLabel={lastCorrect ? "Weiter" : t.tryAgain}

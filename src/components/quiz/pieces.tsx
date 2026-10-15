@@ -622,16 +622,11 @@ export function MatchPairs<W extends MatchWord>({
     } else {
       playWrongSound();
       setWrong({ left: selectedLeft, right: id });
-      setFailedOnce((prev) => {
-        const next = new Set(prev);
-        for (const missedId of [selectedLeft, id]) {
-          if (!next.has(missedId)) {
-            onAttempt?.(missedId, false);
-            next.add(missedId);
-          }
-        }
-        return next;
-      });
+      // Reported here, not inside the state updater: React may run an
+      // updater twice (StrictMode), which would count the miss twice.
+      const missed = [selectedLeft, id].filter((missedId) => !failedOnce.has(missedId));
+      for (const missedId of missed) onAttempt?.(missedId, false);
+      if (missed.length > 0) setFailedOnce((prev) => new Set([...prev, ...missed]));
       setSelectedLeft(null);
     }
   };

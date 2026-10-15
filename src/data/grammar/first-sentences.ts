@@ -47,6 +47,12 @@ const ABOUT_ICH: Localized = {
   sinhala: '"ich" ගැන කියන්න',
 };
 
+const MATCH_MEANING: Localized = {
+  english: "Match each German phrase to its meaning.",
+  tamil: "ஒவ்வொரு ஜெர்மன் சொற்றொடரையும் அதன் பொருளுடன் இணைக்கவும்.",
+  sinhala: "සෑම ජර්මන් වාක්‍ය ඛණ්ඩයක්ම එහි අර්ථයට ගළපන්න.",
+};
+
 const WORDS_1: WordsTest = {
   kind: "words",
   testId: "G2.1",
@@ -254,11 +260,14 @@ const HEISSEN: GrammarTest = {
     },
   ],
   pairs: [
-    { left: "ich", right: "heiße" },
-    { left: "du", right: "heißt" },
     { left: "Ich heiße", right: { english: "My name is", tamil: "என் பெயர்", sinhala: "මගේ නම" } },
+    {
+      left: "Du heißt Tom.",
+      right: { english: "Your name is Tom.", tamil: "உன் பெயர் டாம்.", sinhala: "ඔයාගේ නම ටොම්." },
+    },
     { left: "Wie heißt du?", right: WHAT_IS_YOUR_NAME },
   ],
+  pairsPrompt: MATCH_MEANING,
 };
 
 const BIN: Localized = {
@@ -422,6 +431,7 @@ const BIN_BIST: GrammarTest = {
     {
       id: "ich-neu",
       german: "Ich bin neu hier.",
+      alternatives: ["Ich bin hier neu."],
       meaning: {
         english: "I am new here.",
         tamil: "நான் இங்கே புதிதாக வந்திருக்கிறேன்.",
@@ -447,11 +457,26 @@ const BIN_BIST: GrammarTest = {
     },
   ],
   pairs: [
-    { left: "ich", right: "bin" },
-    { left: "du", right: "bist" },
     { left: "Ich bin", right: { english: "I am", tamil: "நான் …", sinhala: "මම …" } },
     { left: "Du bist", right: { english: "You are", tamil: "நீ …", sinhala: "ඔයා …" } },
+    {
+      left: "Ich bin müde.",
+      right: {
+        english: "I am tired.",
+        tamil: "நான் சோர்வாக இருக்கிறேன்.",
+        sinhala: "මට මහන්සියි.",
+      },
+    },
+    {
+      left: "Du bist nett.",
+      right: {
+        english: "You are nice.",
+        tamil: "நீ அன்பாக இருக்கிறாய்.",
+        sinhala: "ඔයා කරුණාවන්තයි.",
+      },
+    },
   ],
+  pairsPrompt: MATCH_MEANING,
 };
 
 const IST: Localized = {
@@ -619,6 +644,7 @@ const ER_SIE_ES: GrammarTest = {
     {
       id: "er-neu",
       german: "Er ist neu hier.",
+      alternatives: ["Er ist hier neu."],
       meaning: {
         english: "He is new here.",
         tamil: "அவன் இங்கே புதிதாக வந்திருக்கிறான்.",
@@ -644,12 +670,15 @@ const ER_SIE_ES: GrammarTest = {
     },
   ],
   pairs: [
-    { left: "ich", right: "bin" },
-    { left: "du", right: "bist" },
     { left: "Tom", right: "er" },
     { left: "Anna", right: "sie" },
     { left: "das Kind", right: "es" },
   ],
+  pairsPrompt: {
+    english: "Match each one to er, sie or es.",
+    tamil: "ஒவ்வொன்றையும் er, sie அல்லது es உடன் இணைக்கவும்.",
+    sinhala: "එක් එක්කෙනා er, sie හෝ es එකට ගළපන්න.",
+  },
   sort: {
     groups: [
       { id: "bin", label: "bin", meaning: { english: "ich …", tamil: "ich …", sinhala: "ich …" } },
@@ -681,7 +710,6 @@ const WORDS_2: WordsTest = {
   words: [
     { lessonId: GRAMMAR_LESSON_ID, wordId: "wir" },
     { lessonId: GRAMMAR_LESSON_ID, wordId: "ihr" },
-    { lessonId: GRAMMAR_LESSON_ID, wordId: "sie-they" },
     { lessonId: GRAMMAR_LESSON_ID, wordId: "sie-formal" },
     { lessonId: SMALL_WORDS_LESSON_ID, wordId: "und" },
     { lessonId: VERBS_LESSON_ID, wordId: "kommen" },
@@ -689,7 +717,21 @@ const WORDS_2: WordsTest = {
     { lessonId: PREPOSITIONS_LESSON_ID, wordId: "aus" },
     { lessonId: PREPOSITIONS_LESSON_ID, wordId: "in" },
   ],
-  // Spelling two-letter words letter by letter isn't a useful drill.
+  // "sie" is both "she" (G2.4: sie ist) and "they" (G2.6: sie sind), so it
+  // is taught with both meanings, not as 1.30's "They".
+  newWords: [
+    {
+      id: "sie-she-they",
+      image: "/1.30 grammar words/images/they.jpg",
+      full: "sie",
+      english: "she / they",
+      tamil: "அவள் / அவர்கள்",
+      sinhala: "ඇය / ඔවුන්",
+    },
+  ],
+  // No spelling: two-letter words letter by letter aren't a useful drill,
+  // and upper-case letter tiles would spell "Sie" and "sie" the same,
+  // though the capital is the only written difference between them.
   testTypes: [
     "training",
     "wordPicture",
@@ -698,7 +740,6 @@ const WORDS_2: WordsTest = {
     "listen",
     "listenPicture",
     "translate",
-    "listenBuild",
     "match",
   ],
 };
@@ -767,12 +808,14 @@ const PLURAL: GrammarTest = {
         sinhala: '"Sie": ගෞරවාන්විත "ඔබ"',
       },
       text: {
-        english: '"Sie" with a capital S is the polite "you", for adults you don\'t know well.',
+        english:
+          'The polite "you", for adults you don\'t know well, is "Sie". It always has a capital S, even in the middle of a sentence: Wie heißen Sie? At the start of a sentence every "sie" has a capital, so look at the verb: Sie ist = she is, Sie sind = they are or polite you.',
         tamil:
-          'பெரிய S உடன் "Sie" என்பது மரியாதையான "நீங்கள்" — அதிகம் தெரியாத பெரியவர்களிடம் சொல்வோம்.',
-        sinhala: 'කැපිටල් S සහිත "Sie" යනු ගෞරවාන්විත "ඔබ" — හොඳින් නොදන්නා වැඩිහිටියන්ට කියනවා.',
+          'அதிகம் தெரியாத பெரியவர்களிடம் சொல்லும் மரியாதையான "நீங்கள்" என்பது "Sie". வாக்கியத்தின் நடுவிலும் அது எப்போதும் பெரிய S உடன் வரும்: Wie heißen Sie? வாக்கியத் தொடக்கத்தில் எல்லா "sie"-யும் பெரிய எழுத்தில் வரும், அதனால் வினைச்சொல்லைப் பார்: Sie ist = அவள், Sie sind = அவர்கள் அல்லது மரியாதையான நீங்கள்.',
+        sinhala:
+          'හොඳින් නොදන්නා වැඩිහිටියන්ට කියන ගෞරවාන්විත "ඔබ" යනු "Sie". වාක්‍යය මැදදීත් එය හැම විටම කැපිටල් S එකකින් ලියනවා: Wie heißen Sie? වාක්‍යයක මුලදී හැම "sie" එකක්ම කැපිටල්, ඒ නිසා ක්‍රියාපදය බලන්න: Sie ist = ඇය, Sie sind = ඔවුන් හෝ ගෞරවාන්විත ඔබ.',
       },
-      examples: [{ id: "sie-weber" }, { id: "wie-sie" }],
+      examples: [{ id: "wie-sie", highlight: 2 }, { id: "sie-weber" }],
       table: [
         { left: "du", right: "bist, heißt" },
         { left: "Sie", right: "sind, heißen" },
@@ -831,6 +874,7 @@ const PLURAL: GrammarTest = {
     {
       id: "ihr-neu",
       german: "Ihr seid neu hier.",
+      alternatives: ["Ihr seid hier neu."],
       meaning: {
         english: "You (all) are new here.",
         tamil: "நீங்கள் இங்கே புதிதாக வந்திருக்கிறீர்கள்.",
@@ -878,6 +922,7 @@ const PLURAL: GrammarTest = {
     {
       id: "sie-weber",
       german: "Sie sind Frau Weber.",
+      formal: true,
       meaning: {
         english: "You are Mrs Weber.",
         tamil: "நீங்கள் திருமதி வெபர்.",
@@ -945,7 +990,7 @@ const PLURAL: GrammarTest = {
     { left: "wir", right: { english: "we", tamil: "நாங்கள்", sinhala: "අපි" } },
     {
       left: "ihr",
-      right: { english: "you (friends)", tamil: "நீங்கள் (நண்பர்கள்)", sinhala: "ඔයාලා" },
+      right: { english: "you all (friends)", tamil: "நீங்கள் (நண்பர்கள்)", sinhala: "ඔයාලා" },
     },
     {
       left: "Sie",
@@ -953,6 +998,7 @@ const PLURAL: GrammarTest = {
     },
     { left: "sie sind", right: { english: "they are", tamil: "அவர்கள்", sinhala: "ඔවුන්" } },
   ],
+  pairsPrompt: MATCH_MEANING,
 };
 
 const AUS: Localized = {
@@ -965,6 +1011,21 @@ const IN: Localized = {
   tamil: '"wohnen" உடன் "in" வரும்.',
   sinhala: '"wohnen" සමඟ "in" එනවා.',
 };
+
+// "sie" in a table row says which one it is: she (kommt) or they (kommen).
+function withSie(form: string, sie: Localized): Localized {
+  return {
+    english: `${form} ("sie" = ${sie.english})`,
+    tamil: `${form} ("sie" = ${sie.tamil})`,
+    sinhala: `${form} ("sie" = ${sie.sinhala})`,
+  };
+}
+const SHE: Localized = { english: "she", tamil: "அவள்", sinhala: "ඇය" };
+const THEY: Localized = { english: "they", tamil: "அவர்கள்", sinhala: "ඔවුන්" };
+const SHE_KOMMT = withSie("kommt", SHE);
+const THEY_KOMMEN = withSie("kommen", THEY);
+const SHE_WOHNT = withSie("wohnt", SHE);
+const THEY_WOHNEN = withSie("wohnen", THEY);
 
 const FROM_LIVE: GrammarTest = {
   kind: "grammar",
@@ -985,15 +1046,19 @@ const FROM_LIVE: GrammarTest = {
         sinhala: "කොහෙන්ද: kommen aus",
       },
       text: {
-        english: '"aus" means "from". Ich komme aus … = I am from …',
-        tamil: '"aus" என்றால் "இருந்து". Ich komme aus … = நான் …-இலிருந்து வருகிறேன்.',
-        sinhala: '"aus" කියන්නේ "සිට". Ich komme aus … = මම … සිට එනවා.',
+        english:
+          '"aus" means "from". Ich komme aus … = I am from … To ask: Woher kommst du? = Where are you from?',
+        tamil:
+          '"aus" என்றால் "இருந்து". Ich komme aus … = நான் …-இலிருந்து வருகிறேன். கேட்க: Woher kommst du? = நீ எங்கிருந்து வருகிறாய்?',
+        sinhala:
+          '"aus" කියන්නේ "සිට". Ich komme aus … = මම … සිට එනවා. අහන්න: Woher kommst du? = ඔයා කොහෙන්ද එන්නේ?',
       },
-      examples: [{ id: "ich-sri" }, { id: "du-oesterreich" }],
+      examples: [{ id: "woher", highlight: 0 }, { id: "ich-sri" }, { id: "du-oesterreich" }],
       table: [
         { left: "ich", right: "komme" },
         { left: "du", right: "kommst" },
-        { left: "er, sie", right: "kommt" },
+        { left: "er, sie", right: SHE_KOMMT },
+        { left: "wir, sie, Sie", right: THEY_KOMMEN },
       ],
       check: {
         prompt: {
@@ -1013,15 +1078,18 @@ const FROM_LIVE: GrammarTest = {
         sinhala: "කොහෙද ජීවත් වෙන්නේ: wohnen in",
       },
       text: {
-        english: "Ich wohne in … = I live in …",
-        tamil: "Ich wohne in … = நான் …-இல் வசிக்கிறேன்.",
-        sinhala: "Ich wohne in … = මම …වල ජීවත් වෙනවා.",
+        english: "Ich wohne in … = I live in … To ask: Wo wohnst du? = Where do you live?",
+        tamil:
+          "Ich wohne in … = நான் …-இல் வசிக்கிறேன். கேட்க: Wo wohnst du? = நீ எங்கே வசிக்கிறாய்?",
+        sinhala:
+          "Ich wohne in … = මම …වල ජීවත් වෙනවා. අහන්න: Wo wohnst du? = ඔයා කොහෙද ජීවත් වෙන්නේ?",
       },
-      examples: [{ id: "ich-wien" }, { id: "du-wien" }],
+      examples: [{ id: "wo", highlight: 0 }, { id: "ich-wien" }, { id: "du-wien" }],
       table: [
         { left: "ich", right: "wohne" },
         { left: "du", right: "wohnst" },
-        { left: "er, sie", right: "wohnt" },
+        { left: "er, sie", right: SHE_WOHNT },
+        { left: "wir, sie, Sie", right: THEY_WOHNEN },
       ],
       check: {
         prompt: {
@@ -1035,6 +1103,26 @@ const FROM_LIVE: GrammarTest = {
     },
   ],
   sentences: [
+    {
+      id: "woher",
+      german: "Woher kommst du?",
+      meaning: {
+        english: "Where are you from?",
+        tamil: "நீ எங்கிருந்து வருகிறாய்?",
+        sinhala: "ඔයා කොහෙන්ද එන්නේ?",
+      },
+      rule: "kommen-aus",
+    },
+    {
+      id: "wo",
+      german: "Wo wohnst du?",
+      meaning: {
+        english: "Where do you live?",
+        tamil: "நீ எங்கே வசிக்கிறாய்?",
+        sinhala: "ඔයා කොහෙද ජීවත් වෙන්නේ?",
+      },
+      rule: "wohnen-in",
+    },
     {
       id: "ich-sri",
       german: "Ich komme aus Sri Lanka.",
@@ -1186,6 +1274,7 @@ const FROM_LIVE: GrammarTest = {
       },
     },
   ],
+  pairsPrompt: MATCH_MEANING,
 };
 
 export const FIRST_SENTENCES_LESSON: GrammarLesson = {

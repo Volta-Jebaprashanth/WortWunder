@@ -55,6 +55,17 @@ function startWith(word: string): Localized {
   };
 }
 
+const MATCH_MEANING: Localized = {
+  english: "Match each German phrase to its meaning.",
+  tamil: "ஒவ்வொரு ஜெர்மன் சொற்றொடரையும் அதன் பொருளுடன் இணைக்கவும்.",
+  sinhala: "සෑම ජර්මන් වාක්‍ය ඛණ්ඩයක්ම එහි අර්ථයට ගළපන්න.",
+};
+const MATCH_VERB: Localized = {
+  english: "Match each person to their verb.",
+  tamil: "ஒவ்வொரு ஆளையும் அவருக்கான வினைச்சொல்லுடன் இணைக்கவும்.",
+  sinhala: "සෑම පුද්ගලයෙක්ම ඔහුගේ ක්‍රියාපදයට ගළපන්න.",
+};
+
 const WORDS: WordsTest = {
   kind: "words",
   testId: "G3.1",
@@ -164,7 +175,8 @@ const ICH_DU: GrammarTest = {
         sinhala: "ich -e, du -st",
       },
       text: {
-        english: 'With "ich" the ending is "-e". With "du" it is "-st".',
+        english:
+          'With "ich" the ending is "-e". With "du" it is "-st". German has one present: "ich lerne" is "I learn" and "I am learning".',
         tamil: '"ich" உடன் முடிவு "-e". "du" உடன் முடிவு "-st".',
         sinhala: '"ich" සමඟ අග "-e". "du" සමඟ අග "-st".',
       },
@@ -319,8 +331,22 @@ const ICH_DU: GrammarTest = {
     },
   ],
   pairs: [
-    { left: "ich", right: "spiele" },
-    { left: "du", right: "spielst" },
+    {
+      left: "Ich spiele Fußball.",
+      right: {
+        english: "I play football.",
+        tamil: "நான் கால்பந்து விளையாடுகிறேன்.",
+        sinhala: "මම පාපන්දු ගහනවා.",
+      },
+    },
+    {
+      left: "Du spielst Fußball.",
+      right: {
+        english: "You play football.",
+        tamil: "நீ கால்பந்து விளையாடுகிறாய்.",
+        sinhala: "ඔයා පාපන්දු ගහනවා.",
+      },
+    },
     {
       left: "Ich lerne",
       right: { english: "I learn", tamil: "நான் கற்கிறேன்", sinhala: "මම ඉගෙන ගන්නවා" },
@@ -330,6 +356,7 @@ const ICH_DU: GrammarTest = {
       right: { english: "You learn", tamil: "நீ கற்கிறாய்", sinhala: "ඔයා ඉගෙන ගන්නවා" },
     },
   ],
+  pairsPrompt: MATCH_MEANING,
   sort: {
     groups: [
       { id: "ich", label: "ich", meaning: { english: "I …", tamil: "நான் …", sinhala: "මම …" } },
@@ -529,15 +556,8 @@ const ER_SIE_ES: GrammarTest = {
     { left: "ich", right: "spiele" },
     { left: "du", right: "spielst" },
     { left: "er", right: "spielt" },
-    {
-      left: "Er spielt Fußball.",
-      right: {
-        english: "He plays football.",
-        tamil: "அவன் கால்பந்து விளையாடுகிறான்.",
-        sinhala: "ඔහු පාපන්දු ගහනවා.",
-      },
-    },
   ],
+  pairsPrompt: MATCH_VERB,
   sort: {
     groups: [
       { id: "ich", label: "ich", meaning: { english: "I …", tamil: "நான் …", sinhala: "මම …" } },
@@ -579,9 +599,9 @@ const PLURAL: GrammarTest = {
   testId: "G3.4",
   title: "wir -en, ihr -t",
   meaning: {
-    english: "we, you all, they",
-    tamil: "நாங்கள், நீங்கள், அவர்கள்",
-    sinhala: "අපි, ඔයාලා, ඔවුන්",
+    english: "we play, you all play",
+    tamil: "நாங்கள் விளையாடுகிறோம், நீங்கள் விளையாடுகிறீர்கள்",
+    sinhala: "අපි, ඔයාලා සෙල්ලම් කරනවා",
   },
   testTypes: [...ALL_SENTENCE_TYPES],
   rules: [
@@ -775,6 +795,7 @@ const PLURAL: GrammarTest = {
     {
       id: "sie-formal",
       german: "Sie trinken Wasser, Frau Weber.",
+      formal: true,
       meaning: {
         english: "You drink water, Mrs Weber.",
         tamil: "நீங்கள் தண்ணீர் குடிக்கிறீர்கள், திருமதி வெபர்.",
@@ -787,8 +808,18 @@ const PLURAL: GrammarTest = {
     },
   ],
   pairs: [
-    { left: "wir", right: "kochen" },
-    { left: "ihr", right: "kocht" },
+    {
+      left: "Wir kochen.",
+      right: { english: "We cook.", tamil: "நாங்கள் சமைக்கிறோம்.", sinhala: "අපි උයනවා." },
+    },
+    {
+      left: "Ihr kocht.",
+      right: {
+        english: "You all cook.",
+        tamil: "நீங்கள் சமைக்கிறீர்கள்.",
+        sinhala: "ඔයාලා උයනවා.",
+      },
+    },
     {
       left: "Wir lernen",
       right: { english: "We learn", tamil: "நாங்கள் கற்கிறோம்", sinhala: "අපි ඉගෙන ගන්නවා" },
@@ -802,6 +833,7 @@ const PLURAL: GrammarTest = {
       },
     },
   ],
+  pairsPrompt: MATCH_MEANING,
   // Who goes with which form. Lower-case "sie" is left out: it could be
   // "she" (spielt) or "they" (spielen).
   sort: {
@@ -860,7 +892,11 @@ const HABEN: GrammarTest = {
   kind: "grammar",
   testId: "G3.5",
   title: "haben",
-  meaning: { english: "to have", tamil: "இருக்கிறது (வைத்திருத்தல்)", sinhala: "තියෙනවා" },
+  meaning: {
+    english: "I have, you have, he has",
+    tamil: "எனக்கு, உனக்கு, அவனுக்கு இருக்கிறது",
+    sinhala: "මට, ඔයාට, ඔහුට තියෙනවා",
+  },
   testTypes: [...ALL_SENTENCE_TYPES],
   rules: [
     {
@@ -902,9 +938,12 @@ const HABEN: GrammarTest = {
         sinhala: "wir haben, ihr habt",
       },
       text: {
-        english: 'With "wir", "ihr" and "sie" (they), "haben" follows the normal pattern.',
-        tamil: '"wir", "ihr", "sie" (அவர்கள்) உடன் "haben" வழக்கமான விதியைப் பின்பற்றும்.',
-        sinhala: '"wir", "ihr" සහ "sie" (ඔවුන්) සමඟ "haben" සාමාන්‍ය නීතියට අනුව යනවා.',
+        english:
+          'With "wir", "ihr", "sie" (they) and polite "Sie", "haben" follows the normal pattern.',
+        tamil:
+          '"wir", "ihr", "sie" (அவர்கள்), மரியாதையான "Sie" உடன் "haben" வழக்கமான விதியைப் பின்பற்றும்.',
+        sinhala:
+          '"wir", "ihr", "sie" (ඔවුන්) සහ ගෞරවාන්විත "Sie" සමඟ "haben" සාමාන්‍ය නීතියට අනුව යනවා.',
       },
       examples: [{ id: "wir-zeit" }, { id: "ihr-zeit" }],
       table: [
@@ -1004,6 +1043,7 @@ const HABEN: GrammarTest = {
     {
       id: "tom-zeit",
       german: "Tom hat heute Zeit.",
+      alternatives: ["Heute hat Tom Zeit."],
       meaning: {
         english: "Tom has time today.",
         tamil: "டாமுக்கு இன்று நேரம் இருக்கிறது.",
@@ -1062,6 +1102,7 @@ const HABEN: GrammarTest = {
     { left: "er", right: "hat" },
     { left: "ihr", right: "habt" },
   ],
+  pairsPrompt: MATCH_VERB,
   sort: {
     groups: [
       {
@@ -1092,13 +1133,13 @@ const HABEN: GrammarTest = {
 
 // G3.6 ------------------------------------------------------------------
 // Each idea is said twice, once starting with the person and once with
-// "Heute". Both halves of a pair share one meaning, so sentenceMeaning (which
-// offers meanings, deduplicated) never asks the learner to tell them apart.
+// "Heute". Both halves of a pair share one meaning, so each lists the other
+// as an alternative: with only the meaning to go on, either order is right.
 
 const VERB_SECOND: Localized = {
-  english: "The verb is always the second part of the sentence.",
-  tamil: "வினைச்சொல் எப்போதும் வாக்கியத்தின் இரண்டாவது பகுதி.",
-  sinhala: "ක්‍රියාපදය සැමවිටම වාක්‍යයේ දෙවැනි කොටසයි.",
+  english: "In a statement the verb is the second part of the sentence.",
+  tamil: "ஒரு கூற்று வாக்கியத்தில் வினைச்சொல் இரண்டாவது பகுதி.",
+  sinhala: "ප්‍රකාශන වාක්‍යයක ක්‍රියාපදය වාක්‍යයේ දෙවැනි කොටසයි.",
 };
 const HEUTE_FIRST: Localized = {
   english: 'When "Heute" comes first, the verb is still second and the person moves behind it.',
@@ -1136,17 +1177,10 @@ const VERB_POSITION: GrammarTest = {
     sinhala: "ක්‍රියාපදය දෙවැනියි",
   },
   // No gaps and no spot: this test is about where the verb goes, not its
-  // form, so it is all tiles, meanings and replies.
-  testTypes: [
-    "rule",
-    "sentenceMeaning",
-    "listenPick",
-    "order",
-    "transform",
-    "meaningBuild",
-    "listenBuild",
-    "reply",
-  ],
+  // form, so it is all tiles, listening and replies. No sentenceMeaning
+  // either: both orders of a sentence mean the same, so a meaning question
+  // is answered by spotting one noun and never tests the order.
+  testTypes: ["rule", "listenPick", "order", "transform", "meaningBuild", "listenBuild", "reply"],
   rules: [
     {
       id: "verb-second",
@@ -1157,11 +1191,11 @@ const VERB_POSITION: GrammarTest = {
       },
       text: {
         english:
-          'In a German sentence the verb always comes second. Words like "heute" go after it: Ich lerne heute Deutsch.',
+          'In a German statement the verb comes second. Words like "heute" go after it: Ich lerne heute Deutsch. In a yes/no question the verb comes first: Hast du Zeit?',
         tamil:
-          'ஜெர்மன் வாக்கியத்தில் வினைச்சொல் எப்போதும் இரண்டாவதாக வரும். "heute" போன்ற சொற்கள் அதற்குப் பின் வரும்: Ich lerne heute Deutsch.',
+          'ஜெர்மன் கூற்று வாக்கியத்தில் வினைச்சொல் இரண்டாவதாக வரும். "heute" போன்ற சொற்கள் அதற்குப் பின் வரும்: Ich lerne heute Deutsch. ஆம்/இல்லை கேள்வியில் வினைச்சொல் முதலில் வரும்: Hast du Zeit?',
         sinhala:
-          'ජර්මන් වාක්‍යයක ක්‍රියාපදය සැමවිටම දෙවැනියට එනවා. "heute" වගේ වචන ඊට පස්සේ එනවා: Ich lerne heute Deutsch.',
+          'ජර්මන් ප්‍රකාශන වාක්‍යයක ක්‍රියාපදය දෙවැනියට එනවා. "heute" වගේ වචන ඊට පස්සේ එනවා: Ich lerne heute Deutsch. ඔව්/නැහැ ප්‍රශ්නයක ක්‍රියාපදය මුලින්ම එනවා: Hast du Zeit?',
       },
       examples: [
         { id: "ich-heute", highlight: 1 },
@@ -1211,6 +1245,9 @@ const VERB_POSITION: GrammarTest = {
     {
       id: "ich-heute",
       german: "Ich lerne heute Deutsch.",
+      // Both orders mean the same: without a "Start with …" instruction,
+      // either is right.
+      alternatives: ["Heute lerne ich Deutsch."],
       meaning: TODAY_GERMAN,
       rule: "verb-second",
       why: VERB_SECOND,
@@ -1219,6 +1256,9 @@ const VERB_POSITION: GrammarTest = {
     {
       id: "heute-ich",
       german: "Heute lerne ich Deutsch.",
+      // Both orders mean the same: without a "Start with …" instruction,
+      // either is right.
+      alternatives: ["Ich lerne heute Deutsch."],
       meaning: TODAY_GERMAN,
       rule: "heute-first",
       why: HEUTE_FIRST,
@@ -1227,6 +1267,9 @@ const VERB_POSITION: GrammarTest = {
     {
       id: "tom-heute",
       german: "Tom spielt heute Fußball.",
+      // Both orders mean the same: without a "Start with …" instruction,
+      // either is right.
+      alternatives: ["Heute spielt Tom Fußball."],
       meaning: TODAY_FOOTBALL,
       rule: "verb-second",
       why: VERB_SECOND,
@@ -1235,6 +1278,9 @@ const VERB_POSITION: GrammarTest = {
     {
       id: "heute-tom",
       german: "Heute spielt Tom Fußball.",
+      // Both orders mean the same: without a "Start with …" instruction,
+      // either is right.
+      alternatives: ["Tom spielt heute Fußball."],
       meaning: TODAY_FOOTBALL,
       rule: "heute-first",
       why: HEUTE_FIRST,
@@ -1243,6 +1289,9 @@ const VERB_POSITION: GrammarTest = {
     {
       id: "wir-heute",
       german: "Wir kochen heute.",
+      // Both orders mean the same: without a "Start with …" instruction,
+      // either is right.
+      alternatives: ["Heute kochen wir."],
       meaning: TODAY_COOK,
       rule: "verb-second",
       why: VERB_SECOND,
@@ -1251,6 +1300,9 @@ const VERB_POSITION: GrammarTest = {
     {
       id: "heute-wir",
       german: "Heute kochen wir.",
+      // Both orders mean the same: without a "Start with …" instruction,
+      // either is right.
+      alternatives: ["Wir kochen heute."],
       meaning: TODAY_COOK,
       rule: "heute-first",
       why: HEUTE_FIRST,
@@ -1268,6 +1320,9 @@ const VERB_POSITION: GrammarTest = {
     {
       id: "ich-zeit-heute",
       german: "Ich habe heute Zeit.",
+      // Both orders mean the same: without a "Start with …" instruction,
+      // either is right.
+      alternatives: ["Heute habe ich Zeit."],
       meaning: TODAY_TIME,
       rule: "verb-second",
       why: VERB_SECOND,
@@ -1276,6 +1331,9 @@ const VERB_POSITION: GrammarTest = {
     {
       id: "heute-zeit",
       german: "Heute habe ich Zeit.",
+      // Both orders mean the same: without a "Start with …" instruction,
+      // either is right.
+      alternatives: ["Ich habe heute Zeit."],
       meaning: TODAY_TIME,
       rule: "heute-first",
       why: HEUTE_FIRST,

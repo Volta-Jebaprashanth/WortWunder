@@ -173,9 +173,17 @@ export function isTestCompleted(testId: string): boolean {
   return readStore().tests[testId]?.completed ?? false;
 }
 
-export function recordFail(testId: string, testType: string, wordId: string) {
+// `penalty` is how many extra passes a miss costs. Big screens (a rule card,
+// a whole pairs or sort board) pass 1, so one miss brings them back once
+// rather than two or three times.
+export function recordFail(
+  testId: string,
+  testType: string,
+  wordId: string,
+  penalty = FAIL_PENALTY,
+) {
   updateRow(testId, testType, wordId, (pending) =>
-    Math.min(pending + FAIL_PENALTY, maxPending(testType)),
+    Math.min(pending + penalty, maxPending(testType)),
   );
 }
 

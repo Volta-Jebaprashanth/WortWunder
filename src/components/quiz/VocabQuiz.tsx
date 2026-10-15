@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Loader2, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -93,6 +93,10 @@ export function VocabQuiz({
   // word-to-picture question. Resets per queue item, so a word whose
   // question was missed gets its intro again the next time it comes up.
   const [introDone, setIntroDone] = useState(false);
+  // For the finish screen: questions answered, and how many of those were
+  // missed at least once.
+  const [score, setScore] = useState({ questions: 0, mistakes: 0 });
+  const boardMissed = useRef(false);
   const item: QuizItem | undefined = queue[index];
   const spokenWord = item && item.kind !== "match" ? item.word.full : "";
   // Rounds are tier-gated, so the current item's tier is the test's tier.
@@ -201,6 +205,8 @@ export function VocabQuiz({
       // further in-place retries (see `retry` below) don't stack.
       else if (attempts === 0) recordFail(testId, item.kind, derived.word.id);
     }
+    if (isCorrect) setScore((s) => ({ ...s, questions: s.questions + 1 }));
+    else if (attempts === 0) setScore((s) => ({ ...s, mistakes: s.mistakes + 1 }));
     if (isCorrect) {
       recordCorrectAnswer();
       playCorrectSound();
@@ -230,6 +236,11 @@ export function VocabQuiz({
       <main className="relative z-10 mx-auto max-w-5xl px-4 pb-10 sm:px-6">
         {ready && !item && (
           <LessonFrame t={t} eyebrow={t.roundUp} title="Geschafft!" subtitle={t.roundSuccess}>
+            {score.questions > 0 && (
+              <p className="my-5 rounded-[24px] bg-card p-4 text-center font-display text-xl font-extrabold ring-1 ring-border">
+                {t.resultSummary(score.questions, score.mistakes)}
+              </p>
+            )}
             <Button variant="adventure" size="lesson" className="w-full" onClick={onExit}>
               {t.backToPath}
             </Button>
@@ -371,7 +382,7 @@ export function VocabQuiz({
             eyebrow={t.wordBuilder}
             tier={tier}
             title="Baue das Wort"
-            subtitle={t.tapLettersToSpell(derived.word.full)}
+            subtitle={t.tapLettersToSpell}
           >
             <Picture
               src={derived.word.image}
@@ -605,12 +616,23 @@ export function VocabQuiz({
               t={t}
               lang={lang}
               words={item.words}
-              onComplete={goNext}
+              onComplete={() => {
+                const missed = boardMissed.current;
+                boardMissed.current = false;
+                setScore((s) => ({
+                  questions: s.questions + 1,
+                  mistakes: s.mistakes + (missed ? 1 : 0),
+                }));
+                goNext();
+              }}
               onAttempt={(wordId, isCorrect) => {
-                if (isCorrect) {
-                  recordPass(testId, "match", wordId);
-                  recordCorrectAnswer();
-                } else recordFail(testId, "match", wordId);
+                if (isCorrect) recordCorrectAnswer();
+                else boardMissed.current = true;
+                // Fillers (see MatchItem) don't count. A missed word comes
+                // back on one more board, not two.
+                if (!item.scoredIds.includes(wordId)) return;
+                if (isCorrect) recordPass(testId, "match", wordId);
+                else recordFail(testId, "match", wordId, 1);
               }}
               title="Super!"
               actionLabel="Weiter"

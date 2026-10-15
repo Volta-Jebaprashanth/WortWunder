@@ -612,7 +612,7 @@ function Index() {
               t={t}
               eyebrow={t.wordBuilder}
               title="Baue das Wort"
-              subtitle={t.tapLettersToSpell("Vogel")}
+              subtitle={t.tapLettersToSpell}
             >
               <Picture src={vogel.image} alt={vogel.full} caption={vogel[lang]} />
               <LetterBuilder

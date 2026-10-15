@@ -105,7 +105,7 @@ export function rowsForTest(test: GrammarTest): GrammarRow[] {
   return rows;
 }
 
-export function tokensOf(sentence: GrammarSentence): string[] {
+export function tokensOf(sentence: Pick<GrammarSentence, "german">): string[] {
   return sentence.german.split(" ");
 }
 
@@ -126,9 +126,62 @@ export function sameAnswer(typed: string, answer: string): boolean {
   return typed.trim().toLowerCase() === answer.trim().toLowerCase();
 }
 
-// The words of a sentence as word tiles: no punctuation ("Hallo," -> "Hallo").
-export function wordsOf(sentence: GrammarSentence): string[] {
+// The words of a sentence without punctuation ("Hallo," -> "Hallo").
+export function wordsOf(sentence: Pick<GrammarSentence, "german">): string[] {
   return tokensOf(sentence).map(bareToken);
+}
+
+// Words written in lower case unless they start a sentence. Nouns and names
+// keep their capital anywhere, so they aren't listed.
+const LOWER_CASE_STARTERS = new Set([
+  "ich",
+  "du",
+  "er",
+  "sie",
+  "es",
+  "wir",
+  "ihr",
+  "heute",
+  "wie",
+  "was",
+  "wo",
+  "woher",
+  "hallo",
+  "der",
+  "die",
+  "das",
+  "ja",
+  "nein",
+]);
+
+// The words of a sentence as word tiles: the first word in lower case unless
+// it keeps its capital anywhere (a noun, a name, polite "Sie"), so the one
+// capital on the tiles doesn't give away which word comes first. WordBuilder
+// capitalises whichever tile is placed first.
+export function tileWords(sentence: Pick<GrammarSentence, "german" | "formal">): string[] {
+  const words = wordsOf(sentence);
+  const first = words[0];
+  if (first && !sentence.formal && LOWER_CASE_STARTERS.has(first.toLowerCase()))
+    words[0] = first.toLowerCase();
+  return words;
+}
+
+// Every word order a built sentence may have, as tile words joined by
+// spaces: the sentence's own, plus its `alternatives` where the question
+// allows them (see GrammarSentence).
+export function acceptedOrders(sentence: GrammarSentence, withAlternatives: boolean): string[] {
+  const orders = [tileWords(sentence).join(" ")];
+  if (withAlternatives)
+    for (const german of sentence.alternatives ?? [])
+      orders.push(tileWords({ ...sentence, german }).join(" "));
+  return orders;
+}
+
+// True when `built` has exactly the words of one accepted order, just not in
+// that order: the learner got the forms right and the word order wrong.
+export function sameWordsOtherOrder(built: string[], sentence: GrammarSentence): boolean {
+  const sorted = (words: string[]) => [...words].sort().join(" ");
+  return sorted(built) === sorted(tileWords(sentence));
 }
 
 // The mark that ends the sentence ("." or "?"), shown after the tiles.
@@ -175,10 +228,34 @@ export type GrammarItem =
     }
   | { kind: "pairs" | "sort"; tier: Tier };
 
+// A meaning as plain English: English has no separate polite or plural
+// "you", so "What is your name? (polite)" and "You all have time." are also
+// right as "What is your name?" and "You have time.".
+function plainEnglish(meaning: GrammarSentence["meaning"]): string {
+  return meaning.english
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, "")
+    .replace(/\ball\b/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 // Up to `count` other sentences as wrong options, from the same rule card
 // first so the choice turns on the thing being taught (ei vs ie, er vs sie).
-function otherSentenceIds(test: GrammarTest, sentence: GrammarSentence, count: number): string[] {
-  const others = test.sentences.filter((s) => s.id !== sentence.id && s.german !== sentence.german);
+// For a meaning question, a sentence whose meaning would also be a right
+// answer (see plainEnglish) is never offered.
+function otherSentenceIds(
+  test: GrammarTest,
+  sentence: GrammarSentence,
+  count: number,
+  byMeaning = false,
+): string[] {
+  const others = test.sentences.filter(
+    (s) =>
+      s.id !== sentence.id &&
+      s.german !== sentence.german &&
+      !(byMeaning && plainEnglish(s.meaning) === plainEnglish(sentence.meaning)),
+  );
   const sameRule = shuffle(others.filter((s) => s.rule && s.rule === sentence.rule));
   const rest = shuffle(others.filter((s) => !s.rule || s.rule !== sentence.rule));
   return [...sameRule, ...rest].slice(0, count).map((s) => s.id);
@@ -187,12 +264,14 @@ function otherSentenceIds(test: GrammarTest, sentence: GrammarSentence, count: n
 // The letter keys offered for typing the gap: every letter of the answer,
 // plus decoys taken first from the sentence's wrong fillers (so "a" sits
 // next to "ä", "e" next to "ie") and then from common letters, shuffled.
-// Answers are checked without case, so keys are lower case.
+// Keys keep the case of the letters they come from, so a capital ("St" in
+// "Stuhl", "Ich" at the start) can be typed with them. Answers are still
+// checked without case; GrammarQuiz notes a missed capital.
 const GAP_KEY_COUNT = 8;
 const COMMON_LETTERS = ["e", "n", "a", "r", "t", "s", "i", "l", "h", "u", "o", "m"];
 
 function lettersOf(text: string): string[] {
-  return [...text.toLowerCase()].filter((ch) => /\p{L}/u.test(ch));
+  return [...text].filter((ch) => /\p{L}/u.test(ch));
 }
 
 export function gapKeys(sentence: GrammarSentence): string[] {
@@ -219,6 +298,7 @@ export function buildGrammarRound(
   const rules = Object.fromEntries(test.rules.map((r) => [r.id, r]));
   const sentences = Object.fromEntries(test.sentences.map((s) => [s.id, s]));
   const items: GrammarItem[] = [];
+  const ruleItems: Extract<GrammarItem, { kind: "rule" }>[] = [];
   for (const row of rows) {
     // Skips rows left over from content that has since changed, like
     // buildRoundFromRows does for vocabulary.
@@ -227,7 +307,8 @@ export function buildGrammarRound(
     const type = row.testType as GrammarType;
     if (type === "rule") {
       const rule = rules[row.wordId];
-      if (rule) items.push({ kind: "rule", tier, rule, checkOptions: shuffle(rule.check.options) });
+      if (rule)
+        ruleItems.push({ kind: "rule", tier, rule, checkOptions: shuffle(rule.check.options) });
       continue;
     }
     if (type === "pairs" || type === "sort") {
@@ -239,7 +320,11 @@ export function buildGrammarRound(
     const options = sentenceOptions(type, sentence, test, sentences);
     if (options) items.push({ kind: type, tier, sentence, options });
   }
-  return shuffle(items);
+  // Rule cards build on each other ("haben breaks the pattern" before "wir
+  // haben follows it"), so they come in the order the test lists them.
+  const ruleOrder = test.rules.map((r) => r.id);
+  ruleItems.sort((a, b) => ruleOrder.indexOf(a.rule.id) - ruleOrder.indexOf(b.rule.id));
+  return [...ruleItems, ...shuffle(items)];
 }
 
 // The question-specific options of a sentence item (see GrammarItem), or
@@ -250,13 +335,14 @@ function sentenceOptions(
   test: GrammarTest,
   sentences: Record<string, GrammarSentence>,
 ): string[] | undefined {
-  const words = wordsOf(sentence);
+  const words = tileWords(sentence);
   switch (type) {
     case "gapPick":
       return shuffle([gapAnswer(sentence), ...(sentence.distractors ?? []).slice(0, 3)]);
     case "gapType":
       return gapKeys(sentence);
     case "sentenceMeaning":
+      return shuffle([sentence.id, ...otherSentenceIds(test, sentence, 3, true)]);
     case "listenPick":
       return shuffle([sentence.id, ...otherSentenceIds(test, sentence, 3)]);
     case "order":
@@ -269,7 +355,7 @@ function sentenceOptions(
       if (!target) return undefined;
       // The words that have to change stay in the pool, so they're changed on
       // purpose rather than by elimination.
-      const targetWords = wordsOf(target);
+      const targetWords = tileWords(target);
       const decoys = [...new Set(words.filter((w) => !targetWords.includes(w)))];
       return scrambled([...targetWords, ...decoys], targetWords);
     }

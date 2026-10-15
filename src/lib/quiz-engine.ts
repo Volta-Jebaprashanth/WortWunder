@@ -67,6 +67,9 @@ export interface MatchItem {
   kind: "match";
   tier: Tier;
   words: VocabWord[];
+  // The words whose match rows are pending. The others only fill the board
+  // up to MIN_MATCH_PAIRS and don't count for progress.
+  scoredIds: string[];
 }
 export type QuizItem = SingleWordItem | MatchItem;
 
@@ -86,9 +89,11 @@ function sameSpelling(a: VocabWord, b: VocabWord): boolean {
   return answerLetters(spellingOf(a)) === answerLetters(spellingOf(b));
 }
 
-// Splits the match words into groups of up to `size`, never putting two
+// Splits the match words into groups of up to `maxSize`, as even as possible
+// (11 words make boards of 4, 4 and 3, not 5, 5 and 1), never putting two
 // same-spelling words in one group.
-function matchGroups(words: VocabWord[], size: number): VocabWord[][] {
+function matchGroups(words: VocabWord[], maxSize: number): VocabWord[][] {
+  const size = Math.ceil(words.length / Math.max(1, Math.ceil(words.length / maxSize)));
   const out: VocabWord[][] = [];
   for (const word of words) {
     const group = out.find((g) => g.length < size && !g.some((w) => sameSpelling(w, word)));
@@ -96,6 +101,23 @@ function matchGroups(words: VocabWord[], size: number): VocabWord[][] {
     else out.push([word]);
   }
   return out;
+}
+
+// A board with one or two pairs leaves nothing to choose, so a small group
+// (a word or two left over after a miss) is filled up with other words of
+// the test. Those fillers aren't scored.
+const MIN_MATCH_PAIRS = 3;
+
+function filledUp(group: VocabWord[], words: VocabWord[]): VocabWord[] {
+  const fillers = shuffle(
+    words.filter((w) => !group.some((g) => g.id === w.id || sameSpelling(g, w))),
+  );
+  const out = [...group];
+  for (const word of fillers) {
+    if (out.length >= MIN_MATCH_PAIRS) break;
+    if (!out.some((w) => sameSpelling(w, word))) out.push(word);
+  }
+  return shuffle(out);
 }
 
 function pickDistractorIds(words: VocabWord[], correct: VocabWord, count: number): string[] {
@@ -146,7 +168,12 @@ export function buildRoundFromRows(rows: RowRef[], words: VocabWord[]): QuizItem
     .map((id) => byId[id])
     .filter((w): w is VocabWord => Boolean(w));
   for (const group of matchGroups(matchWords, 5))
-    items.push({ kind: "match", tier: "hard", words: group });
+    items.push({
+      kind: "match",
+      tier: "hard",
+      words: filledUp(group, words),
+      scoredIds: group.map((w) => w.id),
+    });
 
   return shuffle(items);
 }

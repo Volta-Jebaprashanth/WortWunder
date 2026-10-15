@@ -99,7 +99,8 @@ export function SentenceCard({
       <button
         type="button"
         onClick={() => playWord(sentence.german)}
-        aria-label={t.tapToHear(sentence.german)}
+        // A gap question's label mustn't read the answer out.
+        aria-label={line.gap ? t.playSentence : t.tapToHear(sentence.german)}
         className="inline-flex items-center gap-2 font-display text-2xl font-extrabold sm:text-3xl"
       >
         <SentenceLine german={sentence.german} {...line} />
@@ -356,7 +357,13 @@ export function SortBuckets({
 // Build a sentence from word tiles: tap a tile to place it next, tap a placed
 // tile to send it back. `placed` holds tile indices in sentence order; `end`
 // is the sentence's closing mark, shown after the last slot. Tiles with a
-// recorded clip are spoken on tap.
+// recorded clip are spoken on tap. Tiles come in lower case where German
+// writes them that way (see tileWords), and the first placed word is shown
+// with its capital, the way it is written at the start of a sentence.
+function capitalized(word: string): string {
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
 export function WordBuilder({
   t,
   tiles,
@@ -401,7 +408,7 @@ export function WordBuilder({
             onClick={() => onRemove(position)}
             className={tileClass}
           >
-            {tiles[tileIndex]}
+            {position === 0 ? capitalized(tiles[tileIndex] ?? "") : tiles[tileIndex]}
           </button>
         ))}
         {placed.length > 0 && <span className="font-display text-2xl font-extrabold">{end}</span>}

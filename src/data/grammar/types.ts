@@ -38,6 +38,15 @@ export interface GrammarSentence {
   // beside it — one that is good German but the wrong thing to say, one
   // with the wrong form.
   replyTo?: { german: string; meaning: Localized; decoys: string[] };
+  // Other word orders that are just as right ("Er ist hier neu." for "Er ist
+  // neu hier."). Accepted by `order` and `meaningBuild`, where the learner
+  // only has the meaning to go on; never by `listenBuild` or `transform`,
+  // where the audio or the instruction fixes the order.
+  alternatives?: string[];
+  // The sentence starts with the polite "Sie", which keeps its capital on a
+  // word tile. Every other "Sie" at the start is "sie" (she / they) written
+  // with a capital only because it comes first.
+  formal?: boolean;
 }
 
 export interface RuleCard {
@@ -64,6 +73,9 @@ export interface GrammarTest {
   // For `pairs`: one board for the whole test. The left side is German and
   // is spoken when tapped.
   pairs?: { left: string; right: string | Localized }[];
+  // What to match on the pairs board ("Match each word to the sound it
+  // has."). Every pair on a board is the same kind, so one line covers it.
+  pairsPrompt?: Localized;
   // For `sort`: one board for the whole test.
   sort?: {
     groups: { id: string; label: string; meaning: Localized }[];

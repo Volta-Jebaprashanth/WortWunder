@@ -22,7 +22,10 @@ The plan assumes the learner has never seen German before and reads the
 explanations in English, Tamil or Sinhala.
 
 For one test drawn out screen by screen, see
-[GRAMMAR-EXAMPLE.md](GRAMMAR-EXAMPLE.md).
+[GRAMMAR-EXAMPLE.md](GRAMMAR-EXAMPLE.md). Before writing or shipping any
+lesson, go through the [checklist in section 9](#9-checklist-for-every-new-lesson).
+It comes from the 31 bugs found when G1 to G3 were tested
+(`BUGS-G1.md`, `BUGS-G2.md`, `BUGS-G3.md`).
 
 ## Contents
 
@@ -34,6 +37,7 @@ For one test drawn out screen by screen, see
 6. [What changes in the code](#6-what-changes-in-the-code)
 7. [Build phases](#7-build-phases)
 8. [Open decisions](#8-open-decisions)
+9. [Checklist for every new lesson](#9-checklist-for-every-new-lesson)
 
 ## 1. Teaching principles
 
@@ -202,9 +206,9 @@ Borrows from: 1.1 Hallo, 1.2 Familie, 1.30 Pronomen & Co.
 | G2.2 | `ich` and `du` with `heißen` | *Ich heiße Anna. Wie heißt du?* |
 | G2.3 | `sein`: ich bin, du bist | *Ich bin müde. Du bist nett.* |
 | G2.4 | `er`, `sie`, `es` with `ist` | *Er ist Lehrer. Sie ist Ärztin.* |
-| G2.5 | **Wörter 2**: the words for G2.6 and G2.7 | *wir, ihr, sie (they), Sie, der Freund, die Freundin, Herr, Frau, kommen, wohnen, aus, in* |
+| G2.5 | **Wörter 2**: the words for G2.6 and G2.7 | *wir, ihr, sie (she / they), Sie, der Freund, die Freundin, Herr, Frau, kommen, wohnen, aus, in* |
 | G2.6 | `wir`, `ihr`, `sie` with `sind` / `seid`; formal `Sie` | *Wir sind Freunde. Sind Sie Herr Weber?* |
-| G2.7 | `kommen aus`, `wohnen in` | *Ich komme aus Sri Lanka. Ich wohne in Wien.* |
+| G2.7 | `kommen aus`, `wohnen in`, and the questions `Woher …?`, `Wo …?` | *Woher kommst du? Ich komme aus Sri Lanka.* |
 
 Borrows from: 1.1 Hallo, 1.7 Der Beruf, 1.8 Angaben zur Person,
 1.19 Gefühle, 1.30 Pronomen & Co.
@@ -218,7 +222,7 @@ Borrows from: 1.1 Hallo, 1.7 Der Beruf, 1.8 Angaben zur Person,
 | G3.3 | `er/sie/es -t` | *Er spielt Fußball.* |
 | G3.4 | `wir -en`, `ihr -t`, `sie/Sie -en` | *Wir kochen. Ihr kocht.* |
 | G3.5 | `haben` | *Ich habe Zeit. Sie hat ein Auto.* |
-| G3.6 | The verb is always the second idea | *Ich **lerne** heute Deutsch.* |
+| G3.6 | In a statement the verb is the second idea (a yes/no question puts it first; G4.2 teaches that) | *Ich **lerne** heute Deutsch.* |
 
 Borrows from: 1.6 Die Hobbys, 1.17 Wichtige Verben.
 
@@ -229,7 +233,7 @@ Borrows from: 1.6 Die Hobbys, 1.17 Wichtige Verben.
 | G4.1 | **Wörter** | *wer, was, wo, woher, wohin, wann, nicht, doch, das Land, Indien, Sri Lanka* |
 | G4.2 | Yes/no questions: the verb moves to the front | *Kommst du aus Indien?* |
 | G4.3 | `wer`, `was`, `wie` | *Wer ist das? Was machst du?* |
-| G4.4 | `wo`, `woher`, `wohin`, `wann` | *Wo wohnst du? Woher kommst du?* |
+| G4.4 | `wohin`, `wann`, building on `wo` and `woher` from G2.7 | *Wohin gehst du? Wann kommst du?* |
 | G4.5 | Answering: `ja`, `nein`, `doch` | *Kommst du nicht? Doch!* |
 
 Borrows from: 1.8 Angaben zur Person, 1.16 Die W-Fragen.
@@ -384,14 +388,26 @@ Notes on specific types:
   of text per card. A rule that needs more is split across two tests.
 - **`order` is the most important type** for learners whose own language
   puts the verb last. Every grammar test from G3.6 onward includes it.
-- **`gapType` needs on-screen umlaut keys.** Most learners will not have a
-  German keyboard. Answers are compared without case sensitivity except
-  where the capital letter is the point (nouns, formal `Sie`).
+- **`gapType` needs on-screen letter keys.** Most learners will not have a
+  German keyboard. The keys keep the case of the answer, so `St` in `Stuhl`
+  or `Ich` at the start of a sentence can be typed. Answers are compared
+  without case, and a right answer typed in the wrong case gets a short
+  note about the capital letter.
 - **`reply` is the exam bridge.** It mirrors the A1 speaking and listening
   tasks, where the learner reacts to a question or a request.
-- **Wrong answers explain themselves.** After a miss, the feedback shows the
-  right sentence with the pattern highlighted and one line saying why, in
-  the mother tongue.
+- **The hint fits the mistake.** After a miss, the learner sees a hint
+  chosen by question type, never the answer:
+
+  | Question type | Hint shown after a miss |
+  | --- | --- |
+  | `rule` check | the rule card's text |
+  | `gapPick`, `gapType`, `spot` | the sentence's `why` (the rule for the focus word) |
+  | `order`, `meaningBuild`, `listenBuild` | a word-order hint when the words are right but the order isn't, otherwise the sentence's `why` |
+  | `transform` | the instruction again when the sentence was left unchanged, a word-order hint for the wrong order, otherwise the `why` of the sentence to make |
+  | `sentenceMeaning`, `listenPick`, `reply` | a fixed hint for that type, never a grammar rule |
+
+  So a sentence's `why` must be about the form of its focus word and
+  nothing else: it is only shown where that form is what went wrong.
 
 These types are for grammar tests. Word tests use the eleven vocabulary
 types unchanged.
@@ -403,7 +419,7 @@ Which grammar tests use which types:
 | Sounds and letters (G1.2, G1.3) | `rule`, `ruleCheck`, `listenPick`, `pairs`, `gapType` |
 | Verb forms (G2, G3, G8, G9, G12) | all except `sort` (G12.6 adds `sort` for haben / sein) |
 | Articles and cases (G5, G6, G7) | all, with `sort` for gender |
-| Word order (G3.6, G4, G10.3) | `rule`, `ruleCheck`, `order`, `transform`, `spot`, `meaningBuild`, `listenBuild` |
+| Word order (G3.6, G4, G10.3) | `rule`, `ruleCheck`, `order`, `transform`, `spot`, `meaningBuild`, `listenBuild`. No `sentenceMeaning`: two orders of one sentence mean the same, so a meaning question doesn't test the order |
 | Fixed phrases (G10, G11, G13) | `rule`, `ruleCheck`, `gapPick`, `sentenceMeaning`, `pairs`, `order`, `meaningBuild`, `reply` |
 
 ## 5. Data model
@@ -412,6 +428,18 @@ A word test is a list of word references. A grammar test is a rule plus a
 list of sentences. Each sentence carries
 enough information for every question type to be generated from it, so
 writing a test means writing sentences, not writing questions.
+
+The sketch below is the plan the code started from. The live types in
+`src/data/grammar/types.ts` are the source of truth and have more fields.
+These were added after G1 to G3 were tested, and every new lesson needs to
+think about them:
+
+| Field | On | Use it when |
+| --- | --- | --- |
+| `alternatives` | sentence | Another word order is just as right (*Er ist neu hier.* / *Er ist hier neu.*, *Heute habe ich Zeit.* / *Ich habe heute Zeit.*). `order` and `meaningBuild` accept it; `listenBuild` and `transform` don't, because there the audio or the instruction fixes the order |
+| `formal` | sentence | The sentence starts with polite `Sie`. Word tiles show the first word in lower case unless it's a noun, a name or polite `Sie`; without this flag, *Sie trinken Wasser, Frau Weber.* would show the tile `sie` |
+| `pairsPrompt` | test | Always, when the test has a pairs board: one line saying what to match ("Match each word to the sound it has.") |
+| `newWords` | word test | A word needs a meaning its Wortschatz entry doesn't give. G2.5 teaches `sie` as "she / they" because 1.30 has only "They" |
 
 ```ts
 // src/data/grammar/types.ts
@@ -591,3 +619,129 @@ questions, and name things: the first part of the A1 speaking exam.
 | Typing on a phone | Ship `gapType` with on-screen ä ö ü ß keys. If typing still frustrates learners in Phase 2, drop it from the default set and keep tiles |
 | Where does grammar sit on the path? | Decided: first. 1 Grammatik, 2 Wortschatz, 3 ÖSD, 4 Testing |
 | A word test repeats words the learner already mastered in Wortschatz. Skip them? | Not in Phase 1. A word test has its own test id and its own progress, so a learner who did 1.30 Pronomen & Co sees `ich` and `du` again. That is short, and it is spiral practice. Revisit once there is a shared per-word mastery record |
+
+## 9. Checklist for every new lesson
+
+Testing G1 to G3 found 31 bugs (`BUGS-G1.md`, `BUGS-G2.md`,
+`BUGS-G3.md`). Almost none were wrong German. They were right answers the
+app rejected, rule cards that contradicted their own questions, and things
+tested before they were taught. The engine now guards against some of
+these. The rest can only be caught while writing the lesson, so check every
+item below for each test of G4 to G13 before it ships.
+
+### Before G4: one engine change
+
+Word tiles show the first word of a sentence in lower case, so the one
+capital doesn't give away which word comes first. Today that works only
+for words in `LOWER_CASE_STARTERS` in `grammar-engine.ts` (pronouns,
+articles, `heute`, a few question words). From G4 on, sentences start with
+verbs (*Kommst du …?*, *Kannst du …?*, *Komm bitte!*) and time phrases
+(*Am Montag …*, *Gestern …*), and no word list can cover every verb form.
+Before building G4, turn the rule around: lower-case the first word by
+default, and keep its capital only for a noun, a name or polite `Sie`
+(mark these on the sentence, the way `formal` marks polite `Sie` today).
+Until then, every new word that starts a sentence must be added to
+`LOWER_CASE_STARTERS`, or its tile gives the answer away.
+
+### Exactly one right answer
+
+- **Fill every option into every question and read the result as German.**
+  Exactly one option may work. Zero or two right options is a bug, even
+  when the second one is only "technically" right.
+- **English has one "you".** `du`, `ihr` and `Sie` all translate as "you".
+  Write `ihr` meanings with "all" ("You all have time.") and polite `Sie`
+  meanings with "(polite)". The engine then keeps "You have time." out of
+  the options when "You all have time." is the answer. A meaning that
+  differs from another in any other way English can't show will still
+  produce two right answers. Rewrite one of the two sentences.
+- **Word order that can change.** Two adverbs (*neu hier* / *hier neu*), a
+  time phrase that can go first (*Heute hat Tom Zeit.*), anything English
+  doesn't fix: list every right order in `alternatives`. A sentence whose
+  order the English does fix (*Anna and Tom* → *Anna und Tom*) needs none.
+- **Pairs boards.** Each word on the left must fit exactly one item on the
+  right, even when the learner applies the rule to the whole text,
+  article included. *die Zeit* matched both `z` and `ei`, and the `ie` in
+  *die* made *die Schule* match `ie` as well as `sch`. Check every left
+  item against every right item.
+- **Gaps with real-word decoys.** *sch_n* + `o` is *schon*, and
+  *Sie _ krank* fits both `ist` and `sind`. That's fair only because the
+  meaning under the question rules the decoy out. Read each decoy against
+  the meaning, not only against the gap.
+
+### Teach before you test
+
+- **Every word and structure a question uses must appear earlier**: on a
+  rule card, as a sentence of the test, or in the word test. G2.7 asked
+  *Woher kommst du?* in pairs and replies before any card taught `woher`.
+  Check `replyTo` lines, pairs and sort tiles too, not only the sentences.
+- **Teach a word with every meaning the lesson will use.** G2.5 taught
+  `sie` = "They" right after G2.4 used `sie` = "she". When a Wortschatz word
+  carries only one of its meanings, give the word test its own entry in
+  `newWords`.
+- **Rule cards play in the order they are listed.** List them so each card
+  builds on the one before. A card that says "stays second" or "follows
+  the normal pattern" must come after the card that teaches the pattern.
+
+### Rule cards that hold up
+
+- **No "always" unless it really is always.** "The verb always comes
+  second" was contradicted by *Hast du Zeit?* in the same test. Before
+  writing a rule, search this lesson and every earlier one, including
+  `replyTo` lines, for sentences that break it, and say where the rule
+  stops ("In a statement …").
+- **A definition must cover everything the test files under it.** The
+  Pronomen card said "stands in for a Nomen", then the sort board wanted
+  `ich` and `du` under Pronomen.
+- **No tricks that only work in English.** "Say the second letter!" works
+  with English letter names and gives the wrong sound with German ones.
+  The Tamil and Sinhala text must teach the same thing as the English.
+- **Tables say which `sie`.** Once G2.6 has taught "they", a table row
+  `er, sie → kommt` is ambiguous. Write `"sie" = she` or add the plural
+  row. Name polite `Sie` wherever the rule covers it.
+- **Explain the English when it changes.** English has "I learn" and "I am
+  learning" where German has one form. Pick one English tense for the
+  lesson, or say once on a card that both mean the same German.
+
+### Questions that test the rule
+
+- **Drop types that can't test the rule.** In a word-order test, both
+  orders mean the same, so `sentenceMeaning` is answered by spotting one
+  noun. Leave out any type a learner can answer without knowing the rule.
+- **`why` is about the focus word only.** It's shown after a wrong gap, a
+  missed planted mistake or a wrong word on the tiles (see
+  [question types](#4-question-types)), never after a wrong meaning or
+  reply.
+- **Decoys must be really wrong.** A `reply` decoy needs to be wrong German
+  or the wrong thing to say. A `spot` decoy that happens to be real German
+  (*Er habe ein Auto.*, Konjunktiv) is acceptable at A1, but a plainly
+  wrong form is better.
+- **Spelling and case.** Vocabulary spelling tiles are upper case. A word
+  test that holds two words differing only in case (`Sie`, `sie`) must
+  leave out `build` and `listenBuild`.
+
+### Board and path details
+
+- **One kind of pair per board**, every pair the same kind (word ↔ meaning,
+  person ↔ verb form, Nomen ↔ Pronomen), and a `pairsPrompt` that names
+  it. At least three pairs, and no two right-hand labels the same in any
+  language.
+- **The path title covers the whole test.** A title listing only some of
+  what the test teaches (G1.3 "ei, ie, sch, w, z") misleads. Use a short
+  name instead ("Neue Laute").
+- **One subtitle pattern per lesson**, e.g. *he, she, it plays* / *we play,
+  you all play*.
+
+### Before it ships
+
+1. `bun run lint`, `bun run typecheck` and `bun run build` pass.
+2. Every German string a screen speaks has a clip: sentences, `replyTo`
+   lines, pairs (left side) and sort tiles. Rule-check options are spoken
+   only when every option has a clip, so wrong forms there can go without.
+   Add the clips to `scripts/generate-audio.mjs` and run
+   `bun run generate-audio`.
+3. A tester plays every test in the browser, following
+   [QA-PLAYBOOK.md](QA-PLAYBOOK.md): black-box, judged by their own German,
+   with at least one deliberate wrong answer per question type. They check
+   that the hint fits the mistake and that a missed rule card or board
+   comes back once, not more.
+4. A native speaker reviews the Tamil and Sinhala text.

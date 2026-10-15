@@ -26,9 +26,17 @@ any other lesson without rediscovering the setup.
 ## 1. Connect
 
 - Chrome runs with `--remote-debugging-port=1997`. 1997 is the **Chrome
-  debug port**, not the MCP server's.
+  debug port**, not the MCP server's. If it isn't running, the user starts
+  it from `cmd` with:
+
+  ```
+  start chrome --remote-debugging-port=1997 --user-data-dir="%USERPROFILE%\Videos\temp"
+  ```
+
 - The dev server is `http://localhost:8080`, usually already open in the
-  active tab.
+  active tab. If the page doesn't load (connection refused), the server
+  isn't running: start it with `npm run dev` from the repo root and wait for
+  Vite to report the URL before navigating.
 
 ```
 ToolSearch "select:mcp__selenium-mcp__connectToBrowser,mcp__selenium-mcp__executeScript,mcp__selenium-mcp__click,mcp__selenium-mcp__sendKeys,mcp__selenium-mcp__takeScreenshot"

@@ -40,3 +40,6 @@ package-lock.json
 # Local scratch files
 eslint_stderr.txt
 vite-pid.txt
+
+# selenium-mcp logs (written to the working directory when run from the jar)
+mcp-server.log*

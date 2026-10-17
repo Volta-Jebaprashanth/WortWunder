@@ -2,7 +2,7 @@
 
 How to play through a WortWunder lesson as a black-box tester, using the
 `selenium-mcp` tools against the user's Chrome. It was written after testing
-Grammatik → G1 "Los geht's" (results are in `BUGS-G1.md`). Follow it to test
+Grammatik → G1 "Los geht's" (results are in `bug-reports/BUGS-G1.md`). Follow it to test
 any other lesson without rediscovering the setup.
 
 ## The brief (from the user)
@@ -20,10 +20,13 @@ any other lesson without rediscovering the setup.
   - more than one option is defensible
   - no option is right
   - a question contradicts the rule card shown before it
-- Deliver a bug report like `BUGS-G1.md`, with severity, steps, expected,
+- Deliver a bug report like `bug-reports/BUGS-G1.md`, with severity, steps, expected,
   actual and a suggested fix, plus a "verified working" section.
 
 ## 1. Connect
+
+First-time install of the MCP server, Chrome and the dev server is in
+[SELENIUM-MCP-SETUP.md](SELENIUM-MCP-SETUP.md). Once that's done:
 
 - Chrome runs with `--remote-debugging-port=1997`. 1997 is the **Chrome
   debug port**, not the MCP server's. If it isn't running, the user starts
@@ -35,7 +38,7 @@ any other lesson without rediscovering the setup.
 
 - The dev server is `http://localhost:8080`, usually already open in the
   active tab. If the page doesn't load (connection refused), the server
-  isn't running: start it with `npm run dev` from the repo root and wait for
+  isn't running: start it with `bun run dev` (bun may need its full path, `~/.bun/bin/bun.exe`) from the repo root and wait for
   Vite to report the URL before navigating.
 
 ```
@@ -69,41 +72,80 @@ single-page app, so they last the whole session unless you navigate away.
 
 ```js
 window.sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-window.vis = (el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+window.vis = (el) => {
+  const r = el.getBoundingClientRect();
+  return r.width > 0 && r.height > 0;
+};
 window.txt = (el) => (el.innerText || "").replace(/\s+/g, " ").trim();
 
 // Console errors
 window.__qaErrors = [];
 const oe = console.error;
-console.error = function (...a) { window.__qaErrors.push(a.map(String).join(" ").slice(0, 300)); return oe.apply(this, a); };
+console.error = function (...a) {
+  window.__qaErrors.push(a.map(String).join(" ").slice(0, 300));
+  return oe.apply(this, a);
+};
 addEventListener("error", (e) => window.__qaErrors.push("X: " + e.message));
 addEventListener("unhandledrejection", (e) => window.__qaErrors.push("R: " + e.reason));
 
 // Screen text plus every visible button, input and textarea
-window.__dump = () => JSON.stringify({
-  text: document.body.innerText.replace(/\n+/g, " | ").slice(0, 900),
-  btns: [...document.querySelectorAll("button,input,textarea")].filter(vis).map((b, i) =>
-    i + ":" + (b.tagName === "BUTTON"
-      ? (txt(b) || b.getAttribute("aria-label") || "")
-      : "[" + b.tagName + " val=" + b.value + "]") + (b.disabled ? " (disabled)" : "")),
-});
+window.__dump = () =>
+  JSON.stringify({
+    text: document.body.innerText.replace(/\n+/g, " | ").slice(0, 900),
+    btns: [...document.querySelectorAll("button,input,textarea")]
+      .filter(vis)
+      .map(
+        (b, i) =>
+          i +
+          ":" +
+          (b.tagName === "BUTTON"
+            ? txt(b) || b.getAttribute("aria-label") || ""
+            : "[" + b.tagName + " val=" + b.value + "]") +
+          (b.disabled ? " (disabled)" : ""),
+      ),
+  });
 
 // Find an enabled button by exact text (last = the one lowest on the page)
 window.__btn = (t, last) => {
-  const l = [...document.querySelectorAll("button")].filter((b) => vis(b) && !b.disabled && txt(b) === t);
+  const l = [...document.querySelectorAll("button")].filter(
+    (b) => vis(b) && !b.disabled && txt(b) === t,
+  );
   return last ? l[l.length - 1] : l[0];
 };
-window.__click = async (t) => { const b = __btn(t); if (!b) return "NOTFOUND " + t; b.click(); await sleep(600); return __dump(); };
+window.__click = async (t) => {
+  const b = __btn(t);
+  if (!b) return "NOTFOUND " + t;
+  b.click();
+  await sleep(600);
+  return __dump();
+};
 
 // Feedback line after Check
 window.__fb = () =>
-  (document.body.innerText.replace(/\n+/g, " | ").match(/(Richtig!.{0,120}|Fast!.{0,220}|Super!.{0,40})/) || ["(none)"])[0];
+  (document.body.innerText
+    .replace(/\n+/g, " | ")
+    .match(/(Richtig!.{0,120}|Fast!.{0,220}|Super!.{0,40})/) || ["(none)"])[0];
 
 // Tap for tiles that need pointer events (sort game)
 window.__tap = (el) => {
   const r = el.getBoundingClientRect();
-  const o = { bubbles: true, cancelable: true, clientX: r.x + r.width / 2, clientY: r.y + r.height / 2, pointerId: 1, pointerType: "mouse", isPrimary: true, button: 0 };
-  for (const [C, t] of [[PointerEvent, "pointerdown"], [MouseEvent, "mousedown"], [PointerEvent, "pointerup"], [MouseEvent, "mouseup"], [MouseEvent, "click"]])
+  const o = {
+    bubbles: true,
+    cancelable: true,
+    clientX: r.x + r.width / 2,
+    clientY: r.y + r.height / 2,
+    pointerId: 1,
+    pointerType: "mouse",
+    isPrimary: true,
+    button: 0,
+  };
+  for (const [C, t] of [
+    [PointerEvent, "pointerdown"],
+    [MouseEvent, "mousedown"],
+    [PointerEvent, "pointerup"],
+    [MouseEvent, "mouseup"],
+    [MouseEvent, "click"],
+  ])
     el.dispatchEvent(new C(t, o));
 };
 
@@ -125,9 +167,17 @@ The path is on `/`. Lesson and test nodes are found by their exact text.
 Clicking a lesson expands it; clicking a test starts it.
 
 ```js
-const node = (t) => [...document.querySelectorAll("*")].find((e) => e.childElementCount === 0 && e.textContent.trim() === t);
-if (!node("ä, ö, ü, ß")) { node("Los geht's").click(); await sleep(600); }
-node("ä, ö, ü, ß").click(); await sleep(1000); return __dump();
+const node = (t) =>
+  [...document.querySelectorAll("*")].find(
+    (e) => e.childElementCount === 0 && e.textContent.trim() === t,
+  );
+if (!node("ä, ö, ü, ß")) {
+  node("Los geht's").click();
+  await sleep(600);
+}
+node("ä, ö, ü, ß").click();
+await sleep(1000);
+return __dump();
 ```
 
 - The finish screen says **"Geschafft!"** and has a **"Back to my path"**
@@ -142,30 +192,30 @@ screen is: pick an option → **Check** (disabled until something is chosen) →
 
 ### Vocabulary screens (word tests such as G1.1)
 
-| Title | What it asks | How to answer |
-| --- | --- | --- |
-| Neues Wort | Intro card | Click Weiter |
-| Welches Bild ist das? | German word → picture (English caption) | Pick the meaning |
-| Was ist das? | Picture → German | Pick the German |
-| Was bedeutet das? | German → English | Pick the meaning |
-| Was hörst du? | Audio → German | Pick what you hear (see audio note) |
-| Welches Bild hörst du? | Audio → picture | Pick the picture |
-| Wie sagt man das auf Deutsch? | English → German | Pick the German |
-| Baue das Wort | Spell from letter tiles | Tiles are UPPERCASE; the article is dropped. Click tiles in order, or "Type with the keyboard" + `sendKeys` |
-| Finde die Paare | Match German ↔ meaning | Click left, then right; wrong pairs flash red with no text |
+| Title                         | What it asks                            | How to answer                                                                                               |
+| ----------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Neues Wort                    | Intro card                              | Click Weiter                                                                                                |
+| Welches Bild ist das?         | German word → picture (English caption) | Pick the meaning                                                                                            |
+| Was ist das?                  | Picture → German                        | Pick the German                                                                                             |
+| Was bedeutet das?             | German → English                        | Pick the meaning                                                                                            |
+| Was hörst du?                 | Audio → German                          | Pick what you hear (see audio note)                                                                         |
+| Welches Bild hörst du?        | Audio → picture                         | Pick the picture                                                                                            |
+| Wie sagt man das auf Deutsch? | English → German                        | Pick the German                                                                                             |
+| Baue das Wort                 | Spell from letter tiles                 | Tiles are UPPERCASE; the article is dropped. Click tiles in order, or "Type with the keyboard" + `sendKeys` |
+| Finde die Paare               | Match German ↔ meaning                  | Click left, then right; wrong pairs flash red with no text                                                  |
 
 ### Grammar screens (grammar tests such as G1.2–G1.4)
 
-| Title | What it asks | How to answer |
-| --- | --- | --- |
-| Neue Regel | Rule card | Read it and check its claims for correctness, then Weiter |
-| Was passt? | Rule check question | Pick the answer |
-| Was fehlt? | Gap: pick the filler | English meaning shown under the sentence |
-| Schreib, was fehlt | Gap: type the filler | Letter keys or a real keyboard; case-insensitive |
-| Was hörst du? | Pick the sentence heard | See audio note |
-| Was bedeutet das? | Sentence → meaning | Pick the meaning |
-| Finde die Paare | Pairs board | Click left, then right |
-| Sortiere die Wörter | Sort tiles into groups | Tap a tile, then its group. Use `__tap` or Selenium `click`; JS `click()` does nothing |
+| Title               | What it asks            | How to answer                                                                          |
+| ------------------- | ----------------------- | -------------------------------------------------------------------------------------- |
+| Neue Regel          | Rule card               | Read it and check its claims for correctness, then Weiter                              |
+| Was passt?          | Rule check question     | Pick the answer                                                                        |
+| Was fehlt?          | Gap: pick the filler    | English meaning shown under the sentence                                               |
+| Schreib, was fehlt  | Gap: type the filler    | Letter keys or a real keyboard; case-insensitive                                       |
+| Was hörst du?       | Pick the sentence heard | See audio note                                                                         |
+| Was bedeutet das?   | Sentence → meaning      | Pick the meaning                                                                       |
+| Finde die Paare     | Pairs board             | Click left, then right                                                                 |
+| Sortiere die Wörter | Sort tiles into groups  | Tap a tile, then its group. Use `__tap` or Selenium `click`; JS `click()` does nothing |
 
 **Audio note.** You can't hear audio. For listening questions, judge the
 option set (are the options distinct and sensible?), then answer. To know
@@ -218,14 +268,17 @@ the answer from **your own** lexicon or rules, clicks, logs a line, and
 repeats. Start it without awaiting, and poll it.
 
 ```js
-window.__log = []; window.__done = false;
+window.__log = [];
+window.__done = false;
 (async () => {
   for (let i = 0; i < 80; i++) {
     const r = await window.__step(); // your solver: returns a log line, or "STOP ..." when it can't decide
     __log.push(r);
     if (r.startsWith("STOP") || r === "FINISHED") break;
   }
-})().then(() => (__done = "OK")).catch((e) => (__done = "ERR " + e.stack));
+})()
+  .then(() => (__done = "OK"))
+  .catch((e) => (__done = "ERR " + e.stack));
 return "started";
 ```
 
@@ -241,7 +294,7 @@ Then poll with `await sleep(25000); return (__done || "RUNNING") + "\n" + __log.
 
 ## 8. Report
 
-- Write `BUGS-<lesson>.md` at the repo root, in the same shape as
+- Write `docs/qa/bug-reports/BUGS-<lesson>.md`, in the same shape as
   `BUGS-G1.md`:
   - a summary table
   - one section per bug: steps, expected, actual, suggested fix

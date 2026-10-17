@@ -24,6 +24,55 @@ bun run format    # prettier --write .
 
 There is no test framework configured — no test script, no vitest/jest dependency.
 CI (`.github/workflows/ci.yml`) runs lint, typecheck and build on every PR.
+Lessons are tested by hand in the browser instead (see "Working docs" below).
+
+## Working docs
+
+Planning and QA docs live under `docs/`. Read the one that matches the task
+before starting, so the setup doesn't need explaining again:
+
+```
+docs/
+  planning/
+    ROADMAP.md            grammar plan (G1–G13), data model, build phases,
+                          and §9 "Checklist for every new lesson"
+    GRAMMAR-EXAMPLE.md    one grammar test drawn out screen by screen
+  qa/
+    QA-PLAYBOOK.md        how to test a lesson in the browser: the brief,
+                          helpers, screen types, how to judge, report format
+    SELENIUM-MCP-SETUP.md installing selenium-mcp, Chrome debug port, connecting
+    bug-reports/
+      BUGS-G1.md …        one report per tested lesson (BUGS-<lesson>.md)
+```
+
+- **Building a grammar lesson**: read `docs/planning/ROADMAP.md` (at least
+  §9, the checklist that came out of the G1–G3 bugs) and
+  `GRAMMAR-EXAMPLE.md`.
+- **Testing a lesson** ("test G4", "QA this lesson"): follow
+  `docs/qa/QA-PLAYBOOK.md`. Black-box only — judge the German and meanings
+  from your own knowledge, never from the lesson data; skip audio and
+  images. Write the result to `docs/qa/bug-reports/BUGS-<lesson>.md` in the
+  shape of `BUGS-G1.md`.
+- **Fixing reported bugs**: work from the matching `BUGS-<lesson>.md`.
+- **Testing partner: selenium-mcp**
+  ([repo](https://github.com/Volta-Jebaprashanth/selenium-mcp)), not Claude
+  in Chrome. Quick start, full details in `docs/qa/SELENIUM-MCP-SETUP.md`:
+  1. The server is registered at user scope in `~/.claude.json`
+     (`java -jar C:/Users/volta/Downloads/selenium-mcp.jar`, Java 21+), or
+     via npm: `cmd /c npx -y @xpathy/selenium-mcp`. Its tools are deferred:
+     load them in one `ToolSearch "select:mcp__selenium-mcp__…"` call.
+  2. Chrome runs with
+     `start chrome --remote-debugging-port=1997 --user-data-dir="%USERPROFILE%\Videos\temp"`
+     (the user starts it; 1997 is Chrome's debug port).
+  3. Dev server on `http://localhost:8080` (`bun run dev`).
+  4. `connectToBrowser { debuggerAddress: "127.0.0.1:1997" }`.
+  - Console capture doesn't work on Chrome 155 and `executeScript` times out
+    after 30 s — the playbook has workarounds for both.
+
+Kept at the repo root on purpose: `README.md`, `CONTRIBUTING.md`,
+`CODE_OF_CONDUCT.md`, `SECURITY.md`, `LICENSE` (GitHub looks for them there)
+and `CREDITS.md` (image sources; linked from LICENSE, README, the PR
+template and every data file).
 
 ## Architecture
 
@@ -191,8 +240,8 @@ Vite 8 + Nitro.
   Familienmitglieder"; they open the same tests and share progress), 4 Testing (the hand-written "Tiere" /
   der Vogel walkthrough screens in `index.tsx`). Section numbers are display
   order only: vocabulary ids stay `1.1` to `1.30`.
-- **Grammar lessons**: planned in `ROADMAP.md` (G1 to G13), one test drawn
-  out in `GRAMMAR-EXAMPLE.md`. Data lives in `src/data/grammar/` (types in
+- **Grammar lessons**: planned in `docs/planning/ROADMAP.md` (G1 to G13), one test drawn
+  out in `docs/planning/GRAMMAR-EXAMPLE.md`. Data lives in `src/data/grammar/` (types in
   `types.ts`, one file per lesson, collected into `GRAMMAR_LESSONS` in
   `index.ts`); ids carry a `G` prefix (lesson `G1`, test `G1.2`) and the test
   id is the progress key. A lesson mixes two kinds of test:

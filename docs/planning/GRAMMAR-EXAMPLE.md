@@ -21,35 +21,35 @@ the same screens with the grey text in their language.
 
 ## 1. The test at a glance
 
-| | |
-| --- | --- |
-| Path position | 1 Grammatik, G2 Erste Sätze, test 3 of 7 (G2.1 is the word test, G2.2 is `heißen`) |
-| The one rule | With `ich` the verb is `bin`. With `du` the verb is `bist`. |
-| Already known | `ich`, `du`, *Hallo* (from G1 Los geht's); names (from G2.2); `müde`, `nett`, `hier`, `krank`, `neu` (from G2.1 Wörter 1) |
-| New words | None. Grammar tests never introduce words; G2.1 taught them |
+|               |                                                                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Path position | 1 Grammatik, G2 Erste Sätze, test 3 of 7 (G2.1 is the word test, G2.2 is `heißen`)                                        |
+| The one rule  | With `ich` the verb is `bin`. With `du` the verb is `bist`.                                                               |
+| Already known | `ich`, `du`, _Hallo_ (from G1 Los geht's); names (from G2.2); `müde`, `nett`, `hier`, `krank`, `neu` (from G2.1 Wörter 1) |
+| New words     | None. Grammar tests never introduce words; G2.1 taught them                                                               |
 
 The eight sentences everything is built from:
 
-| Id | German | Meaning |
-| --- | --- | --- |
-| s1 | Ich bin Anna. | I am Anna. |
-| s2 | Du bist Tom. | You are Tom. |
-| s3 | Ich bin müde. | I am tired. |
-| s4 | Du bist nett. | You are nice. |
-| s5 | Ich bin hier. | I am here. |
-| s6 | Du bist krank. | You are sick. |
-| s7 | Ich bin neu hier. | I am new here. |
-| s8 | Du bist müde. | You are tired. |
+| Id  | German            | Meaning        |
+| --- | ----------------- | -------------- |
+| s1  | Ich bin Anna.     | I am Anna.     |
+| s2  | Du bist Tom.      | You are Tom.   |
+| s3  | Ich bin müde.     | I am tired.    |
+| s4  | Du bist nett.     | You are nice.  |
+| s5  | Ich bin hier.     | I am here.     |
+| s6  | Du bist krank.    | You are sick.  |
+| s7  | Ich bin neu hier. | I am new here. |
+| s8  | Du bist müde.     | You are tired. |
 
 What the learner goes through:
 
-| Tier | Screens | Count |
-| --- | --- | --- |
-| Training | 1 rule card, 1 check question | 2 |
-| Basic | pick the gap (8), pick the meaning (8) | 16 |
-| Easy | listen and pick (8), match pairs (1 board) | 9 |
-| Medium | word order (8), find the mistake (8), change the sentence (4) | 20 |
-| Hard | build from meaning (8), type the gap (8), dictation (8), pick the reply (2) | 26 |
+| Tier     | Screens                                                                     | Count |
+| -------- | --------------------------------------------------------------------------- | ----- |
+| Training | 1 rule card, 1 check question                                               | 2     |
+| Basic    | pick the gap (8), pick the meaning (8)                                      | 16    |
+| Easy     | listen and pick (8), match pairs (1 board)                                  | 9     |
+| Medium   | word order (8), find the mistake (8), change the sentence (4)               | 20    |
+| Hard     | build from meaning (8), type the gap (8), dictation (8), pick the reply (2) | 26    |
 
 About 73 screens if nothing is missed. A missed question comes back later in
 the same tier, under the same pending-attempts rule the vocabulary tests use.
@@ -289,13 +289,13 @@ those the learner taps "No mistake".
 └──────────────────────────────────┘
 ```
 
-Feedback shows the fix: *Du [bist] nett.* with the line
+Feedback shows the fix: _Du [bist] nett._ with the line
 `"bin" goes with "ich". With "du" it is "bist".`
 
 ### `transform`: change the sentence
 
 Only sentences that have a partner in the test get this type. Here there
-are four: s3 and s8 (*müde*) in both directions, and two more made the same
+are four: s3 and s8 (_müde_) in both directions, and two more made the same
 way.
 
 ```
@@ -557,16 +557,16 @@ export const TEST_G2_3: GrammarTest = {
 
 How each screen is derived from a sentence:
 
-| Type | Uses |
-| --- | --- |
-| `gapPick`, `gapType` | `german` with the `focus` word removed; `distractors` as the wrong options |
-| `sentenceMeaning` | `german` and `meaning`; wrong options are other sentences' meanings |
-| `listenPick`, `listenBuild` | the sentence's audio clip; other sentences as wrong options |
-| `order`, `meaningBuild` | the words of `german` as tiles; `distractors` as decoy tiles |
-| `spot` | `german` with the `focus` word swapped for one of `distractors` |
-| `transform` | `transformTo` |
-| `reply` | `replyTo` as the prompt; the wrong replies swap the pronoun or the verb form |
-| feedback strip | `german`, `meaning`, `why` |
+| Type                        | Uses                                                                         |
+| --------------------------- | ---------------------------------------------------------------------------- |
+| `gapPick`, `gapType`        | `german` with the `focus` word removed; `distractors` as the wrong options   |
+| `sentenceMeaning`           | `german` and `meaning`; wrong options are other sentences' meanings          |
+| `listenPick`, `listenBuild` | the sentence's audio clip; other sentences as wrong options                  |
+| `order`, `meaningBuild`     | the words of `german` as tiles; `distractors` as decoy tiles                 |
+| `spot`                      | `german` with the `focus` word swapped for one of `distractors`              |
+| `transform`                 | `transformTo`                                                                |
+| `reply`                     | `replyTo` as the prompt; the wrong replies swap the pronoun or the verb form |
+| feedback strip              | `german`, `meaning`, `why`                                                   |
 
 One thing in this example goes beyond the data model in ROADMAP.md: the
 last two `pairs` rows have a mother-tongue right-hand side ("I am"), so

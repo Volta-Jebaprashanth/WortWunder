@@ -6,17 +6,17 @@ Tested on 2026-10-15, desktop Chrome 155, against the local dev server (`localho
 
 **Overall.** Every test completes, saves its progress and shows the tick on the path. No console errors. German spelling, grammar and English meanings are correct throughout. The bugs below are about questions that contradict the lesson, explanations that mislead, and flow.
 
-| #   | Severity | Test       | Summary                                                                        |
-| --- | -------- | ---------- | ------------------------------------------------------------------------------ |
-| 1   | High     | G1.3       | Pairs board rejects correct matches ("die Zeit" ↔ ei, "die Schule" ↔ ie)      |
-| 2   | Medium   | G1.3       | "Say the second letter!" gives the wrong sound with German letter names        |
-| 3   | Medium   | G1.4       | Pronomen definition contradicts the sort game (ich, du)                        |
-| 4   | Low      | G1.3       | Path title lists only part of what the test covers                             |
-| 5   | Low      | G1.2, G1.3 | Pairs instruction doesn't say what to match                                    |
-| 6   | Low      | G1.1, G1.4 | Capitalisation is never practised or enforced                                  |
-| 7   | Low      | G1.2       | Rule card and check question repeat 3× with no mistakes                        |
-| 8   | Low      | All        | Finish screen shows no result                                                  |
-| 9   | Low      | G1.2–G1.4  | Gap questions read the answer out to screen readers                            |
+| #   | Severity | Test       | Summary                                                                  |
+| --- | -------- | ---------- | ------------------------------------------------------------------------ |
+| 1   | High     | G1.3       | Pairs board rejects correct matches ("die Zeit" ↔ ei, "die Schule" ↔ ie) |
+| 2   | Medium   | G1.3       | "Say the second letter!" gives the wrong sound with German letter names  |
+| 3   | Medium   | G1.4       | Pronomen definition contradicts the sort game (ich, du)                  |
+| 4   | Low      | G1.3       | Path title lists only part of what the test covers                       |
+| 5   | Low      | G1.2, G1.3 | Pairs instruction doesn't say what to match                              |
+| 6   | Low      | G1.1, G1.4 | Capitalisation is never practised or enforced                            |
+| 7   | Low      | G1.2       | Rule card and check question repeat 3× with no mistakes                  |
+| 8   | Low      | All        | Finish screen shows no result                                            |
+| 9   | Low      | G1.2–G1.4  | Gap questions read the answer out to screen readers                      |
 
 ---
 
@@ -37,19 +37,19 @@ Tested on 2026-10-15, desktop Chrome 155, against the local dev server (`localho
 
 ## 2. G1.3 "ei / ie" rule card: "Say the second letter!" (Medium)
 
-**Where:** rule card "ei" and "ie": *"ei sounds like 'eye'. ie sounds like 'ee'. Say the second letter!"*
+**Where:** rule card "ei" and "ie": _"ei sounds like 'eye'. ie sounds like 'ee'. Say the second letter!"_
 
 **Problem:** the tip only works with **English** letter names (i = "eye", e = "ee"). With **German** letter names it gives the wrong result: German "i" is "ee", so "ei" would come out as "ee". Learners who know the German alphabet, or whose first language isn't English, get the wrong sound. The app also teaches the German alphabet elsewhere.
 
-**Suggested fix:** drop the tip, or reword it to something like *"ei sounds like English 'eye', ie like English 'ee'."* Check the Tamil and Sinhala versions too.
+**Suggested fix:** drop the tip, or reword it to something like _"ei sounds like English 'eye', ie like English 'ee'."_ Check the Tamil and Sinhala versions too.
 
 ## 3. G1.4 Pronomen definition contradicts the sort game (Medium)
 
-**Where:** rule card "Pronomen: a short word for a Nomen". It says *"A Pronomen stands in for a Nomen, so you don't say the name again."* The sort group is labelled **Pronomen — "stands in"**.
+**Where:** rule card "Pronomen: a short word for a Nomen". It says _"A Pronomen stands in for a Nomen, so you don't say the name again."_ The sort group is labelled **Pronomen — "stands in"**.
 
 **Problem:** the sort game requires **ich** and **du** in Pronomen, but they don't stand in for any named Nomen. A learner following the definition has no reason to put them there.
 
-**Suggested fix:** widen the definition, e.g. *"A Pronomen is a short word for a person or thing: ich, du, er, sie, es."* Change the group subtitle to match, e.g. "ich, du, er…".
+**Suggested fix:** widen the definition, e.g. _"A Pronomen is a short word for a person or thing: ich, du, er, sie, es."_ Change the group subtitle to match, e.g. "ich, du, er…".
 
 ## 4. G1.3 path title is incomplete (Low)
 
@@ -57,7 +57,7 @@ The title on the path is **"ei, ie, sch, w, z"**. The test also teaches **eu, ch
 
 ## 5. Pairs instruction doesn't say what to match (Low)
 
-G1.3's pairs screen only says *"Match each pair."* It doesn't say to match each word with the sound or letters it contains, which makes bug 1 more likely. Suggested wording: *"Match each word to the sound it has."*
+G1.3's pairs screen only says _"Match each pair."_ It doesn't say to match each word with the sound or letters it contains, which makes bug 1 more likely. Suggested wording: _"Match each word to the sound it has."_
 
 ## 6. Capitalisation is never practised or enforced (Low)
 

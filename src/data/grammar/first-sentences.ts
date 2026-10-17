@@ -11,12 +11,12 @@ import { POSITION_LESSON_ID } from "@/data/position";
 import { GRAMMAR_LESSON_ID } from "@/data/grammar-words";
 
 // G2 Erste Sätze: introducing yourself — heißen, sein (bin, bist, ist,
-// sind, seid), kommen aus, wohnen in (ROADMAP.md, section 3). Two word
+// sind, seid), kommen aus, wohnen in (docs/planning/ROADMAP.md, section 3). Two word
 // tests, each right before the grammar tests that use its words. Every
 // sentence has its own clip in public/G2 first sentences/audio/.
 //
 // The Tamil and Sinhala strings are drafts and need a native speaker's
-// review (ROADMAP.md, Open decisions).
+// review (docs/planning/ROADMAP.md, Open decisions).
 export const FIRST_SENTENCES_LESSON_ID = "G2";
 
 // Every grammar test in this lesson uses every sentence-based type it has

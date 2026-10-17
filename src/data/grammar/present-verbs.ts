@@ -7,14 +7,14 @@ import { FOOD_LESSON_ID } from "@/data/food";
 
 // G3 Verben im Präsens: a verb is a stem plus an ending that depends on who
 // does it (ich lerne, du lernst, er lernt, wir lernen, ihr lernt), haben,
-// and the verb as the second part of a sentence (ROADMAP.md, section 3).
+// and the verb as the second part of a sentence (docs/planning/ROADMAP.md, section 3).
 // One word test, then one grammar test per step. Gaps are always the whole
 // verb form, never just its ending: SentenceLine marks the first match of
 // `focusPart`, which is the wrong "e" in "spiele". Every sentence has its
 // own clip in public/G3 present verbs/audio/.
 //
 // The Tamil and Sinhala strings are drafts and need a native speaker's
-// review (ROADMAP.md, Open decisions).
+// review (docs/planning/ROADMAP.md, Open decisions).
 export const PRESENT_VERBS_LESSON_ID = "G3";
 
 const ALL_SENTENCE_TYPES = [

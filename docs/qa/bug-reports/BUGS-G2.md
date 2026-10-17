@@ -6,20 +6,20 @@ Tested on 2026-10-15, desktop Chrome 155, against the local dev server (`localho
 
 **Overall.** Every test completes, saves its progress and shows the tick on the path. No console errors. The German sentences are correct throughout: verb forms, "aus" and "in", and the professions without an article ("Tom ist Lehrer"). The English meanings are correct too. The bugs below are two correct answers that get rejected, the "sie / Sie" explanation, hints that don't match the mistake, and flow.
 
-| #   | Severity | Test       | Summary                                                                                  |
-| --- | -------- | ---------- | ---------------------------------------------------------------------------------------- |
-| 1   | High     | G2.6       | "What is your name?" is rejected as the meaning of "Wie heißen Sie?"                     |
-| 2   | High     | G2.4, G2.6 | Sentence building rejects the correct word order "Er ist hier neu."                      |
-| 3   | Medium   | G2.6       | Rule card: "Sie with a capital S is the polite you" fails at the start of a sentence     |
-| 4   | Medium   | G2.5       | Vocabulary card teaches "sie = They" only, right after G2.4 taught "sie = she"           |
-| 5   | Medium   | G2.2–G2.6  | The hint after a wrong answer doesn't match the mistake                                  |
-| 6   | Low      | G2.7       | "Woher kommst du?" / "Wo wohnst du?" are tested but never taught                         |
-| 7   | Low      | G2.6, G2.7 | Conjugation tables show bare "sie" after "they" has been taught                          |
-| 8   | Low      | G2.6       | Pairs label "ihr ↔ you (friends)" drops the plural                                       |
-| 9   | Low      | G2.5       | Spelling tiles turn "Sie" and "sie" into the same "SIE"                                  |
-| 10  | Low      | G2.1       | A pairs board with a single pair                                                         |
-| 11  | Low      | G2.2–G2.4  | Pairs boards mix two kinds of pair under "Match each pair."                              |
-| 12  | Low      | G2.2       | The "du" rule comes before the "ich" rule in a test called "Ich heiße …"                 |
+| #   | Severity | Test       | Summary                                                                              |
+| --- | -------- | ---------- | ------------------------------------------------------------------------------------ |
+| 1   | High     | G2.6       | "What is your name?" is rejected as the meaning of "Wie heißen Sie?"                 |
+| 2   | High     | G2.4, G2.6 | Sentence building rejects the correct word order "Er ist hier neu."                  |
+| 3   | Medium   | G2.6       | Rule card: "Sie with a capital S is the polite you" fails at the start of a sentence |
+| 4   | Medium   | G2.5       | Vocabulary card teaches "sie = They" only, right after G2.4 taught "sie = she"       |
+| 5   | Medium   | G2.2–G2.6  | The hint after a wrong answer doesn't match the mistake                              |
+| 6   | Low      | G2.7       | "Woher kommst du?" / "Wo wohnst du?" are tested but never taught                     |
+| 7   | Low      | G2.6, G2.7 | Conjugation tables show bare "sie" after "they" has been taught                      |
+| 8   | Low      | G2.6       | Pairs label "ihr ↔ you (friends)" drops the plural                                   |
+| 9   | Low      | G2.5       | Spelling tiles turn "Sie" and "sie" into the same "SIE"                              |
+| 10  | Low      | G2.1       | A pairs board with a single pair                                                     |
+| 11  | Low      | G2.2–G2.4  | Pairs boards mix two kinds of pair under "Match each pair."                          |
+| 12  | Low      | G2.2       | The "du" rule comes before the "ich" rule in a test called "Ich heiße …"             |
 
 ---
 
@@ -33,7 +33,7 @@ Tested on 2026-10-15, desktop Chrome 155, against the local dev server (`localho
 
 **Expected:** accepted. It is a correct translation. English has no polite "you", so it is the normal way to say "Wie heißen Sie?".
 
-**Actual:** "Fast! Versuch's nochmal." The hint is about verb endings, not meaning: *"The polite 'Sie' goes with the same verb as 'wir': 'sind', 'heißen'."* Only "What is your name? (polite)" is accepted. Both options appear together, so the learner has to guess that the "(polite)" label is what's being tested.
+**Actual:** "Fast! Versuch's nochmal." The hint is about verb endings, not meaning: _"The polite 'Sie' goes with the same verb as 'wir': 'sind', 'heißen'."_ Only "What is your name? (polite)" is accepted. Both options appear together, so the learner has to guess that the "(polite)" label is what's being tested.
 
 **Suggested fix:** don't put "What is your name?" and "What is your name? (polite)" in the same option set. Take the other sentence's meaning out of the distractors when the two differ only by "(polite)". The same goes for "Wie heißt du?" (picking the "(polite)" option there is fairly wrong, but the pair still invites guessing).
 
@@ -47,7 +47,7 @@ Tested on 2026-10-15, desktop Chrome 155, against the local dev server (`localho
 
 **Expected:** accepted. "Er ist hier neu." and "Er ist neu hier." are both correct German and mean the same.
 
-**Actual:** "Fast! Versuch's nochmal." with the hint *"'er', 'sie', 'es' and names go with 'ist'"*. The learner did use "ist", so the hint doesn't help either.
+**Actual:** "Fast! Versuch's nochmal." with the hint _"'er', 'sie', 'es' and names go with 'ist'"_. The learner did use "ist", so the hint doesn't help either.
 
 **Also affected:** "Ich bin neu hier." (G2.3) and "Ihr seid neu hier." (G2.6) in "Ordne die Wörter" and "Wie sagt man das auf Deutsch?". I checked G2.4 directly; the other two use the same tiles and almost certainly behave the same. The listening version ("Baue den Satz") is fine. There the audio fixes the order.
 
@@ -55,11 +55,11 @@ Tested on 2026-10-15, desktop Chrome 155, against the local dev server (`localho
 
 ## 3. "Sie with a capital S is the polite you" (Medium)
 
-**Where:** G2.6 rule card "'Sie': the polite 'you'". It says: *"'Sie' with a capital S is the polite 'you', for adults you don't know well."* Example: "Sie sind Frau Weber."
+**Where:** G2.6 rule card "'Sie': the polite 'you'". It says: _"'Sie' with a capital S is the polite 'you', for adults you don't know well."_ Example: "Sie sind Frau Weber."
 
 **Problem:** at the start of a sentence, "sie" (she) and "sie" (they) are also written "Sie". The card's own example starts with "Sie", so the capital proves nothing there. G2.4 had just taught **"Sie ist Ärztin." = "She is a doctor."**, and G2.6 itself uses "Sie sind krank." = "They are sick." A learner following the card would read both as polite "you".
 
-**Suggested fix:** reword to something like *"Polite 'Sie' always has a capital S, even in the middle of a sentence. At the start of a sentence, use the verb and the context: Sie ist = she is, Sie sind = they are or polite you."* Show a mid-sentence example, e.g. "Wie heißen Sie?" (already on the card) or "Woher kommen Sie?". Check the Tamil and Sinhala versions too.
+**Suggested fix:** reword to something like _"Polite 'Sie' always has a capital S, even in the middle of a sentence. At the start of a sentence, use the verb and the context: Sie ist = she is, Sie sind = they are or polite you."_ Show a mid-sentence example, e.g. "Wie heißen Sie?" (already on the card) or "Woher kommen Sie?". Check the Tamil and Sinhala versions too.
 
 ## 4. "sie = They" contradicts G2.4 (Medium)
 
@@ -73,12 +73,12 @@ Tested on 2026-10-15, desktop Chrome 155, against the local dev server (`localho
 
 The hint after a wrong answer seems to be the rule's fixed "why" text, not feedback on what the learner actually did. Examples:
 
-| Test | Question | Wrong answer given | Hint shown |
-| ---- | -------- | ------------------ | ---------- |
-| G2.2 | Was sagst du? "Wie heißt du?" | Du heißt Anna. (correct German, but it doesn't answer the question) | "ich" goes with "heiße". |
-| G2.4 | Ändere den Satz: say "es" instead of "das Kind" | Das Kind ist krank. (the sentence left unchanged) | "er", "sie", "es" and names go with "ist". |
-| G2.4 | Wie sagt man das auf Deutsch? "He is new here." | Er ist hier neu. (correct, see bug 2) | "er", "sie", "es" and names go with "ist". |
-| G2.6 | Was bedeutet das? "Wie heißen Sie?" | What is your name? (correct, see bug 1) | The polite "Sie" goes with the same verb as "wir" … |
+| Test | Question                                        | Wrong answer given                                                  | Hint shown                                          |
+| ---- | ----------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------- |
+| G2.2 | Was sagst du? "Wie heißt du?"                   | Du heißt Anna. (correct German, but it doesn't answer the question) | "ich" goes with "heiße".                            |
+| G2.4 | Ändere den Satz: say "es" instead of "das Kind" | Das Kind ist krank. (the sentence left unchanged)                   | "er", "sie", "es" and names go with "ist".          |
+| G2.4 | Wie sagt man das auf Deutsch? "He is new here." | Er ist hier neu. (correct, see bug 2)                               | "er", "sie", "es" and names go with "ist".          |
+| G2.6 | Was bedeutet das? "Wie heißen Sie?"             | What is your name? (correct, see bug 1)                             | The polite "Sie" goes with the same verb as "wir" … |
 
 In each case the learner already did what the hint says, so the hint doesn't help.
 

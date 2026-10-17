@@ -6,18 +6,18 @@ Tested on 2026-10-15, desktop Chrome 155, against the local dev server (`localho
 
 **Overall.** Every test completes, saves its progress and shows the tick on the path. No console errors. The German is correct throughout: every regular verb ending for every person, all forms of "haben", and every "Heute"-first sentence. Every vocabulary meaning is right too. The bugs below are one rejected correct translation, a rule card that says "always" where German has exceptions, hints that don't match the mistake (same as G2), and flow.
 
-| #   | Severity | Test       | Summary                                                                                     |
-| --- | -------- | ---------- | ------------------------------------------------------------------------------------------- |
-| 1   | High     | G3.5       | "You have time." is rejected as the meaning of "Ihr habt Zeit."                             |
+| #   | Severity | Test       | Summary                                                                                       |
+| --- | -------- | ---------- | --------------------------------------------------------------------------------------------- |
+| 1   | High     | G3.5       | "You have time." is rejected as the meaning of "Ihr habt Zeit."                               |
 | 2   | Medium   | G3.6       | Rule card and hint say the verb is "always" second, but the test's own question puts it first |
-| 3   | Medium   | G3.2–G3.6  | The hint after a wrong answer doesn't match the mistake (same as G2 bug 5)                  |
-| 4   | Low      | G3.6       | Capital letters on the tiles give away the word order                                       |
-| 5   | Low      | G3.5, G3.6 | Rule cards come in reverse order                                                            |
-| 6   | Low      | G3.6       | "Was bedeutet das?" doesn't test word order                                                  |
-| 7   | Low      | G3.6       | English switches from "I learn" to "I am learning" when "heute" is added                    |
-| 8   | Low      | G3.1–G3.5  | One wrong answer brings back the same board or rule card two or three times                 |
-| 9   | Low      | G3.1       | "Baue das Wort" shows the German word it asks you to spell                                   |
-| 10  | Low      | Path       | Test subtitles follow different patterns                                                    |
+| 3   | Medium   | G3.2–G3.6  | The hint after a wrong answer doesn't match the mistake (same as G2 bug 5)                    |
+| 4   | Low      | G3.6       | Capital letters on the tiles give away the word order                                         |
+| 5   | Low      | G3.5, G3.6 | Rule cards come in reverse order                                                              |
+| 6   | Low      | G3.6       | "Was bedeutet das?" doesn't test word order                                                   |
+| 7   | Low      | G3.6       | English switches from "I learn" to "I am learning" when "heute" is added                      |
+| 8   | Low      | G3.1–G3.5  | One wrong answer brings back the same board or rule card two or three times                   |
+| 9   | Low      | G3.1       | "Baue das Wort" shows the German word it asks you to spell                                    |
+| 10  | Low      | Path       | Test subtitles follow different patterns                                                      |
 
 ---
 
@@ -31,13 +31,13 @@ Tested on 2026-10-15, desktop Chrome 155, against the local dev server (`localho
 
 **Expected:** accepted. English "you" is singular and plural, so "You have time." is a correct translation of "Ihr habt Zeit.".
 
-**Actual:** "Fast! Versuch's nochmal." The hint is about the verb form, not the meaning: *"'wir' and 'sie' (they) go with 'haben', 'ihr' goes with 'habt'."* Only "You all have time." is accepted. Both options are on screen together, so the learner has to guess that "all" is what's being tested.
+**Actual:** "Fast! Versuch's nochmal." The hint is about the verb form, not the meaning: _"'wir' and 'sie' (they) go with 'haben', 'ihr' goes with 'habt'."_ Only "You all have time." is accepted. Both options are on screen together, so the learner has to guess that "all" is what's being tested.
 
 **Suggested fix:** don't use "You …" as a distractor for an "ihr" sentence when the option set also has "You all …". When an "ihr" sentence is the prompt, take "Du …" meanings ("You have time.") out of its distractors. This is the same pattern as G2 bug 1 ("What is your name?" vs "(polite)").
 
 ## 2. "The verb always comes second" is contradicted in the same test (Medium)
 
-**Where:** the G3.6 rule card "The verb is number 2": *"In a German sentence the verb always comes second."* The hint after a word-order mistake repeats it: *"The verb is always the second part of the sentence."*
+**Where:** the G3.6 rule card "The verb is number 2": _"In a German sentence the verb always comes second."_ The hint after a word-order mistake repeats it: _"The verb is always the second part of the sentence."_
 
 **Problem:** yes/no questions put the verb first, and the learner has already seen them:
 
@@ -46,22 +46,22 @@ Tested on 2026-10-15, desktop Chrome 155, against the local dev server (`localho
 
 A learner who believes the card can't explain the question they're answering. Imperatives and subordinate clauses break the rule as well; they come later, but "always" will have to be unlearned.
 
-**Suggested fix:** *"In a statement the verb comes second."* Add one line: *"In a yes/no question it comes first: Hast du Zeit?"* Change the hint the same way. Check the Tamil and Sinhala versions too.
+**Suggested fix:** _"In a statement the verb comes second."_ Add one line: _"In a yes/no question it comes first: Hast du Zeit?"_ Change the hint the same way. Check the Tamil and Sinhala versions too.
 
 ## 3. The hint after a wrong answer doesn't match the mistake (Medium)
 
 Same root cause as G2 bug 5: the hint is the rule's fixed "why" text, not feedback on what the learner did. Examples from G3:
 
-| Test | Screen | Wrong answer given | Hint shown |
-| ---- | ------ | ------------------ | ---------- |
-| G3.2 | Was bedeutet das? "Du spielst Fußball." | "I cook." (wrong meaning) | "du" goes with the ending "-st" |
-| G3.2 | Ändere den Satz, Say it about "ich" | wrong form for "ich" | "du" goes with the ending "-st" (the rule for the *source* sentence) |
-| G3.4 | Ändere den Satz, wir → ihr | "Ihr spielen Fußball." | "wir", "sie" and "Sie" go with "-en" (should be the "ihr -t" rule) |
-| G3.2–G3.5 | Ordne die Wörter / Baue den Satz | "singe Ich", "Auto ein hat Er" (wrong order, right forms) | a verb-ending rule |
-| G3.5 | Ordne die Wörter "Tom has time today." | "heute hat Tom Zeit" (uses "hat") | "er", "sie", "es" and names go with "hat" |
-| G3.6 | Ändere den Satz, Start with "Ich" | "Ich heute lerne Deutsch" | When "Heute" comes first, the verb is still second … |
+| Test      | Screen                                  | Wrong answer given                                        | Hint shown                                                           |
+| --------- | --------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------- |
+| G3.2      | Was bedeutet das? "Du spielst Fußball." | "I cook." (wrong meaning)                                 | "du" goes with the ending "-st"                                      |
+| G3.2      | Ändere den Satz, Say it about "ich"     | wrong form for "ich"                                      | "du" goes with the ending "-st" (the rule for the _source_ sentence) |
+| G3.4      | Ändere den Satz, wir → ihr              | "Ihr spielen Fußball."                                    | "wir", "sie" and "Sie" go with "-en" (should be the "ihr -t" rule)   |
+| G3.2–G3.5 | Ordne die Wörter / Baue den Satz        | "singe Ich", "Auto ein hat Er" (wrong order, right forms) | a verb-ending rule                                                   |
+| G3.5      | Ordne die Wörter "Tom has time today."  | "heute hat Tom Zeit" (uses "hat")                         | "er", "sie", "es" and names go with "hat"                            |
+| G3.6      | Ändere den Satz, Start with "Ich"       | "Ich heute lerne Deutsch"                                 | When "Heute" comes first, the verb is still second …                 |
 
-**Suggested fix:** as for G2. On "Ändere den Satz", show the rule for the *target* person. On word-order screens, show a word-order hint (e.g. "Start with the person, then the verb"). On "Was bedeutet das?", show the right meaning instead of a grammar rule.
+**Suggested fix:** as for G2. On "Ändere den Satz", show the rule for the _target_ person. On word-order screens, show a word-order hint (e.g. "Start with the person, then the verb"). On "Was bedeutet das?", show the right meaning instead of a grammar rule.
 
 ## 4. Tile capitals give away the word order (Low)
 
@@ -74,7 +74,7 @@ Same root cause as G2 bug 5: the hint is the rule's fixed "why" text, not feedba
 ## 5. Rule cards in reverse order (Low)
 
 - **G3.6** opens with "Heute first: the verb **stays** second" before "The verb is number 2". "Stays" refers to a rule that hasn't been taught yet.
-- **G3.5** opens with "wir haben, ihr habt" (*"haben follows the normal pattern"*) before "ich habe, du hast, er hat", which is the card that introduces "haben" and says *"It breaks the pattern"*. The first card's text also names only "sie (they)", while its table shows "sie, Sie".
+- **G3.5** opens with "wir haben, ihr habt" (_"haben follows the normal pattern"_) before "ich habe, du hast, er hat", which is the card that introduces "haben" and says _"It breaks the pattern"_. The first card's text also names only "sie (they)", while its table shows "sie, Sie".
 
 **Suggested fix:** swap the two cards in each test. Add "and polite Sie" to the G3.5 card text.
 
@@ -100,22 +100,22 @@ G3.2–G3.5 translate the present as "I learn German." / "We cook.". G3.6 transl
 
 ## 9. "Baue das Wort" shows the word it asks for (Low)
 
-**Where:** G3.1, the non-listening "Baue das Wort": *"Tap the letters to spell lernen."* with the meaning "To learn" below.
+**Where:** G3.1, the non-listening "Baue das Wort": _"Tap the letters to spell lernen."_ with the meaning "To learn" below.
 
 **Problem:** the instruction spells the answer, so the screen is a copying task. The listening version ("Listen, then spell the word you hear.") is fine.
 
-**Suggested fix:** *"Tap the letters to spell the German word."* The meaning (and picture) is already the prompt. (This is probably shared with every vocabulary lesson.)
+**Suggested fix:** _"Tap the letters to spell the German word."_ The meaning (and picture) is already the prompt. (This is probably shared with every vocabulary lesson.)
 
 ## 10. Path subtitles follow different patterns (Low)
 
 Under "Verben im Präsens":
 
-- "ich lerne, du lernst" → *I learn, you learn*
-- "er, sie, es -t" → *he, she, it plays*
-- "wir -en, ihr -t" → *we, you all, they*: names "they", which isn't in the title, and has no verb
-- "haben" → *to have*
+- "ich lerne, du lernst" → _I learn, you learn_
+- "er, sie, es -t" → _he, she, it plays_
+- "wir -en, ihr -t" → _we, you all, they_: names "they", which isn't in the title, and has no verb
+- "haben" → _to have_
 
-**Suggested fix:** use one pattern, e.g. *he, she, it plays* / *we play, you all play*.
+**Suggested fix:** use one pattern, e.g. _he, she, it plays_ / _we play, you all play_.
 
 ---
 

@@ -5,8 +5,8 @@ import type { VocabWord } from "@/data/vocabulary";
 
 // The grammar section (1 Grammatik on the path). A lesson holds word tests,
 // played by VocabQuiz like any Wortschatz test, and hand-written grammar
-// tests, played by GrammarQuiz. See ROADMAP.md for the plan and
-// GRAMMAR-EXAMPLE.md for one test drawn out screen by screen.
+// tests, played by GrammarQuiz. See docs/planning/ROADMAP.md for the plan and
+// docs/planning/GRAMMAR-EXAMPLE.md for one test drawn out screen by screen.
 
 export type Localized = Record<MotherTongue, string>;
 

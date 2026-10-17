@@ -458,6 +458,7 @@ function Index() {
               lang={lang}
               onStart={startLesson}
               name={profile?.name}
+              showDevSections={isDevProfile(profile)}
               showInstall={!installed}
               onAddToHomeScreen={addToHomeScreen}
             />
@@ -1033,11 +1034,63 @@ const PATH_MEANINGS = {
   },
 } satisfies Record<string, Record<MotherTongue, string>>;
 
+// The sections only isDevProfile sees: ÖSD and Testing.
+function devSections(lang: MotherTongue): PathNode[] {
+  return [
+    {
+      id: "oesd",
+      title: "ÖSD",
+      icon: "📘",
+      state: "active",
+      meaning: PATH_MEANINGS.oesd[lang],
+      children: OESD_LESSONS.map(({ lessonId, title, meaning }) =>
+        lessonPathNode(findVocabLesson(lessonId), lang, {
+          idPrefix: "oesd-",
+          title,
+          meaning: meaning?.[lang],
+        }),
+      ),
+    },
+    {
+      id: "testing",
+      title: "Testing",
+      icon: "🧪",
+      state: "active",
+      meaning: PATH_MEANINGS.testing[lang],
+      children: [
+        {
+          id: "tiere",
+          title: "Tiere",
+          icon: "🐕",
+          state: "active",
+          meaning: PATH_MEANINGS.tiere[lang],
+        },
+        {
+          id: SPELLING_TEST.testId,
+          title: "Buchstabieren",
+          icon: "✏️",
+          state: "active",
+          meaning: PATH_MEANINGS.spelling[lang],
+          testId: SPELLING_TEST.testId,
+        },
+      ],
+    },
+  ];
+}
+
+// ÖSD and Testing are still in progress, so the path only shows them to this
+// one profile (name "volta", age 29) — everyone else sees Grammatik and
+// Wortschatz.
+function isDevProfile(profile: Profile | null) {
+  return profile?.name.trim().toLowerCase() === "volta" && profile.age.trim() === "29";
+}
+
 function Home({
   t,
   lang,
   onStart,
   name,
+  showDevSections,
   showInstall,
   onAddToHomeScreen,
 }: {
@@ -1045,6 +1098,7 @@ function Home({
   lang: MotherTongue;
   onStart: (nodeId: string) => void;
   name?: string | undefined;
+  showDevSections: boolean;
   showInstall: boolean;
   onAddToHomeScreen: () => void;
 }) {
@@ -1069,51 +1123,18 @@ function Home({
         meaning: PATH_MEANINGS.wortschatz[lang],
         children: VOCAB_LESSONS.map((lesson) => lessonPathNode(lesson, lang)),
       },
-      {
-        id: "oesd",
-        title: "ÖSD",
-        icon: "📘",
-        state: "active",
-        meaning: PATH_MEANINGS.oesd[lang],
-        children: OESD_LESSONS.map(({ lessonId, title, meaning }) =>
-          lessonPathNode(findVocabLesson(lessonId), lang, {
-            idPrefix: "oesd-",
-            title,
-            meaning: meaning?.[lang],
-          }),
-        ),
-      },
-      {
-        id: "testing",
-        title: "Testing",
-        icon: "🧪",
-        state: "active",
-        meaning: PATH_MEANINGS.testing[lang],
-        children: [
-          {
-            id: "tiere",
-            title: "Tiere",
-            icon: "🐕",
-            state: "active",
-            meaning: PATH_MEANINGS.tiere[lang],
-          },
-          {
-            id: SPELLING_TEST.testId,
-            title: "Buchstabieren",
-            icon: "✏️",
-            state: "active",
-            meaning: PATH_MEANINGS.spelling[lang],
-            testId: SPELLING_TEST.testId,
-          },
-        ],
-      },
+      ...(showDevSections ? devSections(lang) : []),
     ],
-    [lang],
+    [lang, showDevSections],
   );
   // Only the top-level sections start open; each lesson (Hallo, Familie, ...)
-  // expands to its numbered tests on tap.
+  // expands to its numbered tests on tap. The dev sections are included even
+  // when hidden, so they're open if the profile switches to volta later.
   const [expanded, setExpanded] = useState<Set<string>>(
-    () => new Set(path.filter((node) => node.children).map((node) => node.id)),
+    () =>
+      new Set(
+        [...path, ...devSections(lang)].filter((node) => node.children).map((node) => node.id),
+      ),
   );
   const toggleNode = (id: string) =>
     setExpanded((prev) => {

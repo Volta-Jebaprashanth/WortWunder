@@ -9,7 +9,24 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
+import { DESKTOP_QUERY, DesktopViewSwitch, VIEW_KEY } from "@/components/DesktopViewSwitch";
 import appCss from "../styles.css?url";
+
+// Runs before first paint on desktops: sets <html data-view> to the saved
+// view (tablet unless phone was picked) and keeps --frame-zoom /
+// --frame-width / --frame-height fitting that device's screen — iPhone 17
+// Pro Max 440x956, iPad Air 820x1180 — into the window (styles.css). It
+// only zooms out, never past 75%; below that the device gets shorter (or
+// narrower) instead.
+// DesktopViewSwitch calls window.__fitFrame() after switching views.
+const FRAME_SCRIPT = `(function(){var d=document.documentElement;
+if(!matchMedia(${JSON.stringify(DESKTOP_QUERY)}).matches)return;
+var v='tablet';try{if(localStorage.getItem(${JSON.stringify(VIEW_KEY)})==='phone')v='phone';}catch(e){}
+d.setAttribute('data-view',v);
+function fit(){var p=d.getAttribute('data-view')==='phone',W=p?440:820,H=p?956:1180,w=innerWidth-48,h=innerHeight-48;
+var z=Math.min(1,Math.max(0.75,Math.min(w/W,h/H)));
+d.style.setProperty('--frame-zoom',z);d.style.setProperty('--frame-width',Math.min(W,w/z)+'px');d.style.setProperty('--frame-height',Math.min(H,h/z)+'px');}
+window.__fitFrame=fit;fit();addEventListener('resize',fit);})();`;
 
 function NotFoundComponent() {
   return (
@@ -109,8 +126,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    // suppressHydrationWarning: FRAME_SCRIPT sets data-view and style on <html> before hydration.
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: FRAME_SCRIPT }} />
         <script
           dangerouslySetInnerHTML={{
             __html: `window.__bip=null;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__bip=e;window.dispatchEvent(new Event('bip-ready'));});`,
@@ -119,7 +138,11 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        {/* Tablet- or phone-sized column on desktop; plain wrappers on phones and tablets (styles.css). */}
+        <div className="app-frame">
+          <div className="app-frame-scroll">{children}</div>
+        </div>
+        <DesktopViewSwitch />
         <Scripts />
       </body>
     </html>

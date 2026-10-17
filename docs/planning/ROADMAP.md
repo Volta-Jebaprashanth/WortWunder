@@ -240,19 +240,20 @@ Borrows from: 1.8 Angaben zur Person, 1.16 Die W-Fragen.
 
 ### G5 Nomen & Artikel (Nouns and articles)
 
-| Test | Teaches                                      | Example                                                                                                     |
-| ---- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| G5.1 | **Wörter 1**: things at home and animals     | _der Tisch, der Stuhl, die Lampe, die Tür, das Bett, das Fenster, das Buch, der Hund, die Katze, das Pferd_ |
-| G5.2 | Every noun has a gender: `der`, `die`, `das` | _der Tisch, die Lampe, das Bett_                                                                            |
-| G5.3 | `ein`, `eine`: "a" versus "the"              | _Das ist ein Hund. Der Hund ist klein._                                                                     |
-| G5.4 | **Wörter 2**: family, with plurals           | _der Bruder, die Schwester, das Kind, der Sohn, die Tochter, die Eltern, der Opa, die Oma_                  |
-| G5.5 | Plural: always `die`, and the common endings | _das Kind, die Kinder_                                                                                      |
-| G5.6 | `kein`, `keine`                              | _Das ist kein Hund._                                                                                        |
-| G5.7 | `nicht`, and when to use `nicht` or `kein`   | _Ich komme nicht. Ich habe keine Zeit._                                                                     |
+| Test | Teaches                                                | Example                                                                                                                  |
+| ---- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| G5.1 | **Wörter 1**: things at home and animals               | _der Tisch, der Stuhl, die Lampe, die Tür, das Bett, das Fenster, das Buch, der Hund, die Katze, das Pferd, groß, klein_ |
+| G5.2 | Every noun has a gender: `der`, `die`, `das`           | _Der Tisch ist groß. Die Lampe ist neu._                                                                                 |
+| G5.3 | `ein`, `eine`: "a" versus "the"; `Das ist …`           | _Das ist ein Hund. Der Hund ist klein._                                                                                  |
+| G5.4 | **Wörter 2**: family, with plurals, and `zwei`, `drei` | _der Bruder, die Schwester, der Sohn, die Tochter, die Eltern, der Großvater, die Großmutter, das Kind, zwei, drei_      |
+| G5.5 | Plural: `die` for every noun, and the endings          | _Die Kinder sind müde. Ich habe zwei Brüder._                                                                            |
+| G5.6 | `kein`, `keine`                                        | _Das ist kein Hund. Das sind keine Bücher._                                                                              |
+| G5.7 | `nicht`, and when to use `nicht` or `kein`             | _Ich komme nicht. Ich habe keine Zeit._                                                                                  |
 
-Borrows from: 1.2 Familie, 1.4 Haus & Zimmer, 1.24 Die Tiere. G5.4 is the
-place to fill in the `plural` field for these words, which `TrainingCard`
-already shows but almost no word has yet.
+Borrows from: 1.2 Familie, 1.4 Haus & Zimmer, 1.8 Angaben zur Person,
+1.12 Arbeit & Schule, 1.15 Die Zahlen, 1.24 Die Tiere. The words of both word
+tests now carry a `plural`, which `TrainingCard` shows. No sentence puts a
+`der` word after a verb (_Ich habe einen Hund._): that is Akkusativ, G6.
 
 ### G6 Akkusativ (The object of a sentence)
 

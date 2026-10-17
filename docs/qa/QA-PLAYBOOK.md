@@ -57,6 +57,12 @@ If the connection fails, find the port:
 - **`executeScript` times out after 30 s.** Never `await` a long loop.
   Start it without awaiting, then poll a global in later calls
   (`await sleep(25000); return window.__log`).
+- **A hidden Chrome window throttles timers.** When the debug Chrome is
+  minimised or behind other windows, `document.visibilityState` is
+  `"hidden"` and every `setTimeout` waits about a second, so a test that
+  should take minutes takes an hour. Keep the window visible, or define
+  `sleep` with a `MessageChannel` instead, which isn't throttled:
+  `window.sleep = (ms) => new Promise((r) => { const end = performance.now() + ms; const c = new MessageChannel(); c.port1.onmessage = () => (performance.now() >= end ? r() : c.port2.postMessage(0)); c.port2.postMessage(0); });`
 - **Each `executeScript` is a fresh scope.** Anything reused must live on
   `window`. Functions rebuilt with `eval(fn.toString())` lose their closure,
   so keep helpers like `sleep`, `vis` and `txt` on `window`.

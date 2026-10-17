@@ -1419,3 +1419,20 @@ credited in the sections above:
 | test-3.jpg | wer, was, wie          | crop of `1.16 question words/images/who.jpg`      |
 | test-4.jpg | wo, woher, wohin, wann | crop of `1.16 question words/images/where-to.jpg` |
 | test-5.jpg | ja, nein, doch         | crop of `1.18 small words/images/of-course.jpg`   |
+
+## Lesson G5 — Nomen & Artikel
+
+G5 has no word photos of its own: both word tests reuse the Wortschatz
+words' photos. Its path icons in `public/G5 nouns and articles/icons/` are
+160x160 crops of photos credited in the sections above:
+
+| File       | Test            | Source                                         |
+| ---------- | --------------- | ---------------------------------------------- |
+| lesson.jpg | Nomen & Artikel | crop of `1.12 work and school/images/book.jpg` |
+| test-1.jpg | Wörter 1        | crop of `1.4 home/images/lamp.jpg`             |
+| test-2.jpg | der, die, das   | crop of `1.4 home/images/table.jpg`            |
+| test-3.jpg | ein, eine       | crop of `1.24 animals/images/cat.jpg`          |
+| test-4.jpg | Wörter 2        | crop of `1.2 family/images/grandparents.jpg`   |
+| test-5.jpg | Plural          | crop of `1.2 family/images/children.jpg`       |
+| test-6.jpg | kein, keine     | crop of `1.24 animals/images/horse.jpg`        |
+| test-7.jpg | nicht oder kein | crop of `1.24 animals/images/dog.jpg`          |

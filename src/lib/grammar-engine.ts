@@ -183,9 +183,14 @@ function scrambled(tiles: string[], answer: string[]): string[] {
   return out;
 }
 
-// Up to `count` wrong words for the tile pool, not already in it.
+// Up to `count` wrong words for the tile pool, not already in it. Wrong
+// fillers for a first-word gap ("Die" for "Der Tisch …") are written with a
+// capital; when the first tile is shown in lower case they are too, so the
+// capital doesn't mark them as the wrong ones.
 function decoyWords(sentence: GrammarSentence, words: string[], count: number): string[] {
-  return shuffle((sentence.distractors ?? []).filter((d) => !words.includes(d))).slice(0, count);
+  const lower = sentence.focus === 0 && words[0] !== wordsOf(sentence)[0];
+  const decoys = (sentence.distractors ?? []).map((d) => (lower ? d.toLowerCase() : d));
+  return shuffle(decoys.filter((d) => !words.includes(d))).slice(0, count);
 }
 
 export type SentenceKind =

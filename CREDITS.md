@@ -1397,3 +1397,25 @@ photos credited in the sections above:
 | test-4.jpg | wir -en, ihr -t       | crop of `1.17 verbs/images/to-cook.jpg`           |
 | test-5.jpg | haben                 | crop of `1.17 verbs/images/to-have.jpg`           |
 | test-6.jpg | Das Verb ist Nummer 2 | crop of `1.10 time/images/clock.jpg`              |
+
+## Lesson G4 — Fragen
+
+The word photos under `public/G4 questions/images/` are copies of photos
+credited in the sections above:
+
+| File              | Word       | Source                                          |
+| ----------------- | ---------- | ----------------------------------------------- |
+| yes-after-not.jpg | doch       | copy of `1.18 small words/images/of-course.jpg` |
+| home.jpg          | nach Hause | copy of `1.4 home/images/house.jpg`             |
+
+Its path icons in `public/G4 questions/icons/` are 160x160 crops of photos
+credited in the sections above:
+
+| File       | Test                   | Source                                            |
+| ---------- | ---------------------- | ------------------------------------------------- |
+| lesson.jpg | Fragen                 | crop of `1.16 question words/images/why.jpg`      |
+| test-1.jpg | Wörter                 | crop of `1.16 question words/images/what.jpg`     |
+| test-2.jpg | Kommst du?             | crop of `1.17 verbs/images/to-come.jpg`           |
+| test-3.jpg | wer, was, wie          | crop of `1.16 question words/images/who.jpg`      |
+| test-4.jpg | wo, woher, wohin, wann | crop of `1.16 question words/images/where-to.jpg` |
+| test-5.jpg | ja, nein, doch         | crop of `1.18 small words/images/of-course.jpg`   |

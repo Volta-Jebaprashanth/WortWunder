@@ -542,6 +542,7 @@ const ER_SIE_ES: GrammarTest = {
     {
       id: "tom-lehrer",
       german: "Tom ist Lehrer.",
+      nounFirst: true,
       meaning: {
         english: "Tom is a teacher.",
         tamil: "டாம் ஒரு ஆசிரியர்.",
@@ -576,6 +577,7 @@ const ER_SIE_ES: GrammarTest = {
     {
       id: "anna-aerztin",
       german: "Anna ist Ärztin.",
+      nounFirst: true,
       meaning: {
         english: "Anna is a doctor.",
         tamil: "அன்னா ஒரு மருத்துவர்.",
@@ -888,6 +890,7 @@ const PLURAL: GrammarTest = {
     {
       id: "anna-tom",
       german: "Anna und Tom sind krank.",
+      nounFirst: true,
       meaning: {
         english: "Anna and Tom are sick.",
         tamil: "அன்னாவுக்கும் டாமுக்கும் உடம்பு சரியில்லை.",
@@ -1174,6 +1177,7 @@ const FROM_LIVE: GrammarTest = {
     {
       id: "anna-de",
       german: "Anna kommt aus Deutschland.",
+      nounFirst: true,
       meaning: {
         english: "Anna is from Germany.",
         tamil: "அன்னா ஜெர்மனியிலிருந்து வருகிறாள்.",
@@ -1237,6 +1241,7 @@ const FROM_LIVE: GrammarTest = {
     {
       id: "tom-graz",
       german: "Tom wohnt in Graz.",
+      nounFirst: true,
       meaning: {
         english: "Tom lives in Graz.",
         tamil: "டாம் கிராஸில் வசிக்கிறான்.",

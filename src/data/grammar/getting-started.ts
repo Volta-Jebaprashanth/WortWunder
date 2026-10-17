@@ -588,6 +588,7 @@ const KINDS: GrammarTest = {
     {
       id: "anna",
       german: "Anna lernt.",
+      nounFirst: true,
       meaning: { english: "Anna learns.", tamil: "அன்னா கற்கிறாள்.", sinhala: "ඇනා ඉගෙන ගන්නවා." },
       rule: "nomen",
     },
@@ -603,6 +604,7 @@ const KINDS: GrammarTest = {
     {
       id: "tom",
       german: "Tom lernt.",
+      nounFirst: true,
       meaning: { english: "Tom learns.", tamil: "டாம் கற்கிறான்.", sinhala: "ටොම් ඉගෙන ගන්නවා." },
       rule: "nomen",
     },

@@ -438,6 +438,7 @@ think about them:
 | -------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `alternatives` | sentence  | Another word order is just as right (_Er ist neu hier._ / _Er ist hier neu._, _Heute habe ich Zeit._ / _Ich habe heute Zeit._). `order` and `meaningBuild` accept it; `listenBuild` and `transform` don't, because there the audio or the instruction fixes the order |
 | `formal`       | sentence  | The sentence starts with polite `Sie`. Word tiles show the first word in lower case unless it's a noun, a name or polite `Sie`; without this flag, _Sie trinken Wasser, Frau Weber._ would show the tile `sie`                                                        |
+| `nounFirst`    | sentence  | The sentence starts with a noun or a name (_Anna kommt aus Wien._), which keeps its capital on a word tile. Any other first word is shown in lower case                                                                                                               |
 | `pairsPrompt`  | test      | Always, when the test has a pairs board: one line saying what to match ("Match each word to the sound it has.")                                                                                                                                                       |
 | `newWords`     | word test | A word needs a meaning its Wortschatz entry doesn't give. G2.5 teaches `sie` as "she / they" because 1.30 has only "They"                                                                                                                                             |
 
@@ -629,19 +630,17 @@ tested before they were taught. The engine now guards against some of
 these. The rest can only be caught while writing the lesson, so check every
 item below for each test of G4 to G13 before it ships.
 
-### Before G4: one engine change
+### Capitals on word tiles
 
 Word tiles show the first word of a sentence in lower case, so the one
-capital doesn't give away which word comes first. Today that works only
-for words in `LOWER_CASE_STARTERS` in `grammar-engine.ts` (pronouns,
-articles, `heute`, a few question words). From G4 on, sentences start with
-verbs (_Kommst du …?_, _Kannst du …?_, _Komm bitte!_) and time phrases
-(_Am Montag …_, _Gestern …_), and no word list can cover every verb form.
-Before building G4, turn the rule around: lower-case the first word by
-default, and keep its capital only for a noun, a name or polite `Sie`
-(mark these on the sentence, the way `formal` marks polite `Sie` today).
-Until then, every new word that starts a sentence must be added to
-`LOWER_CASE_STARTERS`, or its tile gives the answer away.
+capital doesn't give away which word comes first (`tileWords` in
+`grammar-engine.ts`). The first word keeps its capital only when it is a
+noun or a name, or polite `Sie`. Mark a sentence that starts with a noun or
+a name (_Anna kommt._, _Der Mann …_ doesn't need it: `der` is lower case)
+with `nounFirst`, and one that starts with polite `Sie` with `formal`.
+An alternative order that starts with a word written with a capital later
+in the sentence (_Heute spielt **Tom** Fußball._ → _Tom spielt heute
+Fußball._) keeps that capital without a flag.
 
 ### Exactly one right answer
 

@@ -47,6 +47,10 @@ export interface GrammarSentence {
   // word tile. Every other "Sie" at the start is "sie" (she / they) written
   // with a capital only because it comes first.
   formal?: boolean;
+  // The first word is a noun or a name ("Anna", "Herr", "Deutschland") and
+  // keeps its capital on a word tile. Any other first word is shown in lower
+  // case, so the one capital doesn't give away which tile comes first.
+  nounFirst?: boolean;
 }
 
 export interface RuleCard {

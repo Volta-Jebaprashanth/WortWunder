@@ -337,14 +337,18 @@
     height: var(--frame-height);
     zoom: var(--frame-zoom);
     border-radius: 36px;
+    /* A bezel in the app's navy text colour (--foreground), with a soft
+       outer edge and blue shadow. */
     box-shadow:
-      0 0 0 14px oklch(0.22 0.02 260),
+      0 0 0 14px var(--foreground),
+      0 0 0 16px oklch(0.6 0.1 245 / 0.5),
       0 30px 80px oklch(0.45 0.1 240 / 0.35);
   }
   :root[data-view="phone"] .app-frame {
     border-radius: 48px;
     box-shadow:
-      0 0 0 10px oklch(0.22 0.02 260),
+      0 0 0 10px var(--foreground),
+      0 0 0 12px oklch(0.6 0.1 245 / 0.5),
       0 30px 80px oklch(0.45 0.1 240 / 0.35);
   }
   /* The app's min-h-dvh is the window height, not the device's. */

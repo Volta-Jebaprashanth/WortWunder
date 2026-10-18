@@ -1,5 +1,4 @@
 import { isTestType, TIER_ORDER, tierOfType, type TestType, type Tier } from "@/lib/quiz-engine";
-import { tierOfGrammarType } from "@/lib/grammar-engine";
 
 // Local-only mastery tracking. Each test (e.g. "1.1" for greetings) gets one
 // row per (testType, word) combination — 100 rows for a 10-word/10-type test
@@ -34,12 +33,6 @@ import { tierOfGrammarType } from "@/lib/grammar-engine";
 // missing its question); the basic tier then starts each row at 2 (and caps
 // at 5) so a kid sees every word a couple more times in its simplest form
 // before anything harder shows up.
-//
-// Grammar tests (grammar-engine.ts) use the same store and rules. Their row
-// types ("rule", "gapPick", ...) and ids (a rule card, a sentence, "board")
-// differ, and not every id gets every type, so they enter through
-// ensureRowsEntered with an explicit row list; a row's type names its tier
-// in quiz-engine.ts or grammar-engine.ts.
 const PROGRESS_KEY = "wortwunder:progress";
 const SCHEMA_VERSION = 2;
 const FAIL_PENALTY = 2;
@@ -52,7 +45,7 @@ const PENDING_LIMITS: Record<Tier, { start: number; max: number }> = {
 };
 
 function tierOfRow(testType: string): Tier | undefined {
-  return isTestType(testType) ? tierOfType(testType) : tierOfGrammarType(testType);
+  return isTestType(testType) ? tierOfType(testType) : undefined;
 }
 
 function startPending(testType: string): number {

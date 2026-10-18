@@ -83,48 +83,14 @@ export interface Strings {
   openKeyboard: string;
   playGermanWord: string;
   tapToHear: (text: string) => string;
-  playSentence: string;
   correctMeaning: (word: string, meaning: string) => string;
   hintBird: string;
   hintGeneric: string;
   roundSuccess: string;
   resultSummary: (questions: number, mistakes: number) => string;
-  youLearned: string;
   backToPath: string;
   expandSection: string;
   collapseSection: string;
-  comingSoon: string;
-  comingSoonTitle: string;
-  comingSoonBody: (readyUpTo: string) => string;
-  practiseVocabulary: string;
-  ruleCard: string;
-  quickCheck: string;
-  fillGap: string;
-  pickGapFiller: string;
-  listenThenChooseSentence: string;
-  matchEachPair: string;
-  sortChallenge: string;
-  sortHint: string;
-  typeChallenge: string;
-  typeMissing: string;
-  typeHere: string;
-  typeLetter: (letter: string) => string;
-  deleteLetter: string;
-  orderChallenge: string;
-  putWordsInOrder: string;
-  buildSentence: string;
-  listenThenBuild: string;
-  transformChallenge: string;
-  spotChallenge: string;
-  tapWrongWord: string;
-  noMistake: string;
-  replyChallenge: string;
-  pickReply: string;
-  hintMeaning: string;
-  hintListen: string;
-  hintWordOrder: string;
-  hintReply: string;
-  capitalNote: (word: string) => string;
 }
 
 export const TRANSLATIONS: Record<MotherTongue, Strings> = {
@@ -200,50 +166,15 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     openKeyboard: "Type with the keyboard",
     playGermanWord: "Play German word",
     tapToHear: (text) => `${text} — tap to hear`,
-    playSentence: "Play the sentence",
     correctMeaning: (word, meaning) => `${word} = ${meaning}!`,
     hintBird: "Hint: this animal has feathers and loves to sing.",
     hintGeneric: "Hint: listen to the word again and think about the picture.",
     roundSuccess: "Great job! You finished this test.",
     resultSummary: (questions, mistakes) =>
       `${questions} questions · ${mistakes === 0 ? "no mistakes" : mistakes === 1 ? "1 mistake" : `${mistakes} mistakes`}`,
-    youLearned: "You learned",
     backToPath: "Back to my path",
     expandSection: "Expand",
     collapseSection: "Collapse",
-    comingSoon: "Coming soon",
-    comingSoonTitle: "Coming soon!",
-    comingSoonBody: (readyUpTo) =>
-      `Right now the grammar lessons up to ${readyUpTo} are ready. The rest will be available soon. Until then, practise the vocabulary in Wortschatz!`,
-    practiseVocabulary: "Practise vocabulary",
-    ruleCard: "New rule",
-    quickCheck: "Quick check",
-    fillGap: "Fill the gap",
-    pickGapFiller: "Pick what fills the gap.",
-    listenThenChooseSentence: "Listen, then choose what you hear.",
-    matchEachPair: "Match each pair.",
-    sortChallenge: "Sort it",
-    sortHint: "Tap a word, then tap its group.",
-    typeChallenge: "Type it",
-    typeMissing: "Type what is missing.",
-    typeHere: "Type here",
-    typeLetter: (letter) => `Type ${letter}`,
-    deleteLetter: "Delete a letter",
-    orderChallenge: "Word order",
-    putWordsInOrder: "Put the words in order.",
-    buildSentence: "Build this sentence in German.",
-    listenThenBuild: "Listen, then build the sentence.",
-    transformChallenge: "Change the sentence",
-    spotChallenge: "Find the mistake",
-    tapWrongWord: 'Tap the wrong word, or "No mistake".',
-    noMistake: "No mistake",
-    replyChallenge: "Reply",
-    pickReply: "Pick the reply that fits.",
-    hintMeaning: "Look at the whole sentence: who is it about, and what happens?",
-    hintListen: "Listen again and check every word, not just the first one.",
-    hintWordOrder: "The words are right, but the order isn't. Look at where the verb goes.",
-    hintReply: "Read the question again. Which reply answers it?",
-    capitalNote: (word) => `Remember the capital letter: ${word}`,
   },
   tamil: {
     openProfileMenu: "சுயவிவரப் பட்டியலைத் திற",
@@ -318,50 +249,15 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     openKeyboard: "விசைப்பலகையில் தட்டச்சு செய்",
     playGermanWord: "ஜெர்மன் சொல்லைக் கேள்",
     tapToHear: (text) => `${text} — கேட்க தட்டவும்`,
-    playSentence: "வாக்கியத்தைக் கேள்",
     correctMeaning: (word, meaning) => `${word} = ${meaning}!`,
     hintBird: "குறிப்பு: இந்த விலங்கிற்கு இறகுகள் உண்டு, பாட விரும்பும்.",
     hintGeneric: "குறிப்பு: சொல்லை மீண்டும் கேட்டு படத்தைப் பற்றி யோசி.",
     roundSuccess: "அருமை! இந்தச் சோதனையை முடித்துவிட்டாய்.",
     resultSummary: (questions, mistakes) =>
       `${questions} கேள்விகள் · ${mistakes === 0 ? "தவறு இல்லை" : `${mistakes} தவறுகள்`}`,
-    youLearned: "நீ கற்றது",
     backToPath: "என் பாதைக்குத் திரும்பு",
     expandSection: "விரிவாக்கு",
     collapseSection: "சுருக்கு",
-    comingSoon: "விரைவில்",
-    comingSoonTitle: "விரைவில் வரும்!",
-    comingSoonBody: (readyUpTo) =>
-      `தற்போது ${readyUpTo} வரையிலான இலக்கணப் பாடங்கள் தயாராக உள்ளன. மீதமுள்ளவை விரைவில் கிடைக்கும். அதுவரை Wortschatz பகுதியில் சொற்களைப் பயிற்சி செய்!`,
-    practiseVocabulary: "சொற்களைப் பயிற்சி செய்",
-    ruleCard: "புதிய விதி",
-    quickCheck: "விரைவுச் சோதனை",
-    fillGap: "இடைவெளியை நிரப்பு",
-    pickGapFiller: "இடைவெளியை நிரப்புவதைத் தேர்ந்தெடு.",
-    listenThenChooseSentence: "கேளுங்கள், பிறகு நீங்கள் கேட்டதைத் தேர்ந்தெடுங்கள்.",
-    matchEachPair: "ஒவ்வொரு ஜோடியையும் இணைக்கவும்.",
-    sortChallenge: "வகைப்படுத்து",
-    sortHint: "ஒரு சொல்லைத் தட்டி, பிறகு அதன் குழுவைத் தட்டவும்.",
-    typeChallenge: "தட்டச்சு செய்",
-    typeMissing: "விடுபட்டதைத் தட்டச்சு செய்.",
-    typeHere: "இங்கே தட்டச்சு செய்",
-    typeLetter: (letter) => `"${letter}" தட்டச்சு செய்`,
-    deleteLetter: "ஒரு எழுத்தை நீக்கு",
-    orderChallenge: "சொல் வரிசை",
-    putWordsInOrder: "சொற்களைச் சரியான வரிசையில் வை.",
-    buildSentence: "இந்த வாக்கியத்தை ஜெர்மன் மொழியில் அமை.",
-    listenThenBuild: "கேளுங்கள், பிறகு வாக்கியத்தை அமையுங்கள்.",
-    transformChallenge: "வாக்கியத்தை மாற்று",
-    spotChallenge: "தவறைக் கண்டுபிடி",
-    tapWrongWord: 'தவறான சொல்லைத் தட்டவும், அல்லது "தவறு இல்லை".',
-    noMistake: "தவறு இல்லை",
-    replyChallenge: "பதில்",
-    pickReply: "பொருத்தமான பதிலைத் தேர்ந்தெடு.",
-    hintMeaning: "முழு வாக்கியத்தையும் பார்: யாரைப் பற்றியது, என்ன நடக்கிறது?",
-    hintListen: "மீண்டும் கேட்டு, முதல் சொல்லை மட்டுமல்ல, ஒவ்வொரு சொல்லையும் சரிபார்.",
-    hintWordOrder: "சொற்கள் சரி, ஆனால் வரிசை தவறு. வினைச்சொல் எங்கே வருகிறது என்று பார்.",
-    hintReply: "கேள்வியை மீண்டும் படி. எந்தப் பதில் அதற்குப் பொருந்தும்?",
-    capitalNote: (word) => `பெரிய எழுத்தை (capital) நினைவில் வை: ${word}`,
   },
   sinhala: {
     openProfileMenu: "පැතිකඩ මෙනුව විවෘත කරන්න",
@@ -435,49 +331,14 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     openKeyboard: "යතුරුපුවරුවෙන් ටයිප් කරන්න",
     playGermanWord: "ජර්මානු වචනය ඇසෙන්න",
     tapToHear: (text) => `${text} — ඇසීමට ඔබන්න`,
-    playSentence: "වාක්‍යය අහන්න",
     correctMeaning: (word, meaning) => `${word} = ${meaning}!`,
     hintBird: "ඉඟිය: මෙම සතාට පිහාටු ඇති අතර ගායනා කිරීමට කැමතියි.",
     hintGeneric: "ඉඟිය: වචනය නැවත අසා පින්තූරය ගැන සිතන්න.",
     roundSuccess: "නියමයි! ඔබ මෙම පරීක්ෂණය අවසන් කළා.",
     resultSummary: (questions, mistakes) =>
       `ප්‍රශ්න ${questions} · ${mistakes === 0 ? "වැරදි නැත" : `වැරදි ${mistakes}`}`,
-    youLearned: "ඔබ ඉගෙන ගත්තේ",
     backToPath: "මගේ මාවතට ආපසු",
     expandSection: "විස්තීරණය කරන්න",
     collapseSection: "හකුළන්න",
-    comingSoon: "ළඟදීම",
-    comingSoonTitle: "ළඟදීම පැමිණේ!",
-    comingSoonBody: (readyUpTo) =>
-      `දැනට ${readyUpTo} දක්වා ව්‍යාකරණ පාඩම් සූදානම්. ඉතිරි පාඩම් ළඟදීම ලැබේ. එතෙක් Wortschatz කොටසේ වචන පුහුණු වන්න!`,
-    practiseVocabulary: "වචන පුහුණු වන්න",
-    ruleCard: "නව නීතිය",
-    quickCheck: "ඉක්මන් පරීක්ෂාව",
-    fillGap: "හිස්තැන පුරවන්න",
-    pickGapFiller: "හිස්තැන පුරවන දේ තෝරන්න.",
-    listenThenChooseSentence: "අහන්න, පසුව ඔබ ඇසූ දේ තෝරන්න.",
-    matchEachPair: "එක් එක් යුගලය ගළපන්න.",
-    sortChallenge: "වර්ග කරන්න",
-    sortHint: "වචනයක් ඔබා, පසුව එහි කණ්ඩායම ඔබන්න.",
-    typeChallenge: "ටයිප් කරන්න",
-    typeMissing: "අඩු වී ඇති දේ ටයිප් කරන්න.",
-    typeHere: "මෙතැන ටයිප් කරන්න",
-    typeLetter: (letter) => `"${letter}" ටයිප් කරන්න`,
-    deleteLetter: "අකුරක් මකන්න",
-    orderChallenge: "වචන පිළිවෙළ",
-    putWordsInOrder: "වචන නිවැරදි පිළිවෙළට තබන්න.",
-    buildSentence: "මෙම වාක්‍යය ජර්මන් භාෂාවෙන් හදන්න.",
-    listenThenBuild: "අහන්න, පසුව වාක්‍යය හදන්න.",
-    transformChallenge: "වාක්‍යය වෙනස් කරන්න",
-    spotChallenge: "වැරැද්ද සොයන්න",
-    tapWrongWord: 'වැරදි වචනය ඔබන්න, නැතහොත් "වැරැද්දක් නැත".',
-    noMistake: "වැරැද්දක් නැත",
-    replyChallenge: "පිළිතුර",
-    pickReply: "ගැළපෙන පිළිතුර තෝරන්න.",
-    hintMeaning: "මුළු වාක්‍යයම බලන්න: කවුරු ගැනද, මොකද වෙන්නේ?",
-    hintListen: "නැවත අහලා, පළමු වචනය විතරක් නෙවෙයි, හැම වචනයක්ම බලන්න.",
-    hintWordOrder: "වචන හරි, නමුත් පිළිවෙළ වැරදියි. ක්‍රියාපදය එන තැන බලන්න.",
-    hintReply: "ප්‍රශ්නය නැවත කියවන්න. එයට ගැළපෙන පිළිතුර කුමක්ද?",
-    capitalNote: (word) => `කැපිටල් අකුර මතක තබා ගන්න: ${word}`,
   },
 };

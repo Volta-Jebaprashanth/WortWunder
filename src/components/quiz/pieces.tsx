@@ -857,7 +857,6 @@ export function ResultCard({
   hint,
   picked,
   spelling,
-  detail,
   actionLabel,
   onAction,
 }: {
@@ -881,9 +880,6 @@ export function ResultCard({
         answerLabel: string;
       }
     | undefined;
-  // Extra content under the header, e.g. the grammar quiz's answered
-  // sentence with its meaning.
-  detail?: React.ReactNode;
   actionLabel: string;
   onAction: () => void;
 }) {
@@ -923,11 +919,6 @@ export function ResultCard({
             {!correct && hint && <p className="text-sm font-bold text-ink-soft">💡 {hint}</p>}
           </div>
         </div>
-        {detail && (
-          <div className="mt-4 flex flex-col items-center gap-1 rounded-3xl bg-card p-4 text-center">
-            {detail}
-          </div>
-        )}
         {!correct && picked && (
           <div className="mt-4 flex flex-col items-center gap-2 rounded-3xl bg-card p-4 text-center">
             <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-ink-soft">

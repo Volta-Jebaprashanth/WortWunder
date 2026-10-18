@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { createPortal } from "react-dom";
 import {
   Check,
   ChevronRight,
@@ -35,7 +34,6 @@ import {
   WordCard,
 } from "@/components/quiz/pieces";
 import { VocabQuiz } from "@/components/quiz/VocabQuiz";
-import { GrammarQuiz } from "@/components/quiz/GrammarQuiz";
 import { TierSteps } from "@/components/quiz/TierSteps";
 import { getTestStatus, type TestStatus } from "@/lib/progress-store";
 import {
@@ -58,16 +56,6 @@ import {
   type VocabLesson,
   type VocabTest,
 } from "@/data/lessons";
-import {
-  findGrammarTest,
-  GRAMMAR_LESSONS,
-  UPCOMING_GRAMMAR_LESSONS,
-  type UpcomingGrammarLesson,
-  grammarLessonPicture,
-  grammarTestPicture,
-  resolveWords,
-} from "@/data/grammar";
-import type { GrammarLesson, GrammarTest } from "@/data/grammar/types";
 import { GREETINGS_WORDS } from "@/data/greetings";
 import { FAMILY_LESSON_ID } from "@/data/family";
 import { WEATHER_LESSON_ID } from "@/data/weather";
@@ -109,7 +97,6 @@ export const Route = createFileRoute("/")({
 type Screen =
   | "home"
   | "quiz"
-  | "grammar"
   | "training"
   | "trainingCheck"
   | "picture"
@@ -128,7 +115,6 @@ type Screen =
 function Index() {
   const [screen, setScreen] = useState<Screen>("home");
   const [activeTest, setActiveTest] = useState<VocabTest | null>(null);
-  const [activeGrammar, setActiveGrammar] = useState<GrammarTest | null>(null);
   const [answer, setAnswer] = useState<string | null>(null);
   const [letters, setLetters] = useState<number[]>([]);
   const [heard, setHeard] = useState(false);
@@ -372,23 +358,8 @@ function Index() {
         /* fullscreen unsupported (e.g. iOS Safari) — layout still fills the viewport */
       }
     }
-    // A grammar lesson's word test is an ordinary vocabulary test over words
-    // borrowed from Wortschatz lessons; its grammar tests have their own quiz.
-    const grammarTest = findGrammarTest(nodeId);
-    if (grammarTest?.kind === "grammar") {
-      setActiveGrammar(grammarTest);
-      go("grammar");
-      return;
-    }
     const test: VocabTest | undefined =
-      grammarTest?.kind === "words"
-        ? {
-            testId: grammarTest.testId,
-            part: 1,
-            words: resolveWords(grammarTest),
-            ...(grammarTest.testTypes && { testTypes: grammarTest.testTypes }),
-          }
-        : (findVocabTest(nodeId) ?? TESTING_TESTS.find((t) => t.testId === nodeId));
+      findVocabTest(nodeId) ?? TESTING_TESTS.find((t) => t.testId === nodeId);
     if (test) {
       setActiveTest(test);
       go("quiz");
@@ -446,17 +417,7 @@ function Index() {
         />
       )}
 
-      {screen === "grammar" && activeGrammar && (
-        <GrammarQuiz
-          key={activeGrammar.testId}
-          test={activeGrammar}
-          t={t}
-          lang={lang}
-          onExit={() => go("home")}
-        />
-      )}
-
-      {screen !== "quiz" && screen !== "grammar" && (
+      {screen !== "quiz" && (
         <main className="relative z-10 mx-auto max-w-5xl px-4 pb-10 sm:px-6">
           {screen === "home" && (
             <Home
@@ -910,8 +871,7 @@ type PathNode = {
   id: string;
   title: string;
   icon: React.ReactNode;
-  // "soon": a lesson that isn't built yet; tapping it explains that.
-  state: "done" | "active" | "soon";
+  state: "done" | "active";
   meaning: string;
   // The VocabQuiz test this node opens, if any — drives its tier badge and
   // completed tick (see getTestStatus).
@@ -970,37 +930,6 @@ function lessonPathNode(
       meaning: `${meaning} ${test.part}`,
       testId: test.testId,
     })),
-  };
-}
-
-// A grammar lesson as a path node. Its tests are named for what they teach
-// ("Wörter", "ä, ö, ü, ß"), not numbered like the vocabulary tests.
-function grammarLessonPathNode(lesson: GrammarLesson, lang: MotherTongue): PathNode {
-  return {
-    id: lesson.id,
-    title: lesson.title,
-    icon: <PathPicture src={grammarLessonPicture(lesson)} fallback={lesson.icon} />,
-    state: "active",
-    meaning: lesson.meaning[lang],
-    children: lesson.tests.map((test) => ({
-      id: test.testId,
-      title: test.title,
-      icon: <PathPicture src={grammarTestPicture(lesson, test)} fallback={lesson.icon} />,
-      state: "active",
-      meaning: test.meaning[lang],
-      testId: test.testId,
-    })),
-  };
-}
-
-// A grammar lesson that isn't built yet: no tests, greyed out on the path.
-function upcomingGrammarPathNode(lesson: UpcomingGrammarLesson, lang: MotherTongue): PathNode {
-  return {
-    id: lesson.id,
-    title: lesson.title,
-    icon: lesson.icon,
-    state: "soon",
-    meaning: lesson.meaning[lang],
   };
 }
 
@@ -1131,10 +1060,8 @@ function Home({
         icon: "📝",
         state: "active",
         meaning: PATH_MEANINGS.grammatik[lang],
-        children: [
-          ...GRAMMAR_LESSONS.map((lesson) => grammarLessonPathNode(lesson, lang)),
-          ...UPCOMING_GRAMMAR_LESSONS.map((lesson) => upcomingGrammarPathNode(lesson, lang)),
-        ],
+        // Empty while the grammar lessons are being redesigned.
+        children: [],
       },
       {
         id: "wortschatz",
@@ -1166,10 +1093,8 @@ function Home({
     });
   // Sections/lessons toggle open; only playable nodes (a vocab test or the
   // Tiere demo) start a lesson.
-  const [showComingSoon, setShowComingSoon] = useState(false);
   const handleCardClick = (node: PathNode) => {
-    if (node.state === "soon") setShowComingSoon(true);
-    else if (node.children?.length) toggleNode(node.id);
+    if (node.children?.length) toggleNode(node.id);
     else if (node.testId) onStart(node.testId);
     else if (node.id === "tiere") onStart(node.id);
   };
@@ -1209,21 +1134,6 @@ function Home({
             />
           </div>
         </div>
-        {showComingSoon && (
-          <ComingSoon
-            t={t}
-            onClose={() => setShowComingSoon(false)}
-            onPractiseVocabulary={() => {
-              setShowComingSoon(false);
-              setExpanded((prev) => new Set(prev).add("wortschatz"));
-              requestAnimationFrame(() =>
-                document
-                  .getElementById("path-wortschatz")
-                  ?.scrollIntoView({ behavior: "smooth", block: "start" }),
-              );
-            }}
-          />
-        )}
         <div className="mx-auto mt-7 max-w-lg">
           <PathTree
             t={t}
@@ -1300,7 +1210,6 @@ function PathTree({
               className={cn(
                 "flex items-center gap-3 rounded-2xl bg-card p-3 ring-1 ring-border transition",
                 depth === 0 && "p-4",
-                state === "soon" && "opacity-60",
               )}
             >
               <button
@@ -1312,7 +1221,6 @@ function PathTree({
                   depth === 0 ? "size-14 text-2xl" : "size-11 text-lg",
                   state === "done" && "bg-mint",
                   state === "active" && "animate-bob bg-frost",
-                  state === "soon" && "bg-muted grayscale",
                 )}
               >
                 {node.icon}
@@ -1348,11 +1256,6 @@ function PathTree({
                   <span className="block text-xs font-bold text-ink-soft">{node.meaning}</span>
                 </span>
                 {currentTier && <TierSteps tier={currentTier} />}
-                {state === "soon" && (
-                  <span className="shrink-0 rounded-full bg-muted px-2.5 py-1 text-xs font-extrabold text-ink-soft ring-1 ring-border">
-                    {t.comingSoon}
-                  </span>
-                )}
               </button>
               {hasChildren && (
                 <button
@@ -1602,57 +1505,6 @@ function ProfileMenu({
         </div>
       </div>
     </div>
-  );
-}
-
-// Shown when a grammar lesson that isn't built yet is tapped. Portalled to
-// the app root like the other popups: inside the path's glass-panel (which
-// has a backdrop-filter) "fixed" would pin it to the panel, not the screen.
-function ComingSoon({
-  t,
-  onClose,
-  onPractiseVocabulary,
-}: {
-  t: Strings;
-  onClose: () => void;
-  onPractiseVocabulary: () => void;
-}) {
-  const lastReady = GRAMMAR_LESSONS[GRAMMAR_LESSONS.length - 1]!;
-  return createPortal(
-    <div
-      className="fixed inset-0 z-50 grid place-items-center bg-foreground/40 p-4 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="coming-soon-title"
-        onClick={(e) => e.stopPropagation()}
-        className="animate-pop glass-panel w-full max-w-sm rounded-[28px] bg-card p-6 text-center sm:p-7"
-      >
-        <div className="mx-auto grid size-14 place-items-center rounded-3xl bg-sun/40">
-          <Sparkles className="size-7" />
-        </div>
-        <h2 id="coming-soon-title" className="mt-4 font-display text-xl font-extrabold">
-          {t.comingSoonTitle}
-        </h2>
-        <p className="mt-2 font-bold text-ink-soft">
-          {t.comingSoonBody(`${lastReady.id} ${lastReady.title}`)}
-        </p>
-        <Button
-          variant="adventure"
-          size="lesson"
-          className="mt-6 w-full"
-          onClick={onPractiseVocabulary}
-        >
-          {t.practiseVocabulary}
-        </Button>
-        <Button variant="ghost" className="mt-2 w-full rounded-2xl" onClick={onClose}>
-          {t.gotIt}
-        </Button>
-      </div>
-    </div>,
-    document.getElementById("app-root") ?? document.body,
   );
 }
 

@@ -35,8 +35,9 @@ the task before starting, so the setup doesn't need explaining again:
 docs/
   grammar-planning/
     ROADMAP.md            the grammar lessons G1–G20 and their tests
-    G1/plan.md            G1 in detail: screens, questions per level,
-                          memory tricks, penalty rules
+    G1/plan.md            G1 in detail: questions per level, memory
+                          tricks, penalty rules
+    G1/screens.md         wireframes of every G1 screen, exact content
   qa/
     QA-PLAYBOOK.md        how to test a lesson in the browser: the brief,
                           helpers, screen types, how to judge, report format
@@ -50,6 +51,10 @@ docs/
   images. Write the result to `docs/qa/bug-reports/BUGS-<lesson>.md` in the
   shape the playbook's §8 describes.
 - **Fixing reported bugs**: work from the matching `BUGS-<lesson>.md`.
+- **Planning any grammar section** ("plan G2", "plan G7"): follow "How to
+  plan a grammar section" in `docs/grammar-planning/ROADMAP.md`. Write
+  `docs/grammar-planning/G<n>/plan.md` and `screens.md`. Each section is
+  designed on its own and doesn't have to follow G1.
 - **Testing partner: selenium-mcp**
   ([repo](https://github.com/Volta-Jebaprashanth/selenium-mcp)), not Claude
   in Chrome. Quick start, full details in `docs/qa/SELENIUM-MCP-SETUP.md`:

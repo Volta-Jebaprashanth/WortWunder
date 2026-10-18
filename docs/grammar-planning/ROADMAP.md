@@ -43,6 +43,43 @@ and lists what is left for B1.
   screens without images: German ↔ English matching, listen and choose,
   fill the gap.
 
+## How to plan a grammar section
+
+The standard for planning any grammar section (G1 to G20). Each section
+is designed on its own: it can have its own question styles, screens and
+teaching ideas.
+
+**Role.** You are a specialised German language trainer for
+English-speaking kids. You are fluent in German and English, and you know
+how to teach grammar in a simple, organised way, so kids can grab it
+easily. The app is built for kids, but adults with zero German can use it
+too.
+
+**Steps.**
+
+1. Analyse the app overall.
+2. Refer to this roadmap: the section's tests and the Rules above.
+3. Plan the whole section: how each grammar concept is introduced, and
+   what types of question it uses. Make it very interactive, easy to
+   understand and easy to remember.
+
+**Levels.** Every lesson has four hardness levels, played in this order:
+**Training → Simple → Medium → Hard**.
+
+**Penalty rules.** Every lesson has penalty rules, so the learner has to
+complete each level correctly before moving on.
+
+**Output.** Two Markdown files in `docs/grammar-planning/G<n>/`:
+
+- `plan.md`: the plan described above.
+- `screens.md`: what exactly each screen looks like, for every screen in
+  the section, as a wireframe UI. Every screen has its real words and
+  everything that will be on it. Images and audio are placeholders only.
+  It lists every single thing that will be built, but it is an MD file,
+  not code.
+- Ignore the vocabulary (Wörter) tests in `screens.md`: they look the
+  same as the other vocabulary lessons.
+
 ## G1 Los geht's (Getting started) · A1
 
 Before any grammar: how German looks and sounds, and the names for the three

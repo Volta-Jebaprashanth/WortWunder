@@ -91,6 +91,35 @@ export interface Strings {
   backToPath: string;
   expandSection: string;
   collapseSection: string;
+  // Grammar tests (GrammarQuiz.tsx)
+  levelWord: string;
+  levelNames: [string, string, string, string];
+  levelLines: [string, string, string, string];
+  hint: string;
+  hintNote: string;
+  warmUp: string;
+  fromLastTime: string;
+  pause: string;
+  pauseLine: string;
+  remember: string;
+  sayItAfterMe: string;
+  listenThenSay: string;
+  hearAgain: string;
+  slowly: string;
+  iSaidIt: string;
+  skip: string;
+  playAll: string;
+  playAgain: string;
+  playScene: string;
+  answerWas: (answer: string) => string;
+  you: string;
+  soundN: (n: number) => string;
+  tapSoundToChoose: string;
+  turnOf: (turn: number, total: number) => string;
+  finishFirst: (name: string) => string;
+  typeHere: string;
+  tapToPlace: string;
+  starsLabel: (stars: number) => string;
 }
 
 export const TRANSLATIONS: Record<MotherTongue, Strings> = {
@@ -175,6 +204,39 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     backToPath: "Back to my path",
     expandSection: "Expand",
     collapseSection: "Collapse",
+    levelWord: "Level",
+    levelNames: ["Training", "Simple", "Medium", "Hard"],
+    levelLines: [
+      "Look, listen, remember.",
+      "Choose the right one.",
+      "Remember it yourself.",
+      "No help now. You can do it!",
+    ],
+    hint: "Hint",
+    hintNote: "Using a hint means this one comes back once more.",
+    warmUp: "Warm-up",
+    fromLastTime: "From last time",
+    pause: "Pause",
+    pauseLine: "Let's look at this again together.",
+    remember: "Merke · Remember",
+    sayItAfterMe: "Say it after me",
+    listenThenSay: "Listen, then say it out loud.",
+    hearAgain: "Hear it again",
+    slowly: "Slowly",
+    iSaidIt: "I said it!",
+    skip: "Skip",
+    playAll: "Play all",
+    playAgain: "Play again",
+    playScene: "Play the scene",
+    answerWas: (answer) => `The answer: ${answer}`,
+    you: "You",
+    soundN: (n) => `Sound ${n}`,
+    tapSoundToChoose: "Tap a sound to hear it and choose it.",
+    turnOf: (turn, total) => `turn ${turn} of ${total}`,
+    finishFirst: (name) => `Finish ${name} first`,
+    typeHere: "Type here",
+    tapToPlace: "Tap a tile, then tap where it goes.",
+    starsLabel: (stars) => `${stars} of 3 stars`,
   },
   tamil: {
     openProfileMenu: "சுயவிவரப் பட்டியலைத் திற",
@@ -258,6 +320,39 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     backToPath: "என் பாதைக்குத் திரும்பு",
     expandSection: "விரிவாக்கு",
     collapseSection: "சுருக்கு",
+    levelWord: "நிலை",
+    levelNames: ["பயிற்சி", "எளிது", "நடுத்தரம்", "கடினம்"],
+    levelLines: [
+      "பார், கேள், நினைவில் வை.",
+      "சரியானதைத் தேர்ந்தெடு.",
+      "நீயே நினைவுகூர்.",
+      "இப்போது உதவி இல்லை. உன்னால் முடியும்!",
+    ],
+    hint: "குறிப்பு",
+    hintNote: "குறிப்பைப் பயன்படுத்தினால் இந்தக் கேள்வி இன்னொரு முறை வரும்.",
+    warmUp: "தயார்ப் பயிற்சி",
+    fromLastTime: "கடந்த முறையிலிருந்து",
+    pause: "இடைவேளை",
+    pauseLine: "இதை மீண்டும் ஒன்றாகப் பார்ப்போம்.",
+    remember: "Merke · நினைவில் வை",
+    sayItAfterMe: "என்னைப் பின்தொடர்ந்து சொல்",
+    listenThenSay: "கேள், பிறகு சத்தமாகச் சொல்.",
+    hearAgain: "மீண்டும் கேள்",
+    slowly: "மெதுவாக",
+    iSaidIt: "நான் சொன்னேன்!",
+    skip: "தவிர்",
+    playAll: "எல்லாவற்றையும் இயக்கு",
+    playAgain: "மீண்டும் இயக்கு",
+    playScene: "காட்சியை இயக்கு",
+    answerWas: (answer) => `விடை: ${answer}`,
+    you: "நீ",
+    soundN: (n) => `ஒலி ${n}`,
+    tapSoundToChoose: "ஒலியைத் தட்டிக் கேட்டுத் தேர்ந்தெடு.",
+    turnOf: (turn, total) => `${total} இல் ${turn}`,
+    finishFirst: (name) => `முதலில் ${name} முடி`,
+    typeHere: "இங்கே தட்டச்சு செய்",
+    tapToPlace: "ஒரு ஓடுவைத் தட்டி, அது போகும் இடத்தைத் தட்டு.",
+    starsLabel: (stars) => `3 இல் ${stars} நட்சத்திரங்கள்`,
   },
   sinhala: {
     openProfileMenu: "පැතිකඩ මෙනුව විවෘත කරන්න",
@@ -340,5 +435,38 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     backToPath: "මගේ මාවතට ආපසු",
     expandSection: "විස්තීරණය කරන්න",
     collapseSection: "හකුළන්න",
+    levelWord: "මට්ටම",
+    levelNames: ["පුහුණුව", "සරල", "මධ්‍යම", "අමාරු"],
+    levelLines: [
+      "බලන්න, අහන්න, මතක තබාගන්න.",
+      "හරි එක තෝරන්න.",
+      "ඔබම මතක් කරන්න.",
+      "දැන් උදව් නැහැ. ඔබට පුළුවන්!",
+    ],
+    hint: "ඉඟිය",
+    hintNote: "ඉඟියක් භාවිත කළොත් මේ ප්‍රශ්නය තව වරක් එනවා.",
+    warmUp: "උණුසුම් කිරීම",
+    fromLastTime: "පසුගිය වතාවෙන්",
+    pause: "විවේකය",
+    pauseLine: "අපි මේක ආයෙත් එකට බලමු.",
+    remember: "Merke · මතක තබාගන්න",
+    sayItAfterMe: "මට පස්සේ කියන්න",
+    listenThenSay: "අහලා, ඊට පස්සේ හයියෙන් කියන්න.",
+    hearAgain: "ආයෙත් අහන්න",
+    slowly: "හෙමින්",
+    iSaidIt: "මම කිව්වා!",
+    skip: "මඟහරින්න",
+    playAll: "සියල්ල වාදනය කරන්න",
+    playAgain: "ආයෙත් වාදනය කරන්න",
+    playScene: "දර්ශනය වාදනය කරන්න",
+    answerWas: (answer) => `පිළිතුර: ${answer}`,
+    you: "ඔබ",
+    soundN: (n) => `ශබ්දය ${n}`,
+    tapSoundToChoose: "ශබ්දයක් තට්ටු කර අහලා තෝරන්න.",
+    turnOf: (turn, total) => `${total} න් ${turn}`,
+    finishFirst: (name) => `මුලින්ම ${name} අවසන් කරන්න`,
+    typeHere: "මෙතන ටයිප් කරන්න",
+    tapToPlace: "ටයිල් එකක් තට්ටු කර, එය යන තැන තට්ටු කරන්න.",
+    starsLabel: (stars) => `තරු 3 න් ${stars}`,
   },
 };

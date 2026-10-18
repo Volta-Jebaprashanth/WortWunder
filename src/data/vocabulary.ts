@@ -17,6 +17,9 @@ export interface VocabWord {
   // A short German sentence using the word, plus its meaning, shown on the
   // Training level's intro screen (TrainingCard in pieces.tsx).
   example?: { german: string } & Record<MotherTongue, string>;
+  // A one-line memory trick shown on the intro screen ("nein sounds like
+  // nine"), used by the G1.1 grammar test.
+  hook?: Record<MotherTongue, string>;
 }
 
 export const TIERE_WORDS: VocabWord[] = [

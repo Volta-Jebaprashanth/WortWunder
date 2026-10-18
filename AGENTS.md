@@ -229,7 +229,20 @@ Vite 8 + Nitro.
   `src/routes/index.tsx` are generated from it. Nouns keep their
   der/die/das in `full` (shown and spoken); spelling screens drop it via
   `spellingOf`.
-- **Path layout**: 1 Grammatik (empty while grammar is redesigned), 2
+- **Grammar tests** (G1 so far, planned in `docs/grammar-planning/`): data
+  in `src/data/g1/` (one file per test, `index.ts` lists them), engine in
+  `src/lib/grammar-engine.ts`, screens in
+  `src/components/quiz/grammar-pieces.tsx`, runner `GrammarQuiz.tsx`.
+  G1.1 is a plain vocabulary test (`VocabQuiz`); G1.2–G1.6 are hand-written
+  questions in four levels (Training → Simple → Medium → Hard, stored as
+  the `training`/`easy`/`medium`/`hard` tiers). Each question is one
+  progress row keyed `g.<tier>:<questionId>` (same pending counter, Hard
+  caps at 5). Training questions carry `intro` cards shown before them.
+  Tests open in order on the path (`requires`); stars live under
+  `wortwunder:stars`. G1 audio is under `public/G1 getting started/audio/`;
+  `en:<text>` clips are English-voice "wrong" readings. Card art is emoji
+  placeholders for now.
+- **Path layout**: 1 Grammatik (G1 Los geht's), 2
   Wortschatz (the vocabulary lessons), 3 ÖSD
   (no lessons of its own: `OESD_LESSONS` in `index.tsx` lists
   Wortschatz lessons again, optionally renamed, e.g. 1.2 Familie as "Die

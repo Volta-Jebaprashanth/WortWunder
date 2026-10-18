@@ -24,6 +24,8 @@ export function LessonFrame({
   title,
   subtitle,
   tier,
+  tiers,
+  onTitle,
   children,
 }: {
   t: Strings;
@@ -34,6 +36,10 @@ export function LessonFrame({
   // top-right corner, level with the eyebrow (the test name, e.g. "Word to
   // picture").
   tier?: Tier | undefined;
+  // The level track's tiers, for grammar tests' 4 dots (see TierSteps).
+  tiers?: Tier[] | undefined;
+  // What tapping the title plays; speaks the title itself when left out.
+  onTitle?: (() => void) | undefined;
   children: React.ReactNode;
 }) {
   return (
@@ -42,12 +48,12 @@ export function LessonFrame({
         <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-ink-soft">
           {eyebrow}
         </p>
-        {tier && <TierSteps tier={tier} />}
+        {tier && <TierSteps tier={tier} tiers={tiers} />}
       </div>
       <h1 className="mt-1 font-display text-3xl font-extrabold sm:text-4xl">
         <button
           type="button"
-          onClick={() => playWord(title)}
+          onClick={onTitle ?? (() => playWord(title))}
           className="inline-flex items-center gap-2 text-left"
           aria-label={t.tapToHear(title)}
         >
@@ -772,6 +778,11 @@ export function TrainingCard({
           {word[lang]}
         </p>
       </div>
+      {word.hook && (
+        <p className="mx-auto mt-4 max-w-sm rounded-[24px] bg-sun/30 p-4 text-center font-bold ring-1 ring-sun">
+          💡 {word.hook[lang]}
+        </p>
+      )}
       {word.plural && (
         <div className="mx-auto mt-6 max-w-sm rounded-[24px] bg-card p-4 text-center ring-1 ring-border">
           <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-ink-soft">

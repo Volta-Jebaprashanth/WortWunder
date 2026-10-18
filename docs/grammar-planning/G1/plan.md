@@ -33,12 +33,12 @@ German. Every teaching card is also shown in the learner's mother tongue
 Every G1 test runs the same four levels, in order. A level opens only
 when every question in the level before it is cleared.
 
-| Level           | Colour (existing `TierSteps`) | What the learner does                                  | Help allowed           |
-| --------------- | ----------------------------- | ------------------------------------------------------ | ---------------------- |
-| 🟣 **Training** | violet                        | Sees and hears the new thing, then one easy check      | Everything             |
-| 🔵 **Simple**   | sky / green                   | Recognises it: choose from 2–4 options                 | 🔊 replay, 💡 hint     |
-| 🟡 **Medium**   | amber                         | Recalls it: fill a gap, sort, listen and pick, 4+ opts | 🔊 replay, 💡 hint     |
-| 🔴 **Hard**     | berry                         | Produces it: build/type with no options, mixed review  | 🔊 replay only         |
+| Level           | Colour (existing `TierSteps`) | What the learner does                                  | Help allowed       |
+| --------------- | ----------------------------- | ------------------------------------------------------ | ------------------ |
+| 🟣 **Training** | violet                        | Sees and hears the new thing, then one easy check      | Everything         |
+| 🔵 **Simple**   | sky / green                   | Recognises it: choose from 2–4 options                 | 🔊 replay, 💡 hint |
+| 🟡 **Medium**   | amber                         | Recalls it: fill a gap, sort, listen and pick, 4+ opts | 🔊 replay, 💡 hint |
+| 🔴 **Hard**     | berry                         | Produces it: build/type with no options, mixed review  | 🔊 replay only     |
 
 Engine mapping: Training = today's `training` + `basic` tiers merged
 (intro card, then "find the picture"); Simple = `easy`; Medium = `medium`;
@@ -123,12 +123,12 @@ Memory hooks on the Training card (1 line each):
 - _der / die / das_ — "say the little word with the noun, like it's part of
   its name": **der** Mann, **die** Frau, **das** Kind (no rule yet, G5).
 
-| Level    | Questions (existing vocabulary screens)                                               |
-| -------- | ------------------------------------------------------------------------------------- |
-| Training | `TrainingCard` per word → "find the picture" (`wordPicture`)                          |
-| Simple   | picture → choose word; word → choose meaning; listen → choose word                    |
-| Medium   | missing letter; listen → choose picture; English → choose German                      |
-| Hard     | build the word from letter tiles; listen → build; match 5 pairs (German ↔ picture)    |
+| Level    | Questions (existing vocabulary screens)                                            |
+| -------- | ---------------------------------------------------------------------------------- |
+| Training | `TrainingCard` per word → "find the picture" (`wordPicture`)                       |
+| Simple   | picture → choose word; word → choose meaning; listen → choose word                 |
+| Medium   | missing letter; listen → choose picture; English → choose German                   |
+| Hard     | build the word from letter tiles; listen → build; match 5 pairs (German ↔ picture) |
 
 This is a Wörter test, so it is built exactly like a vocabulary test
 (`VocabQuiz` + data file). No new screens are needed.
@@ -142,12 +142,12 @@ them are "tricksters" for English speakers.
 
 **Training: four letter clubs** (one card + one check per club):
 
-| Club                  | Letters                  | Trick                                                     |
-| --------------------- | ------------------------ | --------------------------------------------------------- |
-| 🎵 **"-eh" club**      | B C D E G P T W          | They all rhyme: beh, tseh, deh, eh, geh, peh, teh, weh     |
-| 🔔 **"e-" club**       | F L M N R S              | They start with "e": eff, ell, emm, enn, err, ess          |
-| 😮 **"-ah" club**      | A H K                    | Open your mouth: ah, hah, kah                              |
-| 🃏 **Odd ones**        | I J O Q U V X Y Z        | Each has its own name: ih, jott, oh, kuh, uh, fau, iks, üpsilon, tsett |
+| Club              | Letters           | Trick                                                                  |
+| ----------------- | ----------------- | ---------------------------------------------------------------------- |
+| 🎵 **"-eh" club** | B C D E G P T W   | They all rhyme: beh, tseh, deh, eh, geh, peh, teh, weh                 |
+| 🔔 **"e-" club**  | F L M N R S       | They start with "e": eff, ell, emm, enn, err, ess                      |
+| 😮 **"-ah" club** | A H K             | Open your mouth: ah, hah, kah                                          |
+| 🃏 **Odd ones**   | I J O Q U V X Y Z | Each has its own name: ih, jott, oh, kuh, uh, fau, iks, üpsilon, tsett |
 
 **Trickster card** (shown after the clubs, Maus gets these wrong):
 
@@ -164,16 +164,16 @@ clips joined with short pauses). Names used, all sound-safe: Anna, Tom,
 Ben, Max, Ida, Jan, Emil, Lena, Paul, Eva, Uwe, Zoe. **E, I, J, V, W, Z
 appear often on purpose.**
 
-| Level    | Questions                                                                                                 | Items |
-| -------- | --------------------------------------------------------------------------------------------------------- | ----- |
+| Level    | Questions                                                                                                                                                 | Items |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
 | Training | Club card (hear each letter, tap to replay) → "which letter did you hear?" (2 options from that club); then trickster card + check, spelling card + check | 6 + 6 |
-| Simple   | Hear a letter → tap it (4 letter options, `LetterOptions`); always 1 trickster distractor (hear "ih" → E/I) | 10    |
-| Simple   | See a letter → hear 3 sounds 🔊🔊🔊, pick the right one (**new: SoundChoice**)                              | 6     |
-| Medium   | Hear a spelled name (3–4 letters) → choose the written name from 4 (Jan / Yan / Gan / Jen)                  | 6     |
-| Medium   | Which club? Drag letters into the 3 rhyme clubs (**new: SortBaskets**)                                     | 3     |
-| Hard     | Hear a spelled name → build it from letter tiles, no options (`LetterBuilder` fed with letter audio)        | 6     |
-| Hard     | Hear a whole spelled sequence fast (e.g. W-I-E) → build                                                   | 3     |
-| Hard     | ⭐ **Spell YOUR name**: the app spells the profile name (`wortwunder:profile`), the learner taps each letter as it's spoken | 1     |
+| Simple   | Hear a letter → tap it (4 letter options, `LetterOptions`); always 1 trickster distractor (hear "ih" → E/I)                                               | 10    |
+| Simple   | See a letter → hear 3 sounds 🔊🔊🔊, pick the right one (**new: SoundChoice**)                                                                            | 6     |
+| Medium   | Hear a spelled name (3–4 letters) → choose the written name from 4 (Jan / Yan / Gan / Jen)                                                                | 6     |
+| Medium   | Which club? Drag letters into the 3 rhyme clubs (**new: SortBaskets**)                                                                                    | 3     |
+| Hard     | Hear a spelled name → build it from letter tiles, no options (`LetterBuilder` fed with letter audio)                                                      | 6     |
+| Hard     | Hear a whole spelled sequence fast (e.g. W-I-E) → build                                                                                                   | 3     |
+| Hard     | ⭐ **Spell YOUR name**: the app spells the profile name (`wortwunder:profile`), the learner taps each letter as it's spoken                               | 1     |
 
 ---
 
@@ -199,15 +199,15 @@ Apfel/Äpfel; and groß, Fuß, weiß for ß.
 
 Merke: _"Dots change the sound. Lips round for ö and ü."_
 
-| Level    | Questions                                                                                 | Items |
-| -------- | ----------------------------------------------------------------------------------------- | ----- |
+| Level    | Questions                                                                                                      | Items |
+| -------- | -------------------------------------------------------------------------------------------------------------- | ----- |
 | Training | Card → hear a pair (Mutter / Mütter), "which one had the dots?" (2 options); plus the no-keyboard card + check | 5 + 5 |
-| Simple   | Hear a word → choose a or ä / o or ö / u or ü (minimal pair, 2 options)                   | 8     |
-| Simple   | Hear the letter → tap ä / ö / ü / ß (`LetterOptions`)                                      | 4     |
-| Medium   | Missing letter: M_dchen, sch_n, T_r, Stra_e (options a ä e / o ö u / u ü i / ß s z)       | 6     |
-| Medium   | Match the spelling: Straße ↔ Strasse, schön ↔ schoen, Tür ↔ Tuer (`MatchPairs`)           | 2     |
-| Hard     | Hear a sound word → build it from letter tiles that include Ä Ö Ü ß and lookalike decoys  | 6     |
-| Hard     | Type it the "no keyboard" way: shown _schön_ → type `schoen`                              | 3     |
+| Simple   | Hear a word → choose a or ä / o or ö / u or ü (minimal pair, 2 options)                                        | 8     |
+| Simple   | Hear the letter → tap ä / ö / ü / ß (`LetterOptions`)                                                          | 4     |
+| Medium   | Missing letter: M_dchen, sch_n, T_r, Stra_e (options a ä e / o ö u / u ü i / ß s z)                            | 6     |
+| Medium   | Match the spelling: Straße ↔ Strasse, schön ↔ schoen, Tür ↔ Tuer (`MatchPairs`)                                | 2     |
+| Hard     | Hear a sound word → build it from letter tiles that include Ä Ö Ü ß and lookalike decoys                       | 6     |
+| Hard     | Type it the "no keyboard" way: shown _schön_ → type `schoen`                                                   | 3     |
 
 Engine note: `answerLetters()` turns ß into "SS". For G1.3, **ß must be
 its own tile**, so the builder needs a "keep ß" option.
@@ -241,16 +241,16 @@ sound. In tiles, a team is **one tile** (`sch`, `ei`, `ie`, `au`, `eu`,
 
 Merke: _"ei = eye, ie = ee. W says v, V says f, J says y."_
 
-| Level    | Questions                                                                                        | Items |
-| -------- | ------------------------------------------------------------------------------------------------ | ----- |
-| Training | Team card (tap each example to hear) → hear one, choose between 2 spellings                      | 3 + 6 |
-| Simple   | Hear a word → choose **ei** or **ie** (mein / mien, wie / wei, nein / nien)                       | 6     |
-| Simple   | See a word → hear 3 sounds, pick the right one (**SoundChoice**): _ja_ → "ya" / "dja" / "ha"      | 6     |
-| Medium   | **Dragon or cat?** Sort ch-words into 🐉 / 🐱 baskets: acht, ich, Buch, nicht, auch, Milch         | 2     |
-| Medium   | Fill the team: H\_\_s (au / eu / ei), W\_\_ (ie / ei), \_\_ule (Sch / Sh / Ch)                    | 6     |
-| Medium   | Hear a word → choose from 4 spellings with swap traps: _wie_ → wie / vie / wee / wei              | 4     |
-| Hard     | Hear a word → build it from **team tiles + single letters** (**new: ChunkBuilder**)               | 6     |
-| Hard     | Mixed review: G1.3 + G1.4 words, build with no options                                            | 4     |
+| Level    | Questions                                                                                    | Items |
+| -------- | -------------------------------------------------------------------------------------------- | ----- |
+| Training | Team card (tap each example to hear) → hear one, choose between 2 spellings                  | 3 + 6 |
+| Simple   | Hear a word → choose **ei** or **ie** (mein / mien, wie / wei, nein / nien)                  | 6     |
+| Simple   | See a word → hear 3 sounds, pick the right one (**SoundChoice**): _ja_ → "ya" / "dja" / "ha" | 6     |
+| Medium   | **Dragon or cat?** Sort ch-words into 🐉 / 🐱 baskets: acht, ich, Buch, nicht, auch, Milch   | 2     |
+| Medium   | Fill the team: H\_\_s (au / eu / ei), W\_\_ (ie / ei), \_\_ule (Sch / Sh / Ch)               | 6     |
+| Medium   | Hear a word → choose from 4 spellings with swap traps: _wie_ → wie / vie / wee / wei         | 4     |
+| Hard     | Hear a word → build it from **team tiles + single letters** (**new: ChunkBuilder**)          | 6     |
+| Hard     | Mixed review: G1.3 + G1.4 words, build with no options                                       | 4     |
 
 ---
 
@@ -280,15 +280,15 @@ Sentences (only introduced words; `lernt` is shown as a whole word, its
 ending is explained in G3.3): _Anna lernt. Der Mann lernt. Die Frau lernt.
 Das Kind lernt. Er lernt. Sie lernt._ (er/sie → decision D1.)
 
-| Level    | Questions                                                                                          | Items |
-| -------- | -------------------------------------------------------------------------------------------------- | ----- |
-| Training | 3 kind cards + capital-trap card → "is this word blue, red or green?" (one each)                   | 4 + 3 |
-| Simple   | One word shown → tap 📦 / ⚡ / 🔁 (Frau, lernen, du, Kind, ich, Mann)                                 | 8     |
-| Simple   | "Which needs a capital?" frau / lernen / du → tap one (3 options)                                  | 4     |
-| Medium   | **Tap all the Nomen** in a sentence (**new: TapWords**): _Die Frau lernt._ / _Ich lerne. Das Kind lernt._ (the capital-trap _Ich_ must not be tapped) | 4     |
-| Medium   | **Colour the sentence:** drag each word of _Anna lernt._ / _Sie lernt._ into its colour basket       | 4     |
-| Medium   | Fix the capitals: _die frau lernt._ → tap the letters that must be big                             | 3     |
-| Hard     | Swap noun → Pronomen: _**Die Frau** lernt._ → build _Sie lernt._ from tiles (lower/upper-case decoys: sie / Sie / frau) | 4     |
+| Level    | Questions                                                                                                                                                  | Items |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| Training | 3 kind cards + capital-trap card → "is this word blue, red or green?" (one each)                                                                           | 4 + 3 |
+| Simple   | One word shown → tap 📦 / ⚡ / 🔁 (Frau, lernen, du, Kind, ich, Mann)                                                                                      | 8     |
+| Simple   | "Which needs a capital?" frau / lernen / du → tap one (3 options)                                                                                          | 4     |
+| Medium   | **Tap all the Nomen** in a sentence (**new: TapWords**): _Die Frau lernt._ / _Ich lerne. Das Kind lernt._ (the capital-trap _Ich_ must not be tapped)      | 4     |
+| Medium   | **Colour the sentence:** drag each word of _Anna lernt._ / _Sie lernt._ into its colour basket                                                             | 4     |
+| Medium   | Fix the capitals: _die frau lernt._ → tap the letters that must be big                                                                                     | 3     |
+| Hard     | Swap noun → Pronomen: _**Die Frau** lernt._ → build _Sie lernt._ from tiles (lower/upper-case decoys: sie / Sie / frau)                                    | 4     |
 | Hard     | Build the sentence from tiles with correct capitals: [das] [Das] [kind] [Kind] [lernt] → _Das Kind lernt._ (**SentenceTiles**, from the old `GrammarQuiz`) | 4     |
 
 ---
@@ -309,15 +309,15 @@ bubbles, cat on one side, the learner on the other; **new: DialogueChat**).
 Plus **ja / nein** as answers to a picture prompt (a cookie held out with
 a "?" bubble). No question grammar, just pictures.
 
-| Level    | Questions                                                                                            | Items |
-| -------- | ---------------------------------------------------------------------------------------------------- | ----- |
-| Training | Scene card (hear both lines) → 🔁 "say it after me" (unscored) → pick the reply (2 bubbles)           | 3 + 3 |
-| Simple   | Scene picture + cat's line → pick your reply bubble (3 options)                                       | 6     |
-| Medium   | Listen only (no text) → pick the reply                                                                | 4     |
-| Medium   | Put a 4-line dialogue in order (drag bubbles): Hallo → Hallo → Danke → Bitte                           | 2     |
-| Hard     | Type / build your reply from letters, no options                                                      | 4     |
+| Level    | Questions                                                                                                                 | Items |
+| -------- | ------------------------------------------------------------------------------------------------------------------------- | ----- |
+| Training | Scene card (hear both lines) → 🔁 "say it after me" (unscored) → pick the reply (2 bubbles)                               | 3 + 3 |
+| Simple   | Scene picture + cat's line → pick your reply bubble (3 options)                                                           | 6     |
+| Medium   | Listen only (no text) → pick the reply                                                                                    | 4     |
+| Medium   | Put a 4-line dialogue in order (drag bubbles): Hallo → Hallo → Danke → Bitte                                              | 2     |
+| Hard     | Type / build your reply from letters, no options                                                                          | 4     |
 | Hard     | **Full scene, 4–6 turns, no hints:** meet, take a gift, say thanks, say bye. One mistake replays the scene from that turn | 2     |
-| Hard     | ⭐ **Name tag:** the cat says _Hallo!_ and spells her name (L-E-N-A), the learner builds it (G1.2 review) | 2     |
+| Hard     | ⭐ **Name tag:** the cat says _Hallo!_ and spells her name (L-E-N-A), the learner builds it (G1.2 review)                 | 2     |
 
 Finish: G1 badge 🏅 "Los geht's!" and the Merke cards from all six tests
 shown as a recap.
@@ -326,6 +326,9 @@ Every screen, with its exact words, options and answers, is wireframed in
 [screens.md](screens.md).
 
 ## 6. Decisions for you
+
+Built with the recommended options (2026-10-18): D1 yes (`er`/`sie` in
+G1.1, 14 words), D2 four dots for grammar tests, D3 Hard cap 5.
 
 - **D1. `er` / `sie` (she) in G1.1?** The roadmap's G1.5 example _Sie
   lernt._ uses `sie` before G2.1 introduces it, which breaks the "only

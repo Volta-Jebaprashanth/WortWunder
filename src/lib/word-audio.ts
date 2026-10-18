@@ -16,6 +16,9 @@ import { LETTER_AUDIO } from "@/data/letter-audio.generated";
 interface Clip {
   buffer: AudioBuffer;
   offset: number;
+  // Where the audible part ends: the TTS pads short clips with silence, so a
+  // sequence (playSequence) starts the next clip from here, not the buffer end.
+  end: number;
 }
 export interface AudioNeeds {
   words: string[];
@@ -37,10 +40,12 @@ let active = 0;
 let windowSrcs = new Set<string>();
 let audioCtx: AudioContext | null = null;
 
-// Only one clip plays at a time — otherwise rapid taps (e.g. spelling a word
-// letter by letter) pile up overlapping audio.
-let activeSource: AudioBufferSourceNode | null = null;
+// Only one clip (or one sequence, see playSequence) plays at a time —
+// otherwise rapid taps (e.g. spelling a word letter by letter) pile up
+// overlapping audio.
+let activeSources: AudioBufferSourceNode[] = [];
 let activeElement: HTMLAudioElement | null = null;
+let sequenceTimers: ReturnType<typeof setTimeout>[] = [];
 
 export function constrainedNetwork(): boolean {
   if (typeof navigator === "undefined") return false;
@@ -72,6 +77,15 @@ function firstAudibleOffset(buffer: AudioBuffer): number {
       return Math.max(0, i / buffer.sampleRate - LEAD_IN_SECONDS);
   }
   return 0;
+}
+
+function lastAudibleEnd(buffer: AudioBuffer): number {
+  const data = buffer.getChannelData(0);
+  for (let i = data.length - 1; i >= 0; i--) {
+    if (Math.abs(data[i]!) > SILENCE_THRESHOLD)
+      return Math.min(buffer.duration, i / buffer.sampleRate + LEAD_IN_SECONDS);
+  }
+  return buffer.duration;
 }
 
 function notify() {
@@ -107,7 +121,11 @@ function startLoad(src: string) {
       if (!response.ok) return;
       const bytes = await response.arrayBuffer();
       const buffer = await new OfflineAudioContext(1, 1, 24000).decodeAudioData(bytes);
-      store(src, { buffer, offset: firstAudibleOffset(buffer) });
+      store(src, {
+        buffer,
+        offset: firstAudibleOffset(buffer),
+        end: lastAudibleEnd(buffer),
+      });
     } catch {
       /* aborted or failed — it's requested again the next time it's needed */
     } finally {
@@ -140,10 +158,15 @@ function srcsOf({ words, letters }: AudioNeeds): string[] {
     if (src) srcs.push(src);
   }
   for (const letter of letters) {
-    const src = LETTER_AUDIO[letter.toUpperCase()];
+    const src = LETTER_AUDIO[letterKey(letter)];
     if (src) srcs.push(src);
   }
   return srcs;
+}
+
+// "ß" uppercases to "SS" in JavaScript, so it has its own key.
+function letterKey(letter: string): string {
+  return letter === "ß" || letter === "ẞ" ? "ß" : letter.toUpperCase();
 }
 
 // Tells the loader what the quiz needs now: the clips for the current
@@ -184,12 +207,16 @@ export function subscribeAudio(listener: () => void): () => void {
 
 function stopActive() {
   activeElement?.pause();
-  try {
-    activeSource?.stop();
-  } catch {
-    /* already ended */
+  for (const source of activeSources) {
+    try {
+      source.stop();
+    } catch {
+      /* already ended */
+    }
   }
-  activeSource = null;
+  activeSources = [];
+  for (const timer of sequenceTimers) clearTimeout(timer);
+  sequenceTimers = [];
 }
 
 // Mobile browsers suspend (iOS: "interrupt") the AudioContext when the app is
@@ -223,7 +250,7 @@ function context(): AudioContext {
   return audioCtx;
 }
 
-function playClip(src: string) {
+function playClip(src: string, rate = 1) {
   stopActive();
   const ready = clips.get(src);
   if (ready) {
@@ -232,42 +259,111 @@ function playClip(src: string) {
     const ctx = context();
     const source = ctx.createBufferSource();
     source.buffer = ready.buffer;
+    source.playbackRate.value = rate;
     source.connect(ctx.destination);
     source.start(0, ready.offset);
-    activeSource = source;
+    activeSources = [source];
     return;
   }
   enqueue([src], true);
   const audio = new Audio(src);
+  audio.playbackRate = rate;
   activeElement = audio;
   audio.play().catch(() => {
     /* autoplay/decoding blocked — user can just tap again */
   });
 }
 
-function speak(text: string) {
+// Clips spoken the way an English reader would say a German word (the
+// "wrong" sounds in the grammar tests' sound-choice screens) are keyed
+// "en:<text>" and fall back to an English voice.
+const ENGLISH_PREFIX = "en:";
+
+function speak(text: string, rate = 0.78) {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "de-DE";
-  utterance.rate = 0.78;
+  const english = text.startsWith(ENGLISH_PREFIX);
+  const utterance = new SpeechSynthesisUtterance(
+    english ? text.slice(ENGLISH_PREFIX.length) : text,
+  );
+  utterance.lang = english ? "en-US" : "de-DE";
+  utterance.rate = rate;
   window.speechSynthesis.speak(utterance);
 }
 
 // Plays a recorded pronunciation for `word` if one has been generated
 // (see scripts/generate-audio.mjs). Falls back to the device's speech
 // synthesis for words that don't have an audio file yet, so new vocabulary
-// still speaks something before its audio is recorded.
-export function playWord(word: string) {
+// still speaks something before its audio is recorded. `slow` plays it at
+// three-quarter speed (the grammar tests' "say it after me" screen).
+export function playWord(word: string, { slow = false }: { slow?: boolean } = {}) {
   const src = WORD_AUDIO[word];
-  if (src) playClip(src);
-  else speak(word);
+  if (src) playClip(src, slow ? 0.75 : 1);
+  else speak(word, slow ? 0.55 : 0.78);
 }
 
 // Plays the German name of a single letter (e.g. "P" -> "peh"), for the
 // word-builder's letter tiles.
 export function playLetter(letter: string) {
-  const src = LETTER_AUDIO[letter.toUpperCase()];
+  const src = LETTER_AUDIO[letterKey(letter)];
   if (src) playClip(src);
   else speak(letter);
+}
+
+export type SequenceItem = { word: string } | { letter: string };
+
+function sequenceSrc(item: SequenceItem): string | undefined {
+  return "word" in item ? WORD_AUDIO[item.word] : LETTER_AUDIO[letterKey(item.letter)];
+}
+
+// Plays clips one after another with `gapSeconds` of silence between them —
+// a name spelled letter by letter (A-N-N-A) or a short dialogue. When every
+// clip is already decoded they're scheduled on the audio clock so the gaps
+// are exact; otherwise each one starts on a timer. `onItem(i)` fires as item
+// i starts, so a screen can light it up. Any other playback cancels it.
+export function playSequence(
+  items: SequenceItem[],
+  gapSeconds = 0.6,
+  onItem?: (index: number) => void,
+) {
+  stopActive();
+  if (items.length === 0) return;
+  const srcs = items.map(sequenceSrc);
+  const decoded = srcs.map((src) => (src ? clips.get(src) : undefined));
+  if (decoded.every((clip) => clip !== undefined)) {
+    const ctx = context();
+    let at = ctx.currentTime + 0.05;
+    const sources: AudioBufferSourceNode[] = [];
+    decoded.forEach((clip, i) => {
+      const source = ctx.createBufferSource();
+      source.buffer = clip!.buffer;
+      source.connect(ctx.destination);
+      source.start(at, clip!.offset);
+      if (onItem) {
+        const delay = Math.max(0, (at - ctx.currentTime) * 1000);
+        sequenceTimers.push(setTimeout(() => onItem(i), delay));
+      }
+      sources.push(source);
+      at += clip!.end - clip!.offset + gapSeconds;
+    });
+    activeSources = sources;
+    return;
+  }
+  enqueue(
+    srcs.filter((src): src is string => Boolean(src)),
+    true,
+  );
+  const step = 600 + gapSeconds * 1000;
+  const timers = items.map((item, i) =>
+    setTimeout(() => {
+      // Each clip stops whatever is playing, so keep the remaining timers.
+      const pendingTimers = sequenceTimers;
+      sequenceTimers = [];
+      if ("word" in item) playWord(item.word);
+      else playLetter(item.letter);
+      sequenceTimers = pendingTimers;
+      onItem?.(i);
+    }, i * step),
+  );
+  sequenceTimers = timers;
 }

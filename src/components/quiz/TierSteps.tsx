@@ -8,7 +8,8 @@ import { TIER_ORDER, type Tier } from "@/lib/quiz-engine";
 // "how far along", not as "how hard this exercise is" — a plain "Basic"
 // label looked like the exercise itself was easy. Shown on the learning
 // path (routes/index.tsx) and next to each question's test name
-// (LessonFrame).
+// (LessonFrame). Grammar tests pass their own four `tiers` (no basic tier),
+// so they show 4 dots instead of 5.
 const TIER_STEP_COLORS: Record<Tier, { bg: string; border: string; ring: string }> = {
   training: { bg: "bg-violet-500", border: "border-violet-500", ring: "ring-violet-500/30" },
   basic: { bg: "bg-sky-500", border: "border-sky-500", ring: "ring-sky-500/30" },
@@ -17,15 +18,21 @@ const TIER_STEP_COLORS: Record<Tier, { bg: string; border: string; ring: string 
   hard: { bg: "bg-berry", border: "border-berry", ring: "ring-berry/30" },
 };
 
-export function TierSteps({ tier }: { tier: Tier }) {
-  const current = TIER_ORDER.indexOf(tier);
+export function TierSteps({
+  tier,
+  tiers = TIER_ORDER,
+}: {
+  tier: Tier;
+  tiers?: Tier[] | undefined;
+}) {
+  const current = tiers.indexOf(tier);
   return (
     <span
       className="flex shrink-0 items-center"
       role="img"
-      aria-label={`Level ${current + 1} of ${TIER_ORDER.length}`}
+      aria-label={`Level ${current + 1} of ${tiers.length}`}
     >
-      {TIER_ORDER.map((t, i) => (
+      {tiers.map((t, i) => (
         <Fragment key={t}>
           {i > 0 && (
             <span

@@ -27,4 +27,8 @@ export const LETTER_AUDIO: Record<string, string> = {
   "X": "/audio/letters/x.mp3",
   "Y": "/audio/letters/y.mp3",
   "Z": "/audio/letters/z.mp3",
+  "Ä": "/audio/letters/ae.mp3",
+  "Ö": "/audio/letters/oe.mp3",
+  "Ü": "/audio/letters/ue.mp3",
+  "ß": "/audio/letters/eszett.mp3",
 };

@@ -29,6 +29,7 @@ const WORD_MANIFEST_PATH = path.join(ROOT, "src", "data", "word-audio.generated.
 const LETTER_MANIFEST_PATH = path.join(ROOT, "src", "data", "letter-audio.generated.ts");
 
 const VOICE = "de-DE-KatjaNeural"; // friendly female voice, good for kids
+const ENGLISH_VOICE = "en-US-JennyNeural";
 
 // word: what gets spoken (including the article, since kids need to learn it).
 // slug: the mp3 filename, also used as the word's stable id.
@@ -36,6 +37,8 @@ const VOICE = "de-DE-KatjaNeural"; // friendly female voice, good for kids
 // belong to one specific test's own vocabulary (not shared across tests,
 // unlike letters/titles/articles) use their test's folder, e.g.
 // "1.1 greetings/audio" — see AGENTS.md.
+// key: the manifest key, when it differs from `word` (the "en:" clips).
+// voice: a different TTS voice than the default German one.
 const WORDS = [
   { word: "der Hund", slug: "hund" },
   { word: "die Katze", slug: "katze" },
@@ -863,6 +866,139 @@ const WORDS = [
   { word: "die Töchter", slug: "toechter-plural", dir: "1.2 family/audio" },
   { word: "die Großväter", slug: "grossvaeter-plural", dir: "1.2 family/audio" },
   { word: "die Großmütter", slug: "grossmuetter-plural", dir: "1.2 family/audio" },
+  // G1 Los geht's grammar tests (src/data/g1/): sound words and sentences.
+  { word: "Mädchen", slug: "maedchen", dir: "G1 getting started/audio" },
+  { word: "Tür", slug: "tuer", dir: "G1 getting started/audio" },
+  { word: "Straße", slug: "strasse", dir: "G1 getting started/audio" },
+  { word: "Vater", slug: "vater", dir: "G1 getting started/audio" },
+  { word: "Väter", slug: "vaeter", dir: "G1 getting started/audio" },
+  { word: "Mutter", slug: "mutter", dir: "G1 getting started/audio" },
+  { word: "Mütter", slug: "muetter", dir: "G1 getting started/audio" },
+  { word: "Bruder", slug: "bruder", dir: "G1 getting started/audio" },
+  { word: "Brüder", slug: "brueder", dir: "G1 getting started/audio" },
+  { word: "Apfel", slug: "apfel", dir: "G1 getting started/audio" },
+  { word: "Äpfel", slug: "aepfel", dir: "G1 getting started/audio" },
+  { word: "Fuß", slug: "fuss", dir: "G1 getting started/audio" },
+  { word: "Liebe", slug: "liebe", dir: "G1 getting started/audio" },
+  { word: "Haus", slug: "haus", dir: "G1 getting started/audio" },
+  { word: "Maus", slug: "maus", dir: "G1 getting started/audio" },
+  { word: "Euro", slug: "euro", dir: "G1 getting started/audio" },
+  { word: "Häuser", slug: "haeuser", dir: "G1 getting started/audio" },
+  { word: "Schule", slug: "schule", dir: "G1 getting started/audio" },
+  { word: "Fisch", slug: "fisch", dir: "G1 getting started/audio" },
+  { word: "Buch", slug: "buch", dir: "G1 getting started/audio" },
+  { word: "Nacht", slug: "nacht", dir: "G1 getting started/audio" },
+  { word: "Milch", slug: "milch", dir: "G1 getting started/audio" },
+  { word: "Küche", slug: "kueche", dir: "G1 getting started/audio" },
+  { word: "Sport", slug: "sport", dir: "G1 getting started/audio" },
+  { word: "Stuhl", slug: "stuhl", dir: "G1 getting started/audio" },
+  { word: "Zoo", slug: "zoo", dir: "G1 getting started/audio" },
+  { word: "Zebra", slug: "zebra", dir: "G1 getting started/audio" },
+  { word: "Anna", slug: "anna", dir: "G1 getting started/audio" },
+  { word: "Tom", slug: "tom", dir: "G1 getting started/audio" },
+  { word: "lernt", slug: "lernt", dir: "G1 getting started/audio" },
+  { word: "Frau", slug: "frau", dir: "G1 getting started/audio" },
+  { word: "Mann", slug: "mann", dir: "G1 getting started/audio" },
+  { word: "Kind", slug: "kind", dir: "G1 getting started/audio" },
+  { word: "Anna lernt.", slug: "sentence-anna-lernt", dir: "G1 getting started/audio" },
+  { word: "Sie lernt.", slug: "sentence-sie-lernt", dir: "G1 getting started/audio" },
+  { word: "Die Frau lernt.", slug: "sentence-die-frau-lernt", dir: "G1 getting started/audio" },
+  { word: "Der Mann lernt.", slug: "sentence-der-mann-lernt", dir: "G1 getting started/audio" },
+  { word: "Das Kind lernt.", slug: "sentence-das-kind-lernt", dir: "G1 getting started/audio" },
+  { word: "Er lernt.", slug: "sentence-er-lernt", dir: "G1 getting started/audio" },
+  { word: "Tom lernt.", slug: "sentence-tom-lernt", dir: "G1 getting started/audio" },
+  {
+    word: "Der Mann lernt. Er lernt.",
+    slug: "sentence-der-mann-lernt-er-lernt",
+    dir: "G1 getting started/audio",
+  },
+  { word: "Hallo, Anna!", slug: "sentence-hallo-anna", dir: "G1 getting started/audio" },
+  // How an English reader would (wrongly) say a German word, for G1.4's
+  // sound-choice screen. Keyed "en:<text>" and spoken with an English voice.
+  {
+    word: "jah",
+    key: "en:jah",
+    slug: "en-jah",
+    dir: "G1 getting started/audio",
+    voice: ENGLISH_VOICE,
+  },
+  {
+    word: "ha",
+    key: "en:ha",
+    slug: "en-ha",
+    dir: "G1 getting started/audio",
+    voice: ENGLISH_VOICE,
+  },
+  {
+    word: "wee",
+    key: "en:wee",
+    slug: "en-wee",
+    dir: "G1 getting started/audio",
+    voice: ENGLISH_VOICE,
+  },
+  {
+    word: "why",
+    key: "en:why",
+    slug: "en-why",
+    dir: "G1 getting started/audio",
+    voice: ENGLISH_VOICE,
+  },
+  {
+    word: "vah-ter",
+    key: "en:vah-ter",
+    slug: "en-vah-ter",
+    dir: "G1 getting started/audio",
+    voice: ENGLISH_VOICE,
+  },
+  {
+    word: "wah-ter",
+    key: "en:wah-ter",
+    slug: "en-wah-ter",
+    dir: "G1 getting started/audio",
+    voice: ENGLISH_VOICE,
+  },
+  {
+    word: "zoo",
+    key: "en:zoo",
+    slug: "en-zoo",
+    dir: "G1 getting started/audio",
+    voice: ENGLISH_VOICE,
+  },
+  {
+    word: "so",
+    key: "en:so",
+    slug: "en-so",
+    dir: "G1 getting started/audio",
+    voice: ENGLISH_VOICE,
+  },
+  {
+    word: "skoo-leh",
+    key: "en:skoo-leh",
+    slug: "en-skoo-leh",
+    dir: "G1 getting started/audio",
+    voice: ENGLISH_VOICE,
+  },
+  {
+    word: "soo-leh",
+    key: "en:soo-leh",
+    slug: "en-soo-leh",
+    dir: "G1 getting started/audio",
+    voice: ENGLISH_VOICE,
+  },
+  {
+    word: "hoos",
+    key: "en:hoos",
+    slug: "en-hoos",
+    dir: "G1 getting started/audio",
+    voice: ENGLISH_VOICE,
+  },
+  {
+    word: "hoys",
+    key: "en:hoys",
+    slug: "en-hoys",
+    dir: "G1 getting started/audio",
+    voice: ENGLISH_VOICE,
+  },
 ];
 
 // Full lesson-screen titles (e.g. "Was ist das?"), spoken when a kid taps the
@@ -891,6 +1027,41 @@ const TITLES = [
   { word: "Ändere den Satz", slug: "title-aendere-den-satz" },
   { word: "Finde den Fehler", slug: "title-finde-den-fehler" },
   { word: "Was sagst du?", slug: "title-was-sagst-du" },
+  { word: "Das ABC", slug: "title-das-abc" },
+  { word: "Buchstabieren", slug: "title-buchstabieren" },
+  { word: "Wie klingt das?", slug: "title-wie-klingt-das" },
+  { word: "Wie heißt sie?", slug: "title-wie-heisst-sie" },
+  { word: "Wie heißt das?", slug: "title-wie-heisst-das" },
+  { word: "Welcher Club?", slug: "title-welcher-club" },
+  { word: "Baue den Namen", slug: "title-baue-den-namen" },
+  { word: "Schnell!", slug: "title-schnell" },
+  { word: "Dein Name!", slug: "title-dein-name" },
+  { word: "Ohne Punkte!", slug: "title-ohne-punkte" },
+  { word: "Keine Punkte?", slug: "title-keine-punkte" },
+  { word: "Buchstaben-Teams", slug: "title-buchstaben-teams" },
+  { word: "Konsonanten-Teams", slug: "title-konsonanten-teams" },
+  { word: "Tausch-Buchstaben", slug: "title-tausch-buchstaben" },
+  { word: "ei oder ie?", slug: "title-ei-oder-ie" },
+  { word: "Drache oder Katze?", slug: "title-drache-oder-katze" },
+  { word: "Welches Team fehlt?", slug: "title-welches-team-fehlt" },
+  { word: "Das Nomen", slug: "title-das-nomen" },
+  { word: "Das Verb", slug: "title-das-verb" },
+  { word: "Das Pronomen", slug: "title-das-pronomen" },
+  { word: "Ist das ein Nomen?", slug: "title-ist-das-ein-nomen" },
+  { word: "Ist das ein Verb?", slug: "title-ist-das-ein-verb" },
+  { word: "Ist das ein Pronomen?", slug: "title-ist-das-ein-pronomen" },
+  { word: "Welche Wortart?", slug: "title-welche-wortart" },
+  { word: "Groß oder klein?", slug: "title-gross-oder-klein" },
+  { word: "Finde das Nomen", slug: "title-finde-das-nomen" },
+  { word: "Färbe den Satz", slug: "title-faerbe-den-satz" },
+  { word: "Tausche!", slug: "title-tausche" },
+  { word: "Achtung: Großbuchstabe!", slug: "title-achtung-grossbuchstabe" },
+  { word: "Was kommt zuerst?", slug: "title-was-kommt-zuerst" },
+  { word: "Der erste Tag", slug: "title-der-erste-tag" },
+  { word: "Besuch", slug: "title-besuch" },
+  { word: "Merke!", slug: "title-merke" },
+  { word: "Geschafft!", slug: "title-geschafft" },
+  { word: "Pause", slug: "title-pause" },
 ];
 
 // The German alphabet, for the word-builder's letter tiles. `name` spells out
@@ -934,25 +1105,46 @@ const LETTERS = [
   { letter: "X", name: "Iks" },
   { letter: "Y", name: "Ypsilon" },
   { letter: "Z", name: "Zett" },
+  // G1.3's new letters. "ß" can't use its lowercase as a filename/key the
+  // way A-Z do ("ß".toUpperCase() is "SS"), so these have their own slug.
+  { letter: "Ä", name: "Äh", slug: "ae" },
+  { letter: "Ö", name: "Öh", slug: "oe" },
+  { letter: "Ü", name: "Üh", slug: "ue" },
+  { letter: "ß", name: "Eszett", slug: "eszett" },
 ];
 
 const force = process.argv.includes("--force");
 
-async function synthesize(text, rate) {
+async function synthesize(text, rate, voice = VOICE) {
   const tts = new MsEdgeTTS();
-  await tts.setMetadata(VOICE, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
+  await tts.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
   const { audioStream } = tts.toStream(text, { rate });
   const chunks = [];
   for await (const chunk of audioStream) chunks.push(chunk);
   return Buffer.concat(chunks);
 }
 
-async function writeIfMissing(filePath, label, text, rate) {
+// The free TTS endpoint answers 429 when it's hit too fast; wait and retry
+// instead of aborting the whole run.
+async function synthesizeWithRetry(text, rate, voice) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await synthesize(text, rate, voice);
+    } catch (error) {
+      if (attempt >= 6 || !String(error?.message).includes("429")) throw error;
+      const wait = attempt * 5000;
+      console.log(`429    rate-limited, retrying "${text}" in ${wait / 1000}s`);
+      await new Promise((resolve) => setTimeout(resolve, wait));
+    }
+  }
+}
+
+async function writeIfMissing(filePath, label, text, rate, voice) {
   if (existsSync(filePath) && !force) {
     console.log(`skip   ${label} (already exists, use --force to regenerate)`);
     return;
   }
-  const buffer = await synthesize(text, rate);
+  const buffer = await synthesizeWithRetry(text, rate, voice);
   await writeFile(filePath, buffer);
   console.log(`wrote  ${label} (${buffer.length} bytes) — "${text}"`);
 }
@@ -960,7 +1152,7 @@ async function writeIfMissing(filePath, label, text, rate) {
 await mkdir(AUDIO_DIR, { recursive: true });
 await mkdir(LETTERS_DIR, { recursive: true });
 
-for (const { word, slug, dir } of [...WORDS, ...TITLES]) {
+for (const { word, slug, dir, voice } of [...WORDS, ...TITLES]) {
   const outDir = path.join(ROOT, "public", dir ?? "audio");
   await mkdir(outDir, { recursive: true });
   await writeIfMissing(
@@ -968,16 +1160,19 @@ for (const { word, slug, dir } of [...WORDS, ...TITLES]) {
     `${dir ?? "audio"}/${slug}.mp3`,
     word,
     "-15%",
+    voice,
   );
 }
 
-for (const { letter, name } of LETTERS) {
-  const slug = letter.toLowerCase();
+for (const { letter, name, slug = letter.toLowerCase() } of LETTERS) {
   await writeIfMissing(path.join(LETTERS_DIR, `${slug}.mp3`), `letters/${slug}.mp3`, name, "-10%");
 }
 
 const wordManifestBody = [...WORDS, ...TITLES]
-  .map(({ word, slug, dir }) => `  ${JSON.stringify(word)}: "/${dir ?? "audio"}/${slug}.mp3",`)
+  .map(
+    ({ word, key, slug, dir }) =>
+      `  ${JSON.stringify(key ?? word)}: "/${dir ?? "audio"}/${slug}.mp3",`,
+  )
   .join("\n");
 await writeFile(
   WORD_MANIFEST_PATH,
@@ -992,7 +1187,8 @@ ${wordManifestBody}
 console.log(`wrote  ${path.relative(ROOT, WORD_MANIFEST_PATH)}`);
 
 const letterManifestBody = LETTERS.map(
-  ({ letter }) => `  ${JSON.stringify(letter)}: "/audio/letters/${letter.toLowerCase()}.mp3",`,
+  ({ letter, slug = letter.toLowerCase() }) =>
+    `  ${JSON.stringify(letter)}: "/audio/letters/${slug}.mp3",`,
 ).join("\n");
 await writeFile(
   LETTER_MANIFEST_PATH,

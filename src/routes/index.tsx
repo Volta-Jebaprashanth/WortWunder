@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import {
   Check,
   ChevronRight,
+  Lock,
   ExternalLink,
   Gem,
   Share,
@@ -34,6 +35,8 @@ import {
   WordCard,
 } from "@/components/quiz/pieces";
 import { VocabQuiz } from "@/components/quiz/VocabQuiz";
+import { GrammarQuiz } from "@/components/quiz/GrammarQuiz";
+import { StarsRow } from "@/components/quiz/grammar-pieces";
 import { TierSteps } from "@/components/quiz/TierSteps";
 import { getTestStatus, type TestStatus } from "@/lib/progress-store";
 import {
@@ -47,6 +50,15 @@ import {
   subscribeStats,
 } from "@/lib/stats-store";
 import type { Tier } from "@/lib/quiz-engine";
+import { GRAMMAR_TIERS, getStars, type GrammarTest } from "@/lib/grammar-engine";
+import {
+  G1_1_TEST,
+  G1_BADGE,
+  G1_GRAMMAR_TESTS,
+  G1_PATH,
+  G1_SECTION,
+  findG1GrammarTest,
+} from "@/data/g1";
 import {
   findVocabLesson,
   findVocabTest,
@@ -97,6 +109,7 @@ export const Route = createFileRoute("/")({
 type Screen =
   | "home"
   | "quiz"
+  | "grammar"
   | "training"
   | "trainingCheck"
   | "picture"
@@ -115,6 +128,7 @@ type Screen =
 function Index() {
   const [screen, setScreen] = useState<Screen>("home");
   const [activeTest, setActiveTest] = useState<VocabTest | null>(null);
+  const [activeGrammar, setActiveGrammar] = useState<GrammarTest | null>(null);
   const [answer, setAnswer] = useState<string | null>(null);
   const [letters, setLetters] = useState<number[]>([]);
   const [heard, setHeard] = useState(false);
@@ -358,8 +372,16 @@ function Index() {
         /* fullscreen unsupported (e.g. iOS Safari) — layout still fills the viewport */
       }
     }
+    const grammar = findG1GrammarTest(nodeId);
+    if (grammar) {
+      setActiveGrammar(grammar);
+      go("grammar");
+      return;
+    }
     const test: VocabTest | undefined =
-      findVocabTest(nodeId) ?? TESTING_TESTS.find((t) => t.testId === nodeId);
+      findVocabTest(nodeId) ??
+      TESTING_TESTS.find((t) => t.testId === nodeId) ??
+      (nodeId === G1_1_TEST.testId ? G1_1_TEST : undefined);
     if (test) {
       setActiveTest(test);
       go("quiz");
@@ -417,7 +439,19 @@ function Index() {
         />
       )}
 
-      {screen !== "quiz" && (
+      {screen === "grammar" && activeGrammar && (
+        <GrammarQuiz
+          key={activeGrammar.id}
+          test={activeGrammar}
+          t={t}
+          lang={lang}
+          profileName={profile?.name}
+          badge={activeGrammar.id === G1_GRAMMAR_TESTS.at(-1)?.id ? G1_BADGE : undefined}
+          onExit={() => go("home")}
+        />
+      )}
+
+      {screen !== "quiz" && screen !== "grammar" && (
         <main className="relative z-10 mx-auto max-w-5xl px-4 pb-10 sm:px-6">
           {screen === "home" && (
             <Home
@@ -878,8 +912,38 @@ type PathNode = {
   testId?: string;
   // A numbered test's part, shown in a circle after the title ("Hallo ①").
   part?: number;
+  // Grammar tests open in order: this node stays locked until the test it
+  // names is completed.
+  requires?: { testId: string; label: string };
+  // A grammar test: 4-dot level track and stars on the path.
+  grammar?: boolean;
   children?: PathNode[];
 };
+
+// G1 Los geht's under Grammatik: six tests, each locked until the one
+// before it is done.
+function g1PathNode(lang: MotherTongue): PathNode {
+  return {
+    id: G1_SECTION.id,
+    title: G1_SECTION.title,
+    icon: G1_SECTION.icon,
+    state: "active",
+    meaning: G1_SECTION.meaning[lang],
+    children: G1_PATH.map((test, i) => {
+      const before = G1_PATH[i - 1];
+      return {
+        id: test.testId,
+        title: `${test.label} ${test.title}`,
+        icon: test.icon,
+        state: "active" as const,
+        meaning: test.meaning[lang],
+        testId: test.testId,
+        grammar: test.grammar,
+        ...(before ? { requires: { testId: before.testId, label: before.label } } : {}),
+      };
+    }),
+  };
+}
 
 // A lesson/test photo filling its round path badge. Falls back to the
 // lesson's emoji if the picture is missing (e.g. a lesson re-split into more
@@ -1060,8 +1124,7 @@ function Home({
         icon: "📝",
         state: "active",
         meaning: PATH_MEANINGS.grammatik[lang],
-        // Empty while the grammar lessons are being redesigned.
-        children: [],
+        children: [g1PathNode(lang)],
       },
       {
         id: "wortschatz",
@@ -1080,9 +1143,10 @@ function Home({
   // when hidden, so they're open if the profile switches to volta later.
   const [expanded, setExpanded] = useState<Set<string>>(
     () =>
-      new Set(
-        [...path, ...devSections(lang)].filter((node) => node.children).map((node) => node.id),
-      ),
+      new Set([
+        ...[...path, ...devSections(lang)].filter((node) => node.children).map((node) => node.id),
+        G1_SECTION.id,
+      ]),
   );
   const toggleNode = (id: string) =>
     setExpanded((prev) => {
@@ -1094,6 +1158,7 @@ function Home({
   // Sections/lessons toggle open; only playable nodes (a vocab test or the
   // Tiere demo) start a lesson.
   const handleCardClick = (node: PathNode) => {
+    if (isLocked(node, statuses)) return;
     if (node.children?.length) toggleNode(node.id);
     else if (node.testId) onStart(node.testId);
     else if (node.id === "tiere") onStart(node.id);
@@ -1101,10 +1166,11 @@ function Home({
   // Read after mount rather than during render: progress lives in
   // localStorage, which the server render can't see.
   const [statuses, setStatuses] = useState<Record<string, TestStatus>>({});
+  const [stars, setStars] = useState<Record<string, number>>({});
   useEffect(() => {
-    setStatuses(
-      Object.fromEntries(collectTestIds(path).map((testId) => [testId, getTestStatus(testId)])),
-    );
+    const testIds = collectTestIds(path);
+    setStatuses(Object.fromEntries(testIds.map((testId) => [testId, getTestStatus(testId)])));
+    setStars(Object.fromEntries(testIds.map((testId) => [testId, getStars(testId)])));
   }, [path]);
 
   return (
@@ -1141,6 +1207,7 @@ function Home({
             depth={0}
             expanded={expanded}
             statuses={statuses}
+            stars={stars}
             onToggle={toggleNode}
             onCardClick={handleCardClick}
           />
@@ -1175,12 +1242,17 @@ function Home({
 
 const CHEVRON_COLORS = ["bg-mint", "bg-sun", "bg-frost"];
 
+function isLocked(node: PathNode, statuses: Record<string, TestStatus>): boolean {
+  return Boolean(node.requires && statuses[node.requires.testId]?.kind !== "completed");
+}
+
 function PathTree({
   t,
   nodes,
   depth,
   expanded,
   statuses,
+  stars,
   onToggle,
   onCardClick,
 }: {
@@ -1189,6 +1261,7 @@ function PathTree({
   depth: number;
   expanded: Set<string>;
   statuses: Record<string, TestStatus>;
+  stars: Record<string, number>;
   onToggle: (id: string) => void;
   onCardClick: (node: PathNode) => void;
 }) {
@@ -1204,6 +1277,7 @@ function PathTree({
           childTestIds.length > 0 && childTestIds.every((id) => statuses[id]?.kind === "completed");
         const state = status?.kind === "completed" || allChildrenDone ? "done" : node.state;
         const currentTier = status?.kind === "inProgress" ? status.tier : undefined;
+        const locked = isLocked(node, statuses);
         return (
           <div key={node.id} id={`path-${node.id}`} className="scroll-mt-4">
             <div
@@ -1219,11 +1293,12 @@ function PathTree({
                 className={cn(
                   "relative z-10 grid shrink-0 place-items-center rounded-full border-4 border-frost shadow-md [&>svg]:size-5",
                   depth === 0 ? "size-14 text-2xl" : "size-11 text-lg",
-                  state === "done" && "bg-mint",
-                  state === "active" && "animate-bob bg-frost",
+                  locked && "bg-ice opacity-70",
+                  !locked && state === "done" && "bg-mint",
+                  !locked && state === "active" && "animate-bob bg-frost",
                 )}
               >
-                {node.icon}
+                {locked ? <Lock className="text-ink-soft" /> : node.icon}
                 {state === "done" && (
                   <span className="absolute -bottom-1 -right-1 grid size-5 place-items-center rounded-full bg-success ring-2 ring-frost">
                     <Check className="size-3 text-primary-foreground" />
@@ -1233,7 +1308,11 @@ function PathTree({
               <button
                 type="button"
                 onClick={openCard}
-                className="flex min-w-0 flex-1 items-center gap-3 self-stretch text-left"
+                aria-disabled={locked}
+                className={cn(
+                  "flex min-w-0 flex-1 items-center gap-3 self-stretch text-left",
+                  locked && "cursor-not-allowed opacity-60",
+                )}
               >
                 <span className="min-w-0 flex-1">
                   <span
@@ -1253,9 +1332,21 @@ function PathTree({
                       </>
                     )}
                   </span>
-                  <span className="block text-xs font-bold text-ink-soft">{node.meaning}</span>
+                  <span className="block text-xs font-bold text-ink-soft">
+                    {locked && node.requires ? t.finishFirst(node.requires.label) : node.meaning}
+                  </span>
+                  {node.grammar && !locked && (
+                    <span
+                      className="mt-0.5 block"
+                      aria-label={t.starsLabel(stars[node.testId!] ?? 0)}
+                    >
+                      <StarsRow stars={stars[node.testId!] ?? 0} size="sm" />
+                    </span>
+                  )}
                 </span>
-                {currentTier && <TierSteps tier={currentTier} />}
+                {currentTier && (
+                  <TierSteps tier={currentTier} tiers={node.grammar ? GRAMMAR_TIERS : undefined} />
+                )}
               </button>
               {hasChildren && (
                 <button
@@ -1281,6 +1372,7 @@ function PathTree({
                 depth={depth + 1}
                 expanded={expanded}
                 statuses={statuses}
+                stars={stars}
                 onToggle={onToggle}
                 onCardClick={onCardClick}
               />

@@ -44,16 +44,42 @@ const PENDING_LIMITS: Record<Tier, { start: number; max: number }> = {
   hard: { start: 1, max: 4 },
 };
 
+// Grammar tests (src/lib/grammar-engine.ts) store one row per question,
+// keyed "g.<tier>:<questionId>". They run four levels (no basic tier), every
+// row starts at 1, and a Hard question caps at 5 so a Hard mistake costs a
+// little more (docs/grammar-planning/G1/plan.md §3).
+export const GRAMMAR_ROW_PREFIX = "g.";
+const GRAMMAR_PENDING_LIMITS: Record<Tier, { start: number; max: number }> = {
+  training: { start: 1, max: 3 },
+  basic: { start: 1, max: 4 },
+  easy: { start: 1, max: 4 },
+  medium: { start: 1, max: 4 },
+  hard: { start: 1, max: 5 },
+};
+
+function isGrammarRow(testType: string): boolean {
+  return testType.startsWith(GRAMMAR_ROW_PREFIX);
+}
+
 function tierOfRow(testType: string): Tier | undefined {
+  if (isGrammarRow(testType)) {
+    const tier = testType.slice(GRAMMAR_ROW_PREFIX.length) as Tier;
+    return TIER_ORDER.includes(tier) ? tier : undefined;
+  }
   return isTestType(testType) ? tierOfType(testType) : undefined;
 }
 
+function limitsOf(testType: string) {
+  const table = isGrammarRow(testType) ? GRAMMAR_PENDING_LIMITS : PENDING_LIMITS;
+  return table[tierOfRow(testType) ?? "hard"];
+}
+
 function startPending(testType: string): number {
-  return PENDING_LIMITS[tierOfRow(testType) ?? "hard"].start;
+  return limitsOf(testType).start;
 }
 
 function maxPending(testType: string): number {
-  return PENDING_LIMITS[tierOfRow(testType) ?? "hard"].max;
+  return limitsOf(testType).max;
 }
 
 interface TestState {

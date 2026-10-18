@@ -1436,3 +1436,24 @@ words' photos. Its path icons in `public/G5 nouns and articles/icons/` are
 | test-5.jpg | Plural          | crop of `1.2 family/images/children.jpg`       |
 | test-6.jpg | kein, keine     | crop of `1.24 animals/images/horse.jpg`        |
 | test-7.jpg | nicht oder kein | crop of `1.24 animals/images/dog.jpg`          |
+
+## Lesson G6 — Akkusativ
+
+The word photo under `public/G6 accusative/images/` is a copy of a photo
+credited in the sections above:
+
+| File         | Word    | Source                                   |
+| ------------ | ------- | ---------------------------------------- |
+| there-is.jpg | es gibt | copy of `1.9 shopping/images/market.jpg` |
+
+Its path icons in `public/G6 accusative/icons/` are 160x160 crops of photos
+credited in the sections above:
+
+| File       | Test                       | Source                                        |
+| ---------- | -------------------------- | --------------------------------------------- |
+| lesson.jpg | Akkusativ                  | crop of `1.9 shopping/images/supermarket.jpg` |
+| test-1.jpg | Wörter                     | crop of `1.3 food/images/bread.jpg`           |
+| test-2.jpg | den, einen                 | crop of `1.3 food/images/apple.jpg`           |
+| test-3.jpg | die, das, keinen           | crop of `1.3 food/images/milk.jpg`            |
+| test-4.jpg | möchten, brauchen, es gibt | crop of `1.3 food/images/coffee.jpg`          |
+| test-5.jpg | der oder den               | crop of `1.9 shopping/images/to-buy.jpg`      |

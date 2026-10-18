@@ -1112,6 +1112,7 @@ export const IMAGE_PLACEHOLDERS: Record<string, string> = {
   "/G3 present verbs/images/german.jpg": "LEkSNwp4eHd7iIePd2iIZ3eFeAhJhpMA",
   "/G4 questions/images/home.jpg": "nfgJHwKpx4WAfHiOuDd5mIxVlKn2ZnAJ",
   "/G4 questions/images/yes-after-not.jpg": "4PcJFwRgV3WZhpZ6h1iYl3aGmCAHCmEB",
+  "/G6 accusative/images/there-is.jpg": "0ykGHwavqWeKZnZvmFWZ2HWE+LnF6E8P",
   "/images/animals/hund.png": "XEmCBQAktwiUaImlZ6PAKAh9BF12mYK7WQ==",
   "/images/animals/katze.png": "UxiCBQAjhF+KdZZYp5KdAJkZB8iGeISbZw==",
   "/images/animals/pferd.png": "TkmCBQAkNvGohm0aBAWPaPFnRVd5h4BbmA==",

@@ -166,9 +166,26 @@ export function acceptedOrders(sentence: GrammarSentence, withAlternatives: bool
 
 // True when `built` has exactly the words of one accepted order, just not in
 // that order: the learner got the forms right and the word order wrong.
+// Not when the only change is the gap word trading places with one of its
+// wrong forms ("den Mann kauft der Apfel"): the order is right there, and
+// der and den are on the wrong nouns.
 export function sameWordsOtherOrder(built: string[], sentence: GrammarSentence): boolean {
   const sorted = (words: string[]) => [...words].sort().join(" ");
-  return sorted(built) === sorted(tileWords(sentence));
+  return sorted(built) === sorted(tileWords(sentence)) && !swapsGapForms(built, sentence);
+}
+
+function swapsGapForms(built: string[], sentence: GrammarSentence): boolean {
+  if (sentence.focus === undefined || sentence.focusPart) return false;
+  const forms = new Set(
+    [gapAnswer(sentence), ...(sentence.distractors ?? [])].map((w) => w.toLowerCase()),
+  );
+  return acceptedOrders(sentence, true).some((order) => {
+    const words = order.split(" ");
+    const moved = words.flatMap((w, i) =>
+      w.toLowerCase() === built[i]?.toLowerCase() ? [] : [w.toLowerCase()],
+    );
+    return moved.length === 2 && moved.every((w) => forms.has(w));
+  });
 }
 
 // The mark that ends the sentence ("." or "?"), shown after the tiles.

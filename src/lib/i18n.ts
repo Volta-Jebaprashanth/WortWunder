@@ -93,6 +93,10 @@ export interface Strings {
   backToPath: string;
   expandSection: string;
   collapseSection: string;
+  comingSoon: string;
+  comingSoonTitle: string;
+  comingSoonBody: (readyUpTo: string) => string;
+  practiseVocabulary: string;
   ruleCard: string;
   quickCheck: string;
   fillGap: string;
@@ -207,6 +211,11 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     backToPath: "Back to my path",
     expandSection: "Expand",
     collapseSection: "Collapse",
+    comingSoon: "Coming soon",
+    comingSoonTitle: "Coming soon!",
+    comingSoonBody: (readyUpTo) =>
+      `Right now the grammar lessons up to ${readyUpTo} are ready. The rest will be available soon. Until then, practise the vocabulary in Wortschatz!`,
+    practiseVocabulary: "Practise vocabulary",
     ruleCard: "New rule",
     quickCheck: "Quick check",
     fillGap: "Fill the gap",
@@ -320,6 +329,11 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     backToPath: "என் பாதைக்குத் திரும்பு",
     expandSection: "விரிவாக்கு",
     collapseSection: "சுருக்கு",
+    comingSoon: "விரைவில்",
+    comingSoonTitle: "விரைவில் வரும்!",
+    comingSoonBody: (readyUpTo) =>
+      `தற்போது ${readyUpTo} வரையிலான இலக்கணப் பாடங்கள் தயாராக உள்ளன. மீதமுள்ளவை விரைவில் கிடைக்கும். அதுவரை Wortschatz பகுதியில் சொற்களைப் பயிற்சி செய்!`,
+    practiseVocabulary: "சொற்களைப் பயிற்சி செய்",
     ruleCard: "புதிய விதி",
     quickCheck: "விரைவுச் சோதனை",
     fillGap: "இடைவெளியை நிரப்பு",
@@ -432,6 +446,11 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     backToPath: "මගේ මාවතට ආපසු",
     expandSection: "විස්තීරණය කරන්න",
     collapseSection: "හකුළන්න",
+    comingSoon: "ළඟදීම",
+    comingSoonTitle: "ළඟදීම පැමිණේ!",
+    comingSoonBody: (readyUpTo) =>
+      `දැනට ${readyUpTo} දක්වා ව්‍යාකරණ පාඩම් සූදානම්. ඉතිරි පාඩම් ළඟදීම ලැබේ. එතෙක් Wortschatz කොටසේ වචන පුහුණු වන්න!`,
+    practiseVocabulary: "වචන පුහුණු වන්න",
     ruleCard: "නව නීතිය",
     quickCheck: "ඉක්මන් පරීක්ෂාව",
     fillGap: "හිස්තැන පුරවන්න",

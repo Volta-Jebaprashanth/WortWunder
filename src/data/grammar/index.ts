@@ -19,6 +19,86 @@ export const GRAMMAR_LESSONS: GrammarLesson[] = [
   ACCUSATIVE_LESSON,
 ];
 
+// The grammar lessons not built yet (docs/planning/ROADMAP.md, section 3).
+// The path lists them after GRAMMAR_LESSONS as "coming soon" nodes with no
+// tests; tapping one says which lessons are ready. Move a lesson from here
+// into GRAMMAR_LESSONS once it's built. The Tamil and Sinhala strings are
+// drafts and need a native speaker's review.
+export type UpcomingGrammarLesson = Pick<GrammarLesson, "id" | "title" | "icon" | "meaning">;
+
+export const UPCOMING_GRAMMAR_LESSONS: UpcomingGrammarLesson[] = [
+  {
+    id: "G7",
+    title: "Possessivartikel",
+    icon: "👜",
+    meaning: {
+      english: "My, your, his, her",
+      tamil: "என், உன், அவனுடைய, அவளுடைய",
+      sinhala: "මගේ, ඔබේ, ඔහුගේ, ඇයගේ",
+    },
+  },
+  {
+    id: "G8",
+    title: "Besondere Verben",
+    icon: "🔄",
+    meaning: {
+      english: "Verbs that change",
+      tamil: "மாறும் வினைச்சொற்கள்",
+      sinhala: "වෙනස් වන ක්‍රියා පද",
+    },
+  },
+  {
+    id: "G9",
+    title: "Modalverben",
+    icon: "💪",
+    meaning: {
+      english: "Can, must, want, may",
+      tamil: "முடியும், வேண்டும், விரும்பு, அனுமதி",
+      sinhala: "පුළුවන්, ඕනෑ, කැමති, අවසර",
+    },
+  },
+  {
+    id: "G10",
+    title: "Zeit & Ort",
+    icon: "🕒",
+    meaning: {
+      english: "Time and place",
+      tamil: "நேரமும் இடமும்",
+      sinhala: "කාලය සහ ස්ථානය",
+    },
+  },
+  {
+    id: "G11",
+    title: "Imperativ",
+    icon: "📣",
+    meaning: {
+      english: "Asking and telling",
+      tamil: "கட்டளைகளும் வேண்டுகோள்களும்",
+      sinhala: "අණ සහ ඉල්ලීම්",
+    },
+  },
+  {
+    id: "G12",
+    title: "Vergangenheit",
+    icon: "⏳",
+    meaning: {
+      english: "Talking about the past",
+      tamil: "கடந்த காலத்தைப் பற்றிப் பேசுதல்",
+      sinhala: "අතීතය ගැන කතා කිරීම",
+    },
+  },
+  {
+    id: "G13",
+    title: "Sätze verbinden",
+    icon: "🔗",
+    meaning: {
+      english: "Joining ideas",
+      tamil: "வாக்கியங்களை இணைத்தல்",
+      sinhala: "වාක්‍ය සම්බන්ධ කිරීම",
+    },
+  },
+];
+
 export function findGrammarTest(testId: string): GrammarLessonTest | undefined {
   for (const lesson of GRAMMAR_LESSONS) {
     const test = lesson.tests.find((t) => t.testId === testId);

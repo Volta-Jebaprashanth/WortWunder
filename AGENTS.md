@@ -34,7 +34,9 @@ the task before starting, so the setup doesn't need explaining again:
 ```
 docs/
   grammar-planning/
-    ROADMAP.md            the grammar lessons G1–G13 and their tests
+    ROADMAP.md            the grammar lessons G1–G20 and their tests
+    G1/plan.md            G1 in detail: screens, questions per level,
+                          memory tricks, penalty rules
   qa/
     QA-PLAYBOOK.md        how to test a lesson in the browser: the brief,
                           helpers, screen types, how to judge, report format

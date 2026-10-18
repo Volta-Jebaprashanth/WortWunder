@@ -39,6 +39,7 @@ import {
   wordSegments,
   type QuizItem,
   type TestType,
+  type Tier,
 } from "@/lib/quiz-engine";
 import { ensureTestEntered, getActiveTierRows, recordFail, recordPass } from "@/lib/progress-store";
 import { recordCorrectAnswer } from "@/lib/stats-store";
@@ -66,6 +67,7 @@ export function VocabQuiz({
   testId,
   words,
   testTypes = ALL_TEST_TYPES,
+  startTier,
   t,
   lang,
   onExit,
@@ -73,6 +75,8 @@ export function VocabQuiz({
   testId: string;
   words: VocabWord[];
   testTypes?: TestType[] | undefined;
+  // Start over at this level (picked in the level popup); resume when unset.
+  startTier?: Tier | undefined;
   t: Strings;
   lang: MotherTongue;
   onExit: () => void;
@@ -114,10 +118,10 @@ export function VocabQuiz({
   useEffect(() => {
     preloadFeedbackSounds();
     const wordIds = words.map((w) => w.id);
-    ensureTestEntered(testId, wordIds, testTypes);
+    ensureTestEntered(testId, wordIds, testTypes, startTier);
     setQueue(buildRoundFromRows(getActiveTierRows(testId), words));
     setReady(true);
-  }, [testId, words, testTypes]);
+  }, [testId, words, testTypes, startTier]);
 
   // Keyed on the queue as well as the index: a one-question round followed by
   // a new round stays at index 0, and must still start the next question clean.

@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import {
   Check,
   ChevronRight,
-  Lock,
   ExternalLink,
   Gem,
   Share,
@@ -49,7 +48,7 @@ import {
   startActiveTimeTracking,
   subscribeStats,
 } from "@/lib/stats-store";
-import type { Tier } from "@/lib/quiz-engine";
+import { ALL_TEST_TYPES, TIER_ORDER, tierOfType, type Tier } from "@/lib/quiz-engine";
 import { GRAMMAR_TIERS, getStars, type GrammarTest } from "@/lib/grammar-engine";
 import {
   G1_1_TEST,
@@ -129,6 +128,9 @@ function Index() {
   const [screen, setScreen] = useState<Screen>("home");
   const [activeTest, setActiveTest] = useState<VocabTest | null>(null);
   const [activeGrammar, setActiveGrammar] = useState<GrammarTest | null>(null);
+  // The level picked in the level popup; undefined resumes where the test left off.
+  const [startTier, setStartTier] = useState<Tier | undefined>(undefined);
+  const [levelPick, setLevelPick] = useState<LevelPick | null>(null);
   const [answer, setAnswer] = useState<string | null>(null);
   const [letters, setLetters] = useState<number[]>([]);
   const [heard, setHeard] = useState(false);
@@ -354,7 +356,31 @@ function Index() {
     setAnswer(null);
     setLetters([]);
   };
-  const startLesson = (nodeId: string) => {
+  // Every test on the path is open. A completed test first asks which level
+  // to practise (LevelPicker); the test profile (isDevProfile) always gets
+  // that choice, even before finishing.
+  const requestStart = (nodeId: string) => {
+    const grammar = findG1GrammarTest(nodeId);
+    const vocab = grammar ? undefined : findAnyVocabTest(nodeId);
+    if (!grammar && !vocab) return startLesson(nodeId);
+    const status = getTestStatus(nodeId);
+    if (status.kind !== "completed" && !isDevProfile(profile)) return startLesson(nodeId);
+    const tiers = grammar
+      ? GRAMMAR_TIERS
+      : TIER_ORDER.filter((tier) =>
+          (vocab!.testTypes ?? ALL_TEST_TYPES).some((type) => tierOfType(type) === tier),
+        );
+    setLevelPick({
+      nodeId,
+      tiers,
+      grammar: Boolean(grammar),
+      canContinue: status.kind === "inProgress",
+    });
+  };
+
+  const startLesson = (nodeId: string, tier?: Tier) => {
+    setLevelPick(null);
+    setStartTier(tier);
     if (typeof document !== "undefined") {
       const root = document.documentElement as HTMLElement & {
         webkitRequestFullscreen?: () => Promise<void> | void;
@@ -378,10 +404,7 @@ function Index() {
       go("grammar");
       return;
     }
-    const test: VocabTest | undefined =
-      findVocabTest(nodeId) ??
-      TESTING_TESTS.find((t) => t.testId === nodeId) ??
-      (nodeId === G1_1_TEST.testId ? G1_1_TEST : undefined);
+    const test = findAnyVocabTest(nodeId);
     if (test) {
       setActiveTest(test);
       go("quiz");
@@ -433,6 +456,7 @@ function Index() {
           testId={activeTest.testId}
           words={activeTest.words}
           testTypes={activeTest.testTypes}
+          startTier={startTier}
           t={t}
           lang={lang}
           onExit={() => go("home")}
@@ -447,6 +471,7 @@ function Index() {
           lang={lang}
           profileName={profile?.name}
           badge={activeGrammar.id === G1_GRAMMAR_TESTS.at(-1)?.id ? G1_BADGE : undefined}
+          startTier={startTier}
           onExit={() => go("home")}
         />
       )}
@@ -457,7 +482,7 @@ function Index() {
             <Home
               t={t}
               lang={lang}
-              onStart={startLesson}
+              onStart={requestStart}
               name={profile?.name}
               showDevSections={isDevProfile(profile)}
               showInstall={!installed}
@@ -865,6 +890,15 @@ function Index() {
           onRequestClear={() => setShowClearConfirm(true)}
         />
       )}
+      {levelPick && (
+        <LevelPicker
+          t={t}
+          pick={levelPick}
+          onPick={(tier) => startLesson(levelPick.nodeId, tier)}
+          onCancel={() => setLevelPick(null)}
+        />
+      )}
+
       {showClearConfirm && (
         <ClearConfirm t={t} onCancel={() => setShowClearConfirm(false)} onConfirm={clearAllData} />
       )}
@@ -912,16 +946,13 @@ type PathNode = {
   testId?: string;
   // A numbered test's part, shown in a circle after the title ("Hallo ①").
   part?: number;
-  // Grammar tests open in order: this node stays locked until the test it
-  // names is completed.
-  requires?: { testId: string; label: string };
   // A grammar test: 4-dot level track and stars on the path.
   grammar?: boolean;
   children?: PathNode[];
 };
 
-// G1 Los geht's under Grammatik: six tests, each locked until the one
-// before it is done.
+// G1 Los geht's under Grammatik: six tests, all open (no backend, so
+// nothing is gated — same as the vocabulary lessons).
 function g1PathNode(lang: MotherTongue): PathNode {
   return {
     id: G1_SECTION.id,
@@ -929,19 +960,15 @@ function g1PathNode(lang: MotherTongue): PathNode {
     icon: G1_SECTION.icon,
     state: "active",
     meaning: G1_SECTION.meaning[lang],
-    children: G1_PATH.map((test, i) => {
-      const before = G1_PATH[i - 1];
-      return {
-        id: test.testId,
-        title: `${test.label} ${test.title}`,
-        icon: test.icon,
-        state: "active" as const,
-        meaning: test.meaning[lang],
-        testId: test.testId,
-        grammar: test.grammar,
-        ...(before ? { requires: { testId: before.testId, label: before.label } } : {}),
-      };
-    }),
+    children: G1_PATH.map((test) => ({
+      id: test.testId,
+      title: `${test.label} ${test.title}`,
+      icon: test.icon,
+      state: "active" as const,
+      meaning: test.meaning[lang],
+      testId: test.testId,
+      grammar: test.grammar,
+    })),
   };
 }
 
@@ -1091,7 +1118,8 @@ function devSections(lang: MotherTongue): PathNode[] {
 
 // ÖSD and Testing are still in progress, so the path only shows them to this
 // one profile (name "volta", age 29) — everyone else sees Grammatik and
-// Wortschatz.
+// Wortschatz. It's also the test profile: it gets the level popup on every
+// test, not only completed ones (see requestStart).
 function isDevProfile(profile: Profile | null) {
   return profile?.name.trim().toLowerCase() === "volta" && profile.age.trim() === "29";
 }
@@ -1158,7 +1186,6 @@ function Home({
   // Sections/lessons toggle open; only playable nodes (a vocab test or the
   // Tiere demo) start a lesson.
   const handleCardClick = (node: PathNode) => {
-    if (isLocked(node, statuses)) return;
     if (node.children?.length) toggleNode(node.id);
     else if (node.testId) onStart(node.testId);
     else if (node.id === "tiere") onStart(node.id);
@@ -1242,10 +1269,6 @@ function Home({
 
 const CHEVRON_COLORS = ["bg-mint", "bg-sun", "bg-frost"];
 
-function isLocked(node: PathNode, statuses: Record<string, TestStatus>): boolean {
-  return Boolean(node.requires && statuses[node.requires.testId]?.kind !== "completed");
-}
-
 function PathTree({
   t,
   nodes,
@@ -1277,7 +1300,6 @@ function PathTree({
           childTestIds.length > 0 && childTestIds.every((id) => statuses[id]?.kind === "completed");
         const state = status?.kind === "completed" || allChildrenDone ? "done" : node.state;
         const currentTier = status?.kind === "inProgress" ? status.tier : undefined;
-        const locked = isLocked(node, statuses);
         return (
           <div key={node.id} id={`path-${node.id}`} className="scroll-mt-4">
             <div
@@ -1293,12 +1315,11 @@ function PathTree({
                 className={cn(
                   "relative z-10 grid shrink-0 place-items-center rounded-full border-4 border-frost shadow-md [&>svg]:size-5",
                   depth === 0 ? "size-14 text-2xl" : "size-11 text-lg",
-                  locked && "bg-ice opacity-70",
-                  !locked && state === "done" && "bg-mint",
-                  !locked && state === "active" && "animate-bob bg-frost",
+                  state === "done" && "bg-mint",
+                  state === "active" && "animate-bob bg-frost",
                 )}
               >
-                {locked ? <Lock className="text-ink-soft" /> : node.icon}
+                {node.icon}
                 {state === "done" && (
                   <span className="absolute -bottom-1 -right-1 grid size-5 place-items-center rounded-full bg-success ring-2 ring-frost">
                     <Check className="size-3 text-primary-foreground" />
@@ -1308,11 +1329,7 @@ function PathTree({
               <button
                 type="button"
                 onClick={openCard}
-                aria-disabled={locked}
-                className={cn(
-                  "flex min-w-0 flex-1 items-center gap-3 self-stretch text-left",
-                  locked && "cursor-not-allowed opacity-60",
-                )}
+                className="flex min-w-0 flex-1 items-center gap-3 self-stretch text-left"
               >
                 <span className="min-w-0 flex-1">
                   <span
@@ -1332,10 +1349,8 @@ function PathTree({
                       </>
                     )}
                   </span>
-                  <span className="block text-xs font-bold text-ink-soft">
-                    {locked && node.requires ? t.finishFirst(node.requires.label) : node.meaning}
-                  </span>
-                  {node.grammar && !locked && (
+                  <span className="block text-xs font-bold text-ink-soft">{node.meaning}</span>
+                  {node.grammar && (
                     <span
                       className="mt-0.5 block"
                       aria-label={t.starsLabel(stars[node.testId!] ?? 0)}
@@ -1595,6 +1610,91 @@ function ProfileMenu({
             </a>
           </p>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// Any vocabulary-style test a path node can open: a Wortschatz test, a
+// Testing-section test, or G1.1.
+function findAnyVocabTest(nodeId: string): VocabTest | undefined {
+  return (
+    findVocabTest(nodeId) ??
+    TESTING_TESTS.find((t) => t.testId === nodeId) ??
+    (nodeId === G1_1_TEST.testId ? G1_1_TEST : undefined)
+  );
+}
+
+interface LevelPick {
+  nodeId: string;
+  // The levels this test has, in order (4 for grammar, up to 5 for vocabulary).
+  tiers: Tier[];
+  grammar: boolean;
+  // Only offered when the test is part-way through (test profile).
+  canContinue: boolean;
+}
+
+// "Which level do you want to practise?" — shown before a completed test, and
+// before any test for the test profile. Picking a level starts the test over
+// at that level; earlier levels count as cleared.
+function LevelPicker({
+  t,
+  pick,
+  onPick,
+  onCancel,
+}: {
+  t: Strings;
+  pick: LevelPick;
+  onPick: (tier: Tier | undefined) => void;
+  onCancel: () => void;
+}) {
+  const names = (tier: Tier) =>
+    pick.grammar
+      ? t.levelNames[GRAMMAR_TIERS.indexOf(tier)]
+      : t.vocabLevelNames[TIER_ORDER.indexOf(tier)];
+  return (
+    <div
+      className="fixed inset-0 z-[60] grid place-items-center bg-foreground/40 p-4 backdrop-blur-sm"
+      onClick={onCancel}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="level-picker-title"
+        onClick={(e) => e.stopPropagation()}
+        className="animate-pop glass-panel w-full max-w-sm rounded-[28px] bg-card p-6 sm:p-7"
+      >
+        <h2 id="level-picker-title" className="text-center font-display text-xl font-extrabold">
+          {t.pickLevelTitle}
+        </h2>
+        <p className="mt-1 text-center font-bold text-ink-soft">{t.pickLevelBody}</p>
+        <div className="mt-5 space-y-2">
+          {pick.canContinue && (
+            <Button
+              variant="adventure"
+              className="h-auto w-full rounded-2xl py-3 font-display font-extrabold"
+              onClick={() => onPick(undefined)}
+            >
+              {t.continueWhereLeft}
+            </Button>
+          )}
+          {pick.tiers.map((tier, i) => (
+            <button
+              key={tier}
+              type="button"
+              onClick={() => onPick(tier)}
+              className="flex w-full items-center justify-between gap-3 rounded-2xl bg-card px-4 py-3 text-left ring-2 ring-border transition hover:ring-primary"
+            >
+              <span className="font-display font-extrabold">
+                {t.levelWord} {i + 1} · {names(tier)}
+              </span>
+              <TierSteps tier={tier} tiers={pick.tiers} />
+            </button>
+          ))}
+        </div>
+        <Button variant="outline" className="mt-4 w-full rounded-2xl" onClick={onCancel}>
+          {t.cancel}
+        </Button>
       </div>
     </div>
   );

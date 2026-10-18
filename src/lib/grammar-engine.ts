@@ -178,10 +178,12 @@ export function grammarRowType(tier: GrammarTier): string {
   return `${GRAMMAR_ROW_PREFIX}${tier}`;
 }
 
-export function enterGrammarTest(test: GrammarTest) {
+// `startTier`: start over at that level (the level popup on the path).
+export function enterGrammarTest(test: GrammarTest, startTier?: Tier) {
   ensureRowsEntered(
     test.id,
     test.steps.map((step) => ({ testType: grammarRowType(step.tier), id: step.q.id })),
+    startTier,
   );
 }
 

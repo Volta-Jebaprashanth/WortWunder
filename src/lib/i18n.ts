@@ -116,7 +116,11 @@ export interface Strings {
   soundN: (n: number) => string;
   tapSoundToChoose: string;
   turnOf: (turn: number, total: number) => string;
-  finishFirst: (name: string) => string;
+  // Level popup before a completed test (or any test, for the test profile)
+  pickLevelTitle: string;
+  pickLevelBody: string;
+  continueWhereLeft: string;
+  vocabLevelNames: [string, string, string, string, string];
   typeHere: string;
   tapToPlace: string;
   starsLabel: (stars: number) => string;
@@ -233,7 +237,10 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     soundN: (n) => `Sound ${n}`,
     tapSoundToChoose: "Tap a sound to hear it and choose it.",
     turnOf: (turn, total) => `turn ${turn} of ${total}`,
-    finishFirst: (name) => `Finish ${name} first`,
+    pickLevelTitle: "Practise again",
+    pickLevelBody: "Which level do you want to practise?",
+    continueWhereLeft: "Continue where I left off",
+    vocabLevelNames: ["Training", "Basic", "Easy", "Medium", "Hard"],
     typeHere: "Type here",
     tapToPlace: "Tap a tile, then tap where it goes.",
     starsLabel: (stars) => `${stars} of 3 stars`,
@@ -349,7 +356,10 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     soundN: (n) => `ஒலி ${n}`,
     tapSoundToChoose: "ஒலியைத் தட்டிக் கேட்டுத் தேர்ந்தெடு.",
     turnOf: (turn, total) => `${total} இல் ${turn}`,
-    finishFirst: (name) => `முதலில் ${name} முடி`,
+    pickLevelTitle: "மீண்டும் பயிற்சி செய்",
+    pickLevelBody: "எந்த நிலையைப் பயிற்சி செய்ய விரும்புகிறாய்?",
+    continueWhereLeft: "விட்ட இடத்திலிருந்து தொடர்",
+    vocabLevelNames: ["பயிற்சி", "அடிப்படை", "எளிது", "நடுத்தரம்", "கடினம்"],
     typeHere: "இங்கே தட்டச்சு செய்",
     tapToPlace: "ஒரு ஓடுவைத் தட்டி, அது போகும் இடத்தைத் தட்டு.",
     starsLabel: (stars) => `3 இல் ${stars} நட்சத்திரங்கள்`,
@@ -464,7 +474,10 @@ export const TRANSLATIONS: Record<MotherTongue, Strings> = {
     soundN: (n) => `ශබ්දය ${n}`,
     tapSoundToChoose: "ශබ්දයක් තට්ටු කර අහලා තෝරන්න.",
     turnOf: (turn, total) => `${total} න් ${turn}`,
-    finishFirst: (name) => `මුලින්ම ${name} අවසන් කරන්න`,
+    pickLevelTitle: "ආයෙත් පුහුණු වෙන්න",
+    pickLevelBody: "ඔබට පුහුණු වෙන්න ඕනෙ කුමන මට්ටමද?",
+    continueWhereLeft: "නැවැත්තූ තැන ඉඳන් යන්න",
+    vocabLevelNames: ["පුහුණුව", "මූලික", "පහසු", "මධ්‍යම", "අමාරු"],
     typeHere: "මෙතන ටයිප් කරන්න",
     tapToPlace: "ටයිල් එකක් තට්ටු කර, එය යන තැන තට්ටු කරන්න.",
     starsLabel: (stars) => `තරු 3 න් ${stars}`,

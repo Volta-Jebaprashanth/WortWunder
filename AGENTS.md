@@ -243,10 +243,19 @@ Vite 8 + Nitro.
   the `training`/`easy`/`medium`/`hard` tiers). Each question is one
   progress row keyed `g.<tier>:<questionId>` (same pending counter, Hard
   caps at 5). Training questions carry `intro` cards shown before them.
-  Tests open in order on the path (`requires`); stars live under
-  `wortwunder:stars`. G1 audio is under `public/G1 getting started/audio/`;
+  Every test is open (no locks — see "Test access" below); stars live
+  under `wortwunder:stars`. G1 audio is under `public/G1 getting started/audio/`;
   `en:<text>` clips are English-voice "wrong" readings. Card art is emoji
   placeholders for now.
+- **Test access** (all tests, vocabulary and grammar): nothing on the path
+  is locked — the app has no backend. Opening a **completed** test shows
+  the level popup (`LevelPicker` in `src/routes/index.tsx`: "Which level
+  do you want to practise?"); the test starts over at that level via
+  `startTier` (`ensureRowsEntered` clears earlier levels, the rest start
+  fresh). A test that isn't completed just resumes. The test profile
+  (`isDevProfile`: name `volta` in any capitals, age `29`) always gets the
+  popup, plus "Continue where I left off" when the test is part-way. Don't
+  add unlock gates to new lessons.
 - **Path layout**: 1 Grammatik (G1 Los geht's), 2
   Wortschatz (the vocabulary lessons), 3 ÖSD
   (no lessons of its own: `OESD_LESSONS` in `index.tsx` lists

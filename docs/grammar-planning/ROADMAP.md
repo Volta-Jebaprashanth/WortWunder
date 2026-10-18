@@ -69,6 +69,13 @@ too.
 **Penalty rules.** Every lesson has penalty rules, so the learner has to
 complete each level correctly before moving on.
 
+**Access.** Every lesson and test is open from the start: the app has no
+backend, so nothing on the path is locked (same as the vocabulary lessons).
+Once a test is completed, opening it again shows a level popup ("Which
+level do you want to practise?") and the test starts over at the chosen
+level. The test profile (name `volta`, any capitals, age `29`) gets the
+popup on every test, even before completing it.
+
 **Output.** Two Markdown files in `docs/grammar-planning/G<n>/`:
 
 - `plan.md`: the plan described above.

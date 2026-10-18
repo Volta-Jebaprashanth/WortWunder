@@ -64,16 +64,22 @@ ahead by guessing, and nothing is ever taken away from them.
    either (no +2). Hard has no hints.
 6. **Level gate:** the next level opens only when every question in this
    level is at 0. The test is complete when Hard is at 0.
-7. **Test gate:** G1.1 → G1.6 open in order. G1.6 (Sprechen) needs
-   G1.1–G1.5 done.
+7. **No test gate:** every test is open from the start (the app has no
+   backend, so nothing is locked — same as the vocabulary lessons). The
+   suggested order is still G1.1 → G1.6.
 8. **Three misses in a row → "Pause card"**, the kid-safety valve. The app
    shows the _Merke_ card again and one easy question from the level before
    (unscored), then continues. No lives, no hearts, no lock-outs, and
    progress is never lost.
 9. **Stars on the result card** (based on Hard only): ⭐⭐⭐ no mistakes, ⭐⭐
-   1–2 mistakes, ⭐ more. Replaying a completed test resets the counters
-   (current behaviour) to try for 3 stars.
-10. **Warm-up:** each test starts with 2 unscored review questions from the
+   1–2 mistakes, ⭐ more. The best result is kept.
+10. **Practise again (level popup):** opening a **completed** test first
+    asks "Which level do you want to practise?" (Training / Simple / Medium
+    / Hard). The test starts over at that level; earlier levels count as
+    cleared. Before a test is completed it just resumes, no popup. The test
+    profile (name `volta`, any capitals, age `29`) always gets the popup,
+    plus "Continue where I left off" when the test is part-way through.
+11. **Warm-up:** each test starts with 2 unscored review questions from the
     test before it (G1.2 onward), so earlier things keep coming back.
 
 ## 4. Memory system used across all of G1

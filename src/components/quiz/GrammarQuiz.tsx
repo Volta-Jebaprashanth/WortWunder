@@ -68,6 +68,7 @@ export function GrammarQuiz({
   lang,
   profileName,
   badge,
+  startTier,
   onExit,
 }: {
   test: GrammarTest;
@@ -76,6 +77,8 @@ export function GrammarQuiz({
   profileName?: string | undefined;
   // Shown after the finish screen when this test completes the section.
   badge?: GrammarBadge | undefined;
+  // Start over at this level (picked in the level popup); resume when unset.
+  startTier?: Tier | undefined;
   onExit: () => void;
 }) {
   const [queue, setQueue] = useState<GrammarStep[]>([]);
@@ -142,13 +145,13 @@ export function GrammarQuiz({
 
   useEffect(() => {
     preloadFeedbackSounds();
-    enterGrammarTest(test);
+    enterGrammarTest(test, startTier);
     const first = buildGrammarRound(test);
     setQueue(first);
     if (test.warmup.length > 0) setPhase({ kind: "warmup", index: 0 });
     else if (first.length === 0) setPhase({ kind: "finish" });
     else setPhase({ kind: "banner", tier: first[0]!.tier });
-  }, [test]);
+  }, [test, startTier]);
 
   // Fetch the clips this step and the next few can play.
   useEffect(() => {

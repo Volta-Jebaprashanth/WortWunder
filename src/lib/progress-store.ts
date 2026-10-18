@@ -126,15 +126,39 @@ function writeStore(store: ProgressStore) {
   }
 }
 
-export function ensureTestEntered(testId: string, wordIds: string[], testTypes: TestType[]) {
+export function ensureTestEntered(
+  testId: string,
+  wordIds: string[],
+  testTypes: TestType[],
+  startTier?: Tier,
+) {
   ensureRowsEntered(
     testId,
     wordIds.flatMap((id) => testTypes.map((testType) => ({ testType, id }))),
+    startTier,
   );
 }
 
-export function ensureRowsEntered(testId: string, wanted: { testType: string; id: string }[]) {
+// `startTier` (picked in the level popup — see routes/index.tsx) starts the
+// test over at that level: every row of an earlier level is cleared (0) and
+// the rest start fresh. The completed flag is kept.
+export function ensureRowsEntered(
+  testId: string,
+  wanted: { testType: string; id: string }[],
+  startTier?: Tier,
+) {
   const store = readStore();
+  if (startTier) {
+    const from = TIER_ORDER.indexOf(startTier);
+    const rows: Record<string, number> = {};
+    for (const { testType, id } of wanted) {
+      const tier = tierOfRow(testType) ?? "hard";
+      rows[rowKey(testType, id)] = TIER_ORDER.indexOf(tier) < from ? 0 : startPending(testType);
+    }
+    store.tests[testId] = { completed: store.tests[testId]?.completed ?? false, rows };
+    writeStore(store);
+    return;
+  }
   const existing = store.tests[testId];
   const hasRows = Boolean(existing && Object.keys(existing.rows).length > 0);
   const resetAll = !hasRows || existing!.completed;

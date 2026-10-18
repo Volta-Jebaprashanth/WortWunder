@@ -199,6 +199,7 @@ export const PERSONAL_WORDS: VocabWord[] = [
     id: "kind",
     image: "/1.8 personal information/images/child.jpg",
     full: "das Kind",
+    plural: "die Kinder",
     english: "Child",
     tamil: "குழந்தை",
     sinhala: "ළමයා",

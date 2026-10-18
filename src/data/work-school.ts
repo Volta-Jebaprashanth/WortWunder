@@ -242,6 +242,7 @@ export const WORK_SCHOOL_WORDS: VocabWord[] = [
     id: "buch",
     image: "/1.12 work and school/images/book.jpg",
     full: "das Buch",
+    plural: "die Bücher",
     english: "Book",
     tamil: "புத்தகம்",
     sinhala: "පොත",

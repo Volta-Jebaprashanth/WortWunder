@@ -7,14 +7,14 @@ import { FOOD_LESSON_ID } from "@/data/food";
 
 // G3 Verben im Präsens: a verb is a stem plus an ending that depends on who
 // does it (ich lerne, du lernst, er lernt, wir lernen, ihr lernt), haben,
-// and the verb as the second part of a sentence (ROADMAP.md, section 3).
+// and the verb as the second part of a sentence (docs/planning/ROADMAP.md, section 3).
 // One word test, then one grammar test per step. Gaps are always the whole
 // verb form, never just its ending: SentenceLine marks the first match of
 // `focusPart`, which is the wrong "e" in "spiele". Every sentence has its
 // own clip in public/G3 present verbs/audio/.
 //
 // The Tamil and Sinhala strings are drafts and need a native speaker's
-// review (ROADMAP.md, Open decisions).
+// review (docs/planning/ROADMAP.md, Open decisions).
 export const PRESENT_VERBS_LESSON_ID = "G3";
 
 const ALL_SENTENCE_TYPES = [
@@ -428,6 +428,7 @@ const ER_SIE_ES: GrammarTest = {
     {
       id: "tom-spielt",
       german: "Tom spielt Fußball.",
+      nounFirst: true,
       meaning: {
         english: "Tom plays football.",
         tamil: "டாம் கால்பந்து விளையாடுகிறான்.",
@@ -464,6 +465,7 @@ const ER_SIE_ES: GrammarTest = {
     {
       id: "anna-kocht",
       german: "Anna kocht.",
+      nounFirst: true,
       meaning: { english: "Anna cooks.", tamil: "அன்னா சமைக்கிறாள்.", sinhala: "ඇනා උයනවා." },
       rule: "er-t",
       focus: 1,
@@ -532,6 +534,7 @@ const ER_SIE_ES: GrammarTest = {
     {
       id: "lena-singt",
       german: "Lena singt.",
+      nounFirst: true,
       meaning: {
         english: "Lena sings.",
         tamil: "லீனா பாடுகிறாள்.",
@@ -755,6 +758,7 @@ const PLURAL: GrammarTest = {
     {
       id: "anna-tom-tanzen",
       german: "Anna und Tom tanzen.",
+      nounFirst: true,
       meaning: {
         english: "Anna and Tom dance.",
         tamil: "அன்னாவும் டாமும் நடனமாடுகிறார்கள்.",
@@ -1003,6 +1007,7 @@ const HABEN: GrammarTest = {
     {
       id: "anna-auto",
       german: "Anna hat ein Auto.",
+      nounFirst: true,
       meaning: {
         english: "Anna has a car.",
         tamil: "அன்னாவிடம் ஒரு கார் இருக்கிறது.",
@@ -1043,6 +1048,7 @@ const HABEN: GrammarTest = {
     {
       id: "tom-zeit",
       german: "Tom hat heute Zeit.",
+      nounFirst: true,
       alternatives: ["Heute hat Tom Zeit."],
       meaning: {
         english: "Tom has time today.",
@@ -1267,6 +1273,7 @@ const VERB_POSITION: GrammarTest = {
     {
       id: "tom-heute",
       german: "Tom spielt heute Fußball.",
+      nounFirst: true,
       // Both orders mean the same: without a "Start with …" instruction,
       // either is right.
       alternatives: ["Heute spielt Tom Fußball."],

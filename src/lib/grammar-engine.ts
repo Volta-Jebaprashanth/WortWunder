@@ -131,38 +131,25 @@ export function wordsOf(sentence: Pick<GrammarSentence, "german">): string[] {
   return tokensOf(sentence).map(bareToken);
 }
 
-// Words written in lower case unless they start a sentence. Nouns and names
-// keep their capital anywhere, so they aren't listed.
-const LOWER_CASE_STARTERS = new Set([
-  "ich",
-  "du",
-  "er",
-  "sie",
-  "es",
-  "wir",
-  "ihr",
-  "heute",
-  "wie",
-  "was",
-  "wo",
-  "woher",
-  "hallo",
-  "der",
-  "die",
-  "das",
-  "ja",
-  "nein",
-]);
+type TileSource = Pick<GrammarSentence, "german" | "formal" | "nounFirst">;
 
-// The words of a sentence as word tiles: the first word in lower case unless
-// it keeps its capital anywhere (a noun, a name, polite "Sie"), so the one
-// capital on the tiles doesn't give away which word comes first. WordBuilder
-// capitalises whichever tile is placed first.
-export function tileWords(sentence: Pick<GrammarSentence, "german" | "formal">): string[] {
-  const words = wordsOf(sentence);
+// Whether `word`, starting one order of the sentence, keeps its capital
+// anywhere: a noun or a name (marked with nounFirst, or written with a
+// capital later in the sentence's own order), or polite "Sie".
+function keepsCapital(word: string, sentence: TileSource): boolean {
+  const own = wordsOf(sentence);
+  if (word === own[0]) return !!sentence.nounFirst || (!!sentence.formal && word === "Sie");
+  return own.slice(1).includes(word);
+}
+
+// The words of a sentence (or of one of its `alternatives`) as word tiles:
+// the first word in lower case unless it keeps its capital anywhere, so the
+// one capital on the tiles doesn't give away which word comes first.
+// WordBuilder capitalises whichever tile is placed first.
+export function tileWords(sentence: TileSource, german = sentence.german): string[] {
+  const words = wordsOf({ german });
   const first = words[0];
-  if (first && !sentence.formal && LOWER_CASE_STARTERS.has(first.toLowerCase()))
-    words[0] = first.toLowerCase();
+  if (first && !keepsCapital(first, sentence)) words[0] = first.toLowerCase();
   return words;
 }
 
@@ -173,15 +160,32 @@ export function acceptedOrders(sentence: GrammarSentence, withAlternatives: bool
   const orders = [tileWords(sentence).join(" ")];
   if (withAlternatives)
     for (const german of sentence.alternatives ?? [])
-      orders.push(tileWords({ ...sentence, german }).join(" "));
+      orders.push(tileWords(sentence, german).join(" "));
   return orders;
 }
 
 // True when `built` has exactly the words of one accepted order, just not in
 // that order: the learner got the forms right and the word order wrong.
+// Not when the only change is the gap word trading places with one of its
+// wrong forms ("den Mann kauft der Apfel"): the order is right there, and
+// der and den are on the wrong nouns.
 export function sameWordsOtherOrder(built: string[], sentence: GrammarSentence): boolean {
   const sorted = (words: string[]) => [...words].sort().join(" ");
-  return sorted(built) === sorted(tileWords(sentence));
+  return sorted(built) === sorted(tileWords(sentence)) && !swapsGapForms(built, sentence);
+}
+
+function swapsGapForms(built: string[], sentence: GrammarSentence): boolean {
+  if (sentence.focus === undefined || sentence.focusPart) return false;
+  const forms = new Set(
+    [gapAnswer(sentence), ...(sentence.distractors ?? [])].map((w) => w.toLowerCase()),
+  );
+  return acceptedOrders(sentence, true).some((order) => {
+    const words = order.split(" ");
+    const moved = words.flatMap((w, i) =>
+      w.toLowerCase() === built[i]?.toLowerCase() ? [] : [w.toLowerCase()],
+    );
+    return moved.length === 2 && moved.every((w) => forms.has(w));
+  });
 }
 
 // The mark that ends the sentence ("." or "?"), shown after the tiles.
@@ -196,9 +200,14 @@ function scrambled(tiles: string[], answer: string[]): string[] {
   return out;
 }
 
-// Up to `count` wrong words for the tile pool, not already in it.
+// Up to `count` wrong words for the tile pool, not already in it. Wrong
+// fillers for a first-word gap ("Die" for "Der Tisch …") are written with a
+// capital; when the first tile is shown in lower case they are too, so the
+// capital doesn't mark them as the wrong ones.
 function decoyWords(sentence: GrammarSentence, words: string[], count: number): string[] {
-  return shuffle((sentence.distractors ?? []).filter((d) => !words.includes(d))).slice(0, count);
+  const lower = sentence.focus === 0 && words[0] !== wordsOf(sentence)[0];
+  const decoys = (sentence.distractors ?? []).map((d) => (lower ? d.toLowerCase() : d));
+  return shuffle(decoys.filter((d) => !words.includes(d))).slice(0, count);
 }
 
 export type SentenceKind =

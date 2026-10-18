@@ -7,13 +7,13 @@ import { GRAMMAR_LESSON_ID } from "@/data/grammar-words";
 
 // G1 Los geht's: before any grammar, how German looks and sounds, and the
 // names for the three kinds of word the rest of the section talks about
-// (ROADMAP.md, section 3). The words in G1.2 and G1.3 are there for their
+// (docs/planning/ROADMAP.md, section 3). The words in G1.2 and G1.3 are there for their
 // sounds; every one already exists in a Wortschatz lesson, so its audio is
 // the existing clip (WORD_AUDIO is keyed by the spoken text). G1.4's
 // sentences have their own clips in public/G1 getting started/audio/.
 //
 // The Tamil and Sinhala strings are drafts and need a native speaker's
-// review (ROADMAP.md, Open decisions).
+// review (docs/planning/ROADMAP.md, Open decisions).
 export const GETTING_STARTED_LESSON_ID = "G1";
 
 const WORDS: WordsTest = {
@@ -588,6 +588,7 @@ const KINDS: GrammarTest = {
     {
       id: "anna",
       german: "Anna lernt.",
+      nounFirst: true,
       meaning: { english: "Anna learns.", tamil: "அன்னா கற்கிறாள்.", sinhala: "ඇනා ඉගෙන ගන්නවා." },
       rule: "nomen",
     },
@@ -603,6 +604,7 @@ const KINDS: GrammarTest = {
     {
       id: "tom",
       german: "Tom lernt.",
+      nounFirst: true,
       meaning: { english: "Tom learns.", tamil: "டாம் கற்கிறான்.", sinhala: "ටොම් ඉගෙන ගන්නවා." },
       rule: "nomen",
     },

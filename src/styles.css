@@ -5,6 +5,49 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
+ * Tablet frame on desktop.
+ *
+ * The app is built for phones and tablets. On a desktop (a mouse or trackpad
+ * as the primary pointer, whatever the window width) __root.tsx's
+ * .app-frame shows it in a tablet-sized column (820px, an upright iPad Air)
+ * instead of stretching it across the screen, or an iPhone 17 Pro Max sized
+ * one (440x956) once the visitor picks phone view (DesktopViewSwitch, which
+ * sets <html data-view="phone">). sm:/md: follow the window width, which
+ * matches the tablet column up to 820px, and switch off in phone view. lg:
+ * and up are redefined to skip desktops, since the column never gets that
+ * wide, while real large tablets (coarse pointer) keep them.
+ */
+@custom-variant sm {
+  @media (width >= 40rem) {
+    &:where(:root:not([data-view="phone"]) *) {
+      @slot;
+    }
+  }
+}
+@custom-variant md {
+  @media (width >= 48rem) {
+    &:where(:root:not([data-view="phone"]) *) {
+      @slot;
+    }
+  }
+}
+@custom-variant lg {
+  @media (width >= 64rem) and (not ((hover: hover) and (pointer: fine))) {
+    @slot;
+  }
+}
+@custom-variant xl {
+  @media (width >= 80rem) and (not ((hover: hover) and (pointer: fine))) {
+    @slot;
+  }
+}
+@custom-variant 2xl {
+  @media (width >= 96rem) and (not ((hover: hover) and (pointer: fine))) {
+    @slot;
+  }
+}
+
+/*
  * Design system definition.
  *
  * The @theme inline block maps CSS custom properties to Tailwind utility
@@ -246,6 +289,72 @@
     var(--ice) 44%,
     oklch(0.84 0.1 237) 100%
   );
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body {
+    height: 100dvh;
+    overflow: hidden;
+    background: radial-gradient(
+      100% 100% at 50% 0%,
+      var(--frost) 0%,
+      var(--ice) 55%,
+      oklch(0.8 0.08 240) 100%
+    );
+  }
+
+  /* transform makes this the containing block for the app's position:fixed
+     overlays (dialogs, drawer, answer sheet), keeping them inside the frame. */
+  .app-frame {
+    position: relative;
+    width: min(820px, 100%);
+    height: 100dvh;
+    margin-inline: auto;
+    overflow: hidden;
+    transform: translateZ(0);
+    box-shadow: 0 0 60px oklch(0.45 0.1 240 / 0.25);
+  }
+
+  /* The frame itself doesn't scroll, so fixed overlays stay put while the
+     page scrolls underneath them. */
+  .app-frame-scroll {
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+
+  /* Device views: an iPad Air (820x1180 CSS px) or iPhone 17 Pro Max
+     (440x956) screen, sized and zoomed out by __root.tsx's FRAME_SCRIPT so
+     the whole screen fits the window. Without the script, the plain
+     full-height column above applies. */
+  :root[data-view] body {
+    display: grid;
+    place-items: center;
+  }
+  :root[data-view] .app-frame {
+    width: var(--frame-width);
+    height: var(--frame-height);
+    zoom: var(--frame-zoom);
+    border-radius: 36px;
+    /* A bezel in the app's navy text colour (--foreground), with a soft
+       outer edge and blue shadow. */
+    box-shadow:
+      0 0 0 14px var(--foreground),
+      0 0 0 16px oklch(0.6 0.1 245 / 0.5),
+      0 30px 80px oklch(0.45 0.1 240 / 0.35);
+  }
+  :root[data-view="phone"] .app-frame {
+    border-radius: 48px;
+    box-shadow:
+      0 0 0 10px var(--foreground),
+      0 0 0 12px oklch(0.6 0.1 245 / 0.5),
+      0 30px 80px oklch(0.45 0.1 240 / 0.35);
+  }
+  /* The app's min-h-dvh is the window height, not the device's. */
+  :root[data-view] .app-frame-scroll > * {
+    min-height: 100%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

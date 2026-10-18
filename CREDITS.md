@@ -1397,3 +1397,63 @@ photos credited in the sections above:
 | test-4.jpg | wir -en, ihr -t       | crop of `1.17 verbs/images/to-cook.jpg`           |
 | test-5.jpg | haben                 | crop of `1.17 verbs/images/to-have.jpg`           |
 | test-6.jpg | Das Verb ist Nummer 2 | crop of `1.10 time/images/clock.jpg`              |
+
+## Lesson G4 — Fragen
+
+The word photos under `public/G4 questions/images/` are copies of photos
+credited in the sections above:
+
+| File              | Word       | Source                                          |
+| ----------------- | ---------- | ----------------------------------------------- |
+| yes-after-not.jpg | doch       | copy of `1.18 small words/images/of-course.jpg` |
+| home.jpg          | nach Hause | copy of `1.4 home/images/house.jpg`             |
+
+Its path icons in `public/G4 questions/icons/` are 160x160 crops of photos
+credited in the sections above:
+
+| File       | Test                   | Source                                            |
+| ---------- | ---------------------- | ------------------------------------------------- |
+| lesson.jpg | Fragen                 | crop of `1.16 question words/images/why.jpg`      |
+| test-1.jpg | Wörter                 | crop of `1.16 question words/images/what.jpg`     |
+| test-2.jpg | Kommst du?             | crop of `1.17 verbs/images/to-come.jpg`           |
+| test-3.jpg | wer, was, wie          | crop of `1.16 question words/images/who.jpg`      |
+| test-4.jpg | wo, woher, wohin, wann | crop of `1.16 question words/images/where-to.jpg` |
+| test-5.jpg | ja, nein, doch         | crop of `1.18 small words/images/of-course.jpg`   |
+
+## Lesson G5 — Nomen & Artikel
+
+G5 has no word photos of its own: both word tests reuse the Wortschatz
+words' photos. Its path icons in `public/G5 nouns and articles/icons/` are
+160x160 crops of photos credited in the sections above:
+
+| File       | Test            | Source                                         |
+| ---------- | --------------- | ---------------------------------------------- |
+| lesson.jpg | Nomen & Artikel | crop of `1.12 work and school/images/book.jpg` |
+| test-1.jpg | Wörter 1        | crop of `1.4 home/images/lamp.jpg`             |
+| test-2.jpg | der, die, das   | crop of `1.4 home/images/table.jpg`            |
+| test-3.jpg | ein, eine       | crop of `1.24 animals/images/cat.jpg`          |
+| test-4.jpg | Wörter 2        | crop of `1.2 family/images/grandparents.jpg`   |
+| test-5.jpg | Plural          | crop of `1.2 family/images/children.jpg`       |
+| test-6.jpg | kein, keine     | crop of `1.24 animals/images/horse.jpg`        |
+| test-7.jpg | nicht oder kein | crop of `1.24 animals/images/dog.jpg`          |
+
+## Lesson G6 — Akkusativ
+
+The word photo under `public/G6 accusative/images/` is a copy of a photo
+credited in the sections above:
+
+| File         | Word    | Source                                   |
+| ------------ | ------- | ---------------------------------------- |
+| there-is.jpg | es gibt | copy of `1.9 shopping/images/market.jpg` |
+
+Its path icons in `public/G6 accusative/icons/` are 160x160 crops of photos
+credited in the sections above:
+
+| File       | Test                       | Source                                        |
+| ---------- | -------------------------- | --------------------------------------------- |
+| lesson.jpg | Akkusativ                  | crop of `1.9 shopping/images/supermarket.jpg` |
+| test-1.jpg | Wörter                     | crop of `1.3 food/images/bread.jpg`           |
+| test-2.jpg | den, einen                 | crop of `1.3 food/images/apple.jpg`           |
+| test-3.jpg | die, das, keinen           | crop of `1.3 food/images/milk.jpg`            |
+| test-4.jpg | möchten, brauchen, es gibt | crop of `1.3 food/images/coffee.jpg`          |
+| test-5.jpg | der oder den               | crop of `1.9 shopping/images/to-buy.jpg`      |

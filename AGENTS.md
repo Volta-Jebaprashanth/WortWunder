@@ -28,12 +28,12 @@ Lessons are tested by hand in the browser instead (see "Working docs" below).
 
 ## Working docs
 
-Planning and QA docs live under `docs/`. Read the one that matches the task
-before starting, so the setup doesn't need explaining again:
+Grammar planning and QA docs live under `docs/`. Read the one that matches
+the task before starting, so the setup doesn't need explaining again:
 
 ```
 docs/
-  planning/
+  grammar-planning/
     ROADMAP.md            the grammar lessons G1–G13 and their tests
   qa/
     QA-PLAYBOOK.md        how to test a lesson in the browser: the brief,

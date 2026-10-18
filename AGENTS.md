@@ -34,8 +34,7 @@ before starting, so the setup doesn't need explaining again:
 ```
 docs/
   planning/
-    ROADMAP.md            the earlier grammar plan, kept for reference
-                          while grammar is redesigned
+    ROADMAP.md            the grammar lessons G1–G13 and their tests
   qa/
     QA-PLAYBOOK.md        how to test a lesson in the browser: the brief,
                           helpers, screen types, how to judge, report format

@@ -525,34 +525,7 @@ export const G1_2_TEST: GrammarTest = {
       { text: "J", sound: { letter: "J" } },
     ],
   },
-  warmup: [
-    {
-      id: "w-hallo",
-      type: "choice",
-      eyebrow: EYEBROW.picture,
-      title: "Was ist das?",
-      subtitle: l(
-        "Choose the German word for this picture.",
-        "இந்தப் படத்திற்கான ஜெர்மன் சொல்லைத் தேர்ந்தெடு.",
-        "මේ පින්තූරයට ජර්මන් වචනය තෝරන්න.",
-      ),
-      prompt: {
-        image: "/1.1 greetings/images/hello.jpg",
-        caption: l("Hello", "வணக்கம்", "ආයුබෝවන්"),
-      },
-      options: ["Hallo", "Tschüss", "Danke"],
-      answer: "Hallo",
-    },
-    {
-      id: "w-nein",
-      type: "choice",
-      eyebrow: EYEBROW.listening,
-      title: "Was hörst du?",
-      subtitle: SUB.listenChoose,
-      prompt: { sound: { word: "nein" }, autoplay: true },
-      options: ["nein", "ja", "du"],
-      answer: "nein",
-    },
-  ],
+  // No warm-up: G1.2 opens straight on the alphabet.
+  warmup: [],
   steps,
 };

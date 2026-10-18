@@ -80,7 +80,8 @@ ahead by guessing, and nothing is ever taken away from them.
     profile (name `volta`, any capitals, age `29`) always gets the popup,
     plus "Continue where I left off" when the test is part-way through.
 11. **Warm-up:** each test starts with 2 unscored review questions from the
-    test before it (G1.2 onward), so earlier things keep coming back.
+    test before it (G1.3 onward), so earlier things keep coming back.
+    G1.2 has no warm-up: it opens straight on the alphabet.
 
 ## 4. Memory system used across all of G1
 

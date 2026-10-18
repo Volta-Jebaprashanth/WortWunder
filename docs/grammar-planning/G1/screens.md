@@ -81,7 +81,7 @@ These are used by every G1 test.
 | Medium   | 🟡 Level 3 · Medium — "Remember it yourself."     |
 | Hard     | 🔴 Level 4 · Hard — "No help now. You can do it!" |
 
-### A3. Warm-up (first 2 screens of G1.2–G1.6)
+### A3. Warm-up (first 2 screens of G1.3–G1.6)
 
 Same frame as the question it reuses, with the eyebrow `WARM-UP`, no level
 dots, and the line "From last time" under the title. Unscored: a wrong
@@ -288,12 +288,10 @@ vocabulary lesson, so it isn't wireframed here. The word list is in
 New audio for this test: none for the letters (A–Z clips already exist).
 Spelled names = letter clips played with 0.6 s gaps (0.3 s in "fast").
 
-### C0. Warm-up (2, from G1.1)
+### C0. No warm-up
 
-| #   | Screen            | Shows               | Options                      |
-| --- | ----------------- | ------------------- | ---------------------------- |
-| 1   | Picture challenge | [IMG: child waving] | (Hallo ✅) (Tschüss) (Danke) |
-| 2   | Listening         | [🔊 nein]           | (nein ✅) (ja) (du)          |
+G1.2 opens straight on the first club card (C1); there are no review
+questions from G1.1.
 
 ### C1. Training · club card (×4)
 
@@ -1331,7 +1329,7 @@ Then: A11 (test finished) → A12 (G1 badge).
 | Test | Warm-up                                     | Training (cards + checks) | Simple | Medium | Hard | Scored rows |
 | ---- | ------------------------------------------- | ------------------------- | ------ | ------ | ---- | ----------- |
 | G1.1 | standard vocabulary test (not counted here) |                           |        |        |      |             |
-| G1.2 | 2                                           | 6 cards + 6               | 16     | 9      | 10   | 41          |
+| G1.2 | 0                                           | 6 cards + 6               | 16     | 9      | 10   | 41          |
 | G1.3 | 2                                           | 5 cards + 5               | 12     | 8      | 9    | 34          |
 | G1.4 | 2                                           | 3 cards + 6               | 12     | 12     | 10   | 40          |
 | G1.5 | 2                                           | 4 cards + 3               | 12     | 11     | 8    | 34          |
